@@ -46,7 +46,7 @@ public class BestTimeToBuyAndSell {
 	 * local[i][j] = max(global[i - 1][j - 1], local[i - 1][j]) + diff
 	 * global[i][j] = max( local[i][j], global[i-1][j] )
 	 */
-	public int maxProfit(int[] prices) {
+	public int maxProfit_1(int[] prices) {
 		if(prices == null || prices.length == 0) return 0;
 		int [] local = new int[3];
 		int [] global = new int[3];
@@ -58,6 +58,19 @@ public class BestTimeToBuyAndSell {
 			}
 		}
 		return global[2];
+	}
+	
+	
+	public int maxProfit_2(int[] prices) {
+		int firstBuy = Integer.MIN_VALUE, firstSell = 0;
+		int secondBuy = Integer.MIN_VALUE, secondSell = 0;
+		for(int curPrice : prices) {
+			if(firstBuy < -curPrice) firstBuy = -curPrice;  // the max profit after you buy first stock.
+			if(firstSell < firstBuy + curPrice) firstSell = firstBuy + curPrice;	// the max profit after you sell it.
+			if(secondBuy < firstSell - curPrice) secondBuy = firstSell - curPrice;	// the max profit after you buy second stock.
+			if(secondSell < secondBuy + curPrice) secondSell = secondBuy + curPrice; // the max profit after you sell the second stock.
+		}
+		return secondSell;
 	}
 
 }

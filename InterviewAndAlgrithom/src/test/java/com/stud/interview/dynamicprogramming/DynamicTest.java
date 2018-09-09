@@ -30,7 +30,8 @@ public class DynamicTest {
 	public void testBTTBAS() {
 		BestTimeToBuyAndSell sell = new BestTimeToBuyAndSell();
 		int[] param = {3,3,5,0,0,3,1,4};
-		System.out.println(sell.maxProfit(param));
+		System.out.println(sell.maxProfit_1(param));
+		System.out.println(sell.maxProfit_2(param));
 	}
 
 }

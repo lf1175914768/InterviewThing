@@ -2,16 +2,16 @@ package com.study.algorithm;
 
 public class QuickSort {
 	
-	public void sortCore(int[] array, int first, int last) {
+	public void sort(int[] array, int first, int last) {
 		if(first >= last) {
 			return;
 		}
-		int boundary = quickSort(array, first, last);
-		sortCore(array, first, boundary - 1);
-		sortCore(array, boundary + 1, last);
+		int boundary = doSort(array, first, last);
+		sort(array, first, boundary - 1);
+		sort(array, boundary + 1, last);
 	}
 	
-	public int quickSort(int[] a, int first, int last) {
+	public int doSort(int[] a, int first, int last) {
 		int standard = a[first];
 		int i = first, j = last;
 		while(i < j) {

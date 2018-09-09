@@ -1,5 +1,7 @@
 package com.stud.algorithm;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,6 +11,7 @@ import com.study.interview.dynamicprogramming.MaxCommonSequence;
 import com.study.interview.dynamicprogramming.MaxIncrementalSubArray;
 import com.study.interview.string.KMPAlgorithm;
 import com.study.interview.string.ReplaceString;
+import com.study.interview.tree.BinaryTreeSerialize;
 import com.study.interview.tree.ExchangeTwoErrorNodes;
 import com.study.interview.tree.Node;
 import com.study.interview.tree.TreePrinter;
@@ -24,12 +27,23 @@ public class ApplicationTest {
 		Node n3 = new Node(17, n1, n2);
 		n = new Node(25, n3, new Node(27, new Node(23), new Node(40)));
 	}
+	
+	@Test
+	public void testBinaryTreeSerial() {
+		BinaryTreeSerialize bts = new BinaryTreeSerialize();
+		String serial = null;
+		System.out.println(bts.preOrderSerialize_1(n));
+		System.out.println(bts.preOrderSerialize_2(n));
+		System.out.println(serial = bts.preOrderSerialize_3(n));
+		Node root = bts.preOrderDeserialize_1(serial);
+		assertEquals(bts.preOrderSerialize_1(root), serial);
+	}
 
 	@Test
 	public void test() {
 		QuickSort sort = new QuickSort();
 		int[] test = {1,2,6,9,8,3,6,5,7,8,9,4,5,6,5,6,8,9,7,4,5,6,12,456,78,9};
-		sort.sortCore(test, 0, test.length - 1);
+		sort.sort(test, 0, test.length - 1);
 		for(int i = 0; i < test.length; i++) {
 			System.out.print(test[i] + " ");
 		}
