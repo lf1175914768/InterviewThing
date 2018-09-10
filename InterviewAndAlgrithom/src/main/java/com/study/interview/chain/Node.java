@@ -1,11 +1,15 @@
 package com.study.interview.chain;
 
-class Node {
+public class Node {
 	
 	int value; 
 	Node next; 
-	Node(int data) {
+	public Node(int data) {
 		this.value = data;
+	}
+	
+	public void setNext(Node next) {
+		this.next = next;
 	}
 
 }
