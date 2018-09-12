@@ -7,6 +7,7 @@ import org.junit.Test;
 import com.study.interview.chain.JudgeHasCircle;
 import com.study.interview.chain.Node;
 import com.study.interview.dynamicprogramming.MaxSumOfSubArray;
+import com.study.interview.dynamicprogramming.NPersonSeatOtherPlace;
 
 public class InterviewTest {
 	
@@ -31,6 +32,15 @@ public class InterviewTest {
 		assertEquals(msos.maxOneDimensionSum_2(arr), 20);
 		assertEquals(msos.maxOneDimensionSum_2(null), 0);
 		assertEquals(msos.maxOneDimensionSum_2(arr2), 0);
+	}
+	
+	@Test
+	public void testNPersonNSeat() {
+		NPersonSeatOtherPlace np = new NPersonSeatOtherPlace();
+		assertEquals(np.getNumbers(3), 2);
+		assertEquals(np.getNumbers(4), 9);
+		assertEquals(np.getNumbers(-1), 0);
+		assertEquals(np.getNumbers(1), 0);
 	}
 	
 	private Node generateChain() {

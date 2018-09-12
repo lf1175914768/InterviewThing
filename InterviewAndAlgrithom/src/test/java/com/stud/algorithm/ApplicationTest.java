@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.study.algorithm.HeapSort;
+import com.study.algorithm.MergeSort;
 import com.study.algorithm.QuickSort;
 import com.study.interview.dynamicprogramming.MaxCommonSequence;
 import com.study.interview.dynamicprogramming.MaxIncrementalSubArray;
@@ -56,6 +57,17 @@ public class ApplicationTest {
 		sort.heapSort_2(test);
 		for(int i = 0; i < test.length; i++) {
 			System.out.print(test[i] + " ");
+		}
+	}
+	
+	@Test
+	public void testMergeSort() {
+		int[] arr = {2,3,6,9,8,2,3,45,89,2,102,56,9,89,1425,589,456};
+		int[] temp = new int[arr.length];
+		MergeSort sort = new MergeSort();
+		sort.sort(arr, 0, arr.length - 1, temp);
+		for(int i = 0; i < arr.length; i++) {
+			System.out.print(arr[i] + " ");
 		}
 	}
 	
