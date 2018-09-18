@@ -2,8 +2,13 @@ package com.study.interview;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
+import com.study.interview.array.MinimunPathSum;
+import com.study.interview.array.SpiralMatrixSecond;
+import com.study.interview.array.ThreeSumCloset;
 import com.study.interview.chain.JudgeHasCircle;
 import com.study.interview.chain.Node;
 import com.study.interview.dynamicprogramming.MaxSumOfSubArray;
@@ -41,6 +46,29 @@ public class InterviewTest {
 		assertEquals(np.getNumbers(4), 9);
 		assertEquals(np.getNumbers(-1), 0);
 		assertEquals(np.getNumbers(1), 0);
+	}
+	
+	@Test
+	public void test3SumCloset() {
+		int[] arr = {-1, 2, 1, -4};
+		ThreeSumCloset closet = new ThreeSumCloset();
+		assertEquals(closet.threeSumCloset(arr, 1), 2);
+	}
+	
+	@Test
+	public void testSpiralMatrixSecond() {
+		SpiralMatrixSecond sms = new SpiralMatrixSecond();
+		int[][] result = sms.generateMatrix(5);
+		for(int i = 0; i < result.length; i++) {
+			System.out.println(Arrays.toString(result[i]));
+		}
+	}
+	
+	@Test
+	public void testMinimunPathsum() {
+		MinimunPathSum sum = new MinimunPathSum();
+		int [][] arr = {{1, 3, 1}, {1, 5, 1}, {4, 2, 1}};
+		assertEquals(sum.minPathSum(arr), 7);
 	}
 	
 	private Node generateChain() {
