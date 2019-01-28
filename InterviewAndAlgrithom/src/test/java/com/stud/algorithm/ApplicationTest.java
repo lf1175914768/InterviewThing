@@ -2,6 +2,8 @@ package com.stud.algorithm;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,7 +14,9 @@ import com.study.interview.dynamicprogramming.MaxCommonSequence;
 import com.study.interview.dynamicprogramming.MaxIncrementalSubArray;
 import com.study.interview.string.KMPAlgorithm;
 import com.study.interview.string.ReplaceString;
+import com.study.interview.tree.BinaryTreePaths;
 import com.study.interview.tree.BinaryTreeSerialize;
+import com.study.interview.tree.DistributeTree;
 import com.study.interview.tree.ExchangeTwoErrorNodes;
 import com.study.interview.tree.Node;
 import com.study.interview.tree.TreePrinter;
@@ -123,6 +127,29 @@ public class ApplicationTest {
 		MaxCommonSequence test = new MaxCommonSequence();
 		String result = test.lcse("1a2c3d4b56", "b1d23ca45b6a");
 		System.out.println(result);
+	}
+	
+	@Test
+	public void testPrintPaths() {
+		BinaryTreePaths path = new BinaryTreePaths();
+		List<String> rs = path.binaryTreePaths(n);
+		for(String r : rs) {
+			System.out.println(r);
+		}
+		System.out.println();
+		System.out.println();
+		System.out.println();
+	}
+	
+	@Test
+	public void testDistributeTree() {
+		DistributeTree tree = new DistributeTree();
+		Node n1 = new Node(0);Node n2 = new Node(0);Node n3 = new Node(0, n1, n2);
+		Node n4 = new Node(0);Node n5 = new Node(0);Node n6 = new Node(3, n4, n5);
+		Node n7 = new Node(2, null, n3); Node n8 = new Node(0, n6, null);
+		Node n9 = new Node(4, n7, n8);
+		int res = tree.distributeCoins(n9);
+		assertEquals(res, 10);
 	}
 	
 }
