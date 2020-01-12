@@ -2,9 +2,12 @@ package com.study.interview;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import com.study.interview.tree.AhoCorasickAutomation;
 import org.junit.Test;
 
 import com.study.interview.array.CombinationSum;
@@ -41,6 +44,26 @@ public class InterviewTest {
 		assertEquals(msos.maxOneDimensionSum_2(arr), 20);
 		assertEquals(msos.maxOneDimensionSum_2(null), 0);
 		assertEquals(msos.maxOneDimensionSum_2(arr2), 0);
+	}
+
+	@Test
+	public void testACAutomation() {
+		List<String> target = new ArrayList<>();
+		target.add("abcdef");
+		target.add("abhab");
+		target.add("bcd");
+		target.add("cde");
+		target.add("cdfkcdf");
+
+		String text = "bcabcdebcedfabcdefababkabhabk";
+
+		AhoCorasickAutomation automation = new AhoCorasickAutomation(target);
+		Map<String, List<Integer>> result = automation.find(text);
+
+		System.out.println("'" + text + "', its length is " + text.length());
+		for(Map.Entry entry : result.entrySet()) {
+			System.out.println(entry.getKey() + ": " + entry.getValue());
+		}
 	}
 	
 	@Test
