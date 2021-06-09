@@ -7,19 +7,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.study.interview.array.*;
+import com.study.interview.dynamicprogramming.NumsDupDigits;
+import com.study.interview.string.LengthOfLongestSubstring;
 import com.study.interview.tree.AhoCorasickAutomation;
 import org.junit.Test;
 
-import com.study.interview.array.CombinationSum;
-import com.study.interview.array.MinSubArray;
-import com.study.interview.array.MinimunPathSum;
-import com.study.interview.array.SpiralMatrixSecond;
-import com.study.interview.array.SumRange;
-import com.study.interview.array.ThreeSumCloset;
 import com.study.interview.chain.JudgeHasCircle;
 import com.study.interview.chain.Node;
 import com.study.interview.dynamicprogramming.MaxSumOfSubArray;
 import com.study.interview.dynamicprogramming.NPersonSeatOtherPlace;
+import sun.security.util.Length;
 
 public class InterviewTest {
 	
@@ -144,6 +142,28 @@ public class InterviewTest {
 		for(List<Integer> candidate : result) {
 			System.out.println(Arrays.toString(candidate.toArray()));
 		}
+	}
+
+	@Test
+	public void testlengthOfLongestSubstring1() {
+		LengthOfLongestSubstring test = new LengthOfLongestSubstring();
+		assertEquals(1, test.lengthOfLongestSubstring1("bbbbbb"));
+	}
+
+	@Test
+	public void testTwoSum() {
+		TwoSum test = new TwoSum();
+		int[] param = {3,2,4};
+		int[] rs = test.twoSum(param, 6);
+		System.out.println(rs[0] + ", " +  rs[1]);
+	}
+
+	@Test
+	public void testNumsDupDigits() {
+		NumsDupDigits test = new NumsDupDigits();
+		assertEquals(1, test.numDupDigitsAtMostN(20));
+		assertEquals(10, test.numDupDigitsAtMostN(100));
+		assertEquals(262, test.numDupDigitsAtMostN(1000));
 	}
 	
 	private Node generateChain() {
