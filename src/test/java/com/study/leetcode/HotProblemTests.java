@@ -1,6 +1,5 @@
 package com.study.leetcode;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,6 +17,18 @@ public class HotProblemTests {
     }
 
     @Test
+    public void testLongestPalindrome() {
+        String result = problem.longestPalindrome("aacabdkacaa");
+        System.out.println(result);
+    }
+
+    @Test
+    public void testLongestPalindrome_v2() {
+        String result = problem.longestPalindrome_v2("aacabdkacaa");
+        System.out.println(result);
+    }
+
+    @Test
     public void testRegexIsMatch() {
         boolean result = problem.isMatch("aab", "c*a*b");
         System.out.println(result);
@@ -27,17 +38,17 @@ public class HotProblemTests {
 
     @Test
     public void testMaxArea() {
-        int[] arr = {1,8,6,2,5,4,8,3,7};
+        int[] arr = {1, 8, 6, 2, 5, 4, 8, 3, 7};
         assertEquals(problem.maxArea(arr), 49);
-        int[] arr2 = {1,1};
+        int[] arr2 = {1, 1};
         assertEquals(problem.maxArea(arr2), 1);
-        int[] arr3 = {4,3,2,1,4};
+        int[] arr3 = {4, 3, 2, 1, 4};
         assertEquals(problem.maxArea(arr3), 16);
     }
 
     @Test
     public void testThreeSum() {
-        int[] arr = {-1,0,1,2,-1,-4};
+        int[] arr = {-1, 0, 1, 2, -1, -4};
         List<List<Integer>> result = problem.threeSum(arr);
         System.out.println(result);
     }
