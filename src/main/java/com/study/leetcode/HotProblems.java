@@ -1,5 +1,7 @@
 package com.study.leetcode;
 
+import com.sun.xml.internal.messaging.saaj.packaging.mime.util.LineInputStream;
+
 import java.util.*;
 
 /**
@@ -288,4 +290,246 @@ public class HotProblems {
     }
 
     // -------电话号码的字母组合 << end --------
+
+    // -------有效的括号 start >>--------
+
+    public boolean isValid(String s) {
+        if (null == s || s.length() == 0) {
+            return true;
+        }
+        Stack<Character> stack = new Stack<>();
+        int i = 0, len = s.length();
+        Map<Character, Character> map = new HashMap<>();
+        map.put('(', ')');
+        map.put('{', '}');
+        map.put('[', ']');
+        while (i < len) {
+            Character c = s.charAt(i);
+            i++;
+            if (!stack.isEmpty() && !map.containsKey(c)) {
+                Character pop = stack.pop();
+                if (!c.equals(map.get(pop))) {
+                    return false;
+                }
+                continue;
+            }
+            stack.add(c);
+        }
+        return stack.isEmpty();
+    }
+
+    // -------有效的括号 << end --------
+
+    // -------括号生成 start >>--------
+
+    public List<String> generateParenthesis(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        List<List<String>> list = new ArrayList<>();
+        List<String> list0 = new ArrayList<>();
+        list0.add("");
+        list.add(list0);
+        List<String> list1 = new ArrayList<>();
+        list1.add("()");
+        list.add(list1);
+
+        for (int i = 2; i <= n; i++) {
+            List<String> temp = new ArrayList<>();
+            for (int j = 0; j < i; j++) {
+                List<String> str1 = list.get(j);
+                List<String> str2 = list.get(i - 1 - j);
+                for (String s1 : str1) {
+                    for (String s2 : str2) {
+                        String candidate = "(" + s1 + ")" + s2;
+                        temp.add(candidate);
+                    }
+                }
+            }
+            list.add(temp);
+        }
+        return list.get(n);
+    }
+
+    public List<String> generateParenthesis_v2(int n) {
+        List<String> ans = new ArrayList<>();
+        if (n == 0) {
+            return ans;
+        }
+
+        StringBuilder path = new StringBuilder();
+        dfs(path, n, n, ans);
+        return ans;
+    }
+
+    private void dfs(StringBuilder path, int left, int right, List<String> res) {
+        if (left == 0 && right == 0) {
+            // path.toString() 生成了一个新的字符串，相当于做了一次拷贝
+            res.add(path.toString());
+            return;
+        }
+
+        // 剪枝
+        if (left > right) {
+            return;
+        }
+
+        if (left > 0) {
+            path.append("(");
+            dfs(path, left - 1, right, res);
+            path.deleteCharAt(path.length() - 1);
+        }
+
+        if (right > 0) {
+            path.append(")");
+            dfs(path, left, right - 1, res);
+            path.deleteCharAt(path.length() - 1);
+        }
+    }
+
+    // -------括号生成 << end --------
+
+    // -------括号生成 start >>--------
+
+    /**
+     * 使用优先级队列进行实现
+     *
+     * @param lists list of node
+     * @return node of head
+     */
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (null == lists || lists.length == 0) {
+            return null;
+        }
+        Queue<ListNode> queue = new PriorityQueue<>(lists.length, new Comparator<ListNode>() {
+            @Override
+            public int compare(ListNode o1, ListNode o2) {
+                return Integer.compare(o1.val, o2.val);
+            }
+        });
+        ListNode dummy = new ListNode(0);
+        ListNode p = dummy;
+        for (ListNode node : lists) {
+            if (node != null) {
+                queue.add(node);
+            }
+        }
+        while (!queue.isEmpty()) {
+            p.next = queue.poll();
+            p = p.next;
+            if (p.next != null) {
+                queue.add(p.next);
+            }
+        }
+        return dummy.next;
+    }
+
+    /**
+     * 使用分而治之对的思想解决
+     *
+     * @param lists list of list node
+     * @return head of list
+     */
+    public ListNode mergeKLists_v2(ListNode[] lists) {
+        if (null == lists || lists.length == 0) return null;
+        return merge(lists, 0, lists.length - 1);
+    }
+
+    private ListNode merge(ListNode[] lists, int left, int right) {
+        if (left >= right) {
+            return lists[left];
+        }
+        int middle = left + (right - left) / 2;
+        ListNode l1 = merge(lists, left, middle);
+        ListNode l2 = merge(lists, middle + 1, right);
+
+        return mergeTwoLists(l1, l2);
+    }
+
+    private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode(0);
+        ListNode tail = dummy;
+        while (l1 != null && l2 != null) {
+            if (l1.val < l2.val) {
+                tail.next = l1;
+                l1 = l1.next;
+            } else {
+                tail.next = l2;
+                l2 = l2.next;
+            }
+            tail = tail.next;
+        }
+
+        tail.next = l1 == null ? l2 : l1;
+        return dummy.next;
+    }
+
+
+    // -------括号生成 << end --------
+
+    // -------下一个排列 start >>--------
+
+    /**
+     * 1、从后向前查找第一个相邻的元素对 (i, i + 1), 满足 A[i] < A[i + 1]。此时[i+1, end) 必然是降序
+     * 2、在 [i + 1, end)中从后往前查找第一个满足 A[i] < A[k] 的k。 A[i], A[k] 分别就是【小数】和【大数】。
+     * 3、将 A[i] 与 A[k] 交换
+     * 4、可以断定这时 [i + 1, end) 必然是降序，重新排序 [i + 1, end) 使其升序。
+     * 5、如果在步骤1中找不到符合的相邻元素时，说明当前 [begin, end) 为一个降序顺序，直接跳到 步骤4
+     *
+     * @param nums list of nums
+     */
+    public void nextPermutation(int[] nums) {
+        if (null == nums || nums.length == 0) {
+            return;
+        }
+        int len = nums.length;
+        for (int i = len - 1; i > 0; i--) {
+            if (nums[i] > nums[i - 1]) {
+                for (int j = len - 1; j >= i; j--) {
+                    if (nums[j] > nums[i - 1]) {
+                        int temp = nums[i - 1];
+                        nums[i - 1] = nums[j];
+                        nums[j] = temp;
+                        Arrays.sort(nums, i, len);
+                        return;
+                    }
+                }
+            }
+        }
+        Arrays.sort(nums);
+    }
+
+    // -------下一个排列 << end --------
+
+    // -------最长有效括号 start >>--------
+
+    public int longestValidParentheses(String s) {
+        return 0;
+    }
+
+    // -------最长有效括号 << end --------
+
+    ///////-------------helper class-------------------
+
+    public static class ListNode {
+        int val;
+        ListNode next;
+
+        @Override
+        public String toString() {
+            return String.valueOf(val);
+        }
+
+        ListNode() {
+        }
+
+        ListNode(int val) {
+            this.val = val;
+        }
+
+        ListNode(int val, ListNode next) {
+            this.val = val;
+            this.next = next;
+        }
+    }
 }

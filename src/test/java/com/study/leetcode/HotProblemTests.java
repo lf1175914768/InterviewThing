@@ -3,9 +3,10 @@ package com.study.leetcode;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class HotProblemTests {
 
@@ -56,5 +57,75 @@ public class HotProblemTests {
     @Test
     public void testLetterCombinations() {
         System.out.println(problem.letterCombinations("23"));
+    }
+
+    @Test
+    public void testIsValidString() {
+        assertTrue(problem.isValid("()"));
+        assertTrue(problem.isValid("()[]{{}}"));
+        assertTrue(problem.isValid("{[]}"));
+        assertFalse(problem.isValid("(]"));
+        assertFalse(problem.isValid("]"));
+        assertFalse(problem.isValid("))"));
+        assertFalse(problem.isValid("([)]"));
+    }
+
+    @Test
+    public void testGenerateParenthesis() {
+        assertEquals(problem.generateParenthesis(1).size(), 1);
+        assertEquals(problem.generateParenthesis(2).size(), 2);
+        assertEquals(problem.generateParenthesis(3).size(), 5);
+
+        assertEquals(problem.generateParenthesis_v2(1).size(), 1);
+        assertEquals(problem.generateParenthesis_v2(2).size(), 2);
+        assertEquals(problem.generateParenthesis_v2(3).size(), 5);
+    }
+
+    @Test
+    public void testMergeKLists() {
+        List<HotProblems.ListNode> param = getListNodes();
+        HotProblems.ListNode node = problem.mergeKLists(param.toArray(new HotProblems.ListNode[0]));
+        while (node != null) {
+            System.out.print(node.val + "  ");
+            node = node.next;
+        }
+    }
+
+    @Test
+    public void testMergeKLists_v2() {
+        List<HotProblems.ListNode> param = getListNodes();
+        HotProblems.ListNode result = problem.mergeKLists_v2(param.toArray(new HotProblems.ListNode[0]));
+        while (result != null) {
+            System.out.print(result.val + "  ");
+            result = result.next;
+        }
+    }
+
+    @Test
+    public void testNextPermutation() {
+        int [] arr = {4,2,0,2,3,2,0};
+        problem.nextPermutation(arr);
+        for (int i = 0; i < arr.length; i++) {
+            System.out.println(arr[i]);
+        }
+    }
+
+    private List<HotProblems.ListNode> getListNodes() {
+        List<HotProblems.ListNode> param = new ArrayList<>();
+        HotProblems.ListNode node1 = new HotProblems.ListNode(5);
+        HotProblems.ListNode node2 = new HotProblems.ListNode(4, node1);
+        HotProblems.ListNode node3 = new HotProblems.ListNode(1, node2);
+        param.add(node3);
+
+        HotProblems.ListNode node4 = new HotProblems.ListNode(7);
+        HotProblems.ListNode node5 = new HotProblems.ListNode(3, node4);
+        HotProblems.ListNode node6 = new HotProblems.ListNode(1, node5);
+        param.add(node6);
+
+        HotProblems.ListNode node7 = new HotProblems.ListNode(10);
+        HotProblems.ListNode node8 = new HotProblems.ListNode(6, node7);
+        HotProblems.ListNode node9 = new HotProblems.ListNode(2, node8);
+        param.add(node9);
+        return param;
     }
 }
