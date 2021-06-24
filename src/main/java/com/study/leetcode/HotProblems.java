@@ -1,7 +1,5 @@
 package com.study.leetcode;
 
-import com.sun.xml.internal.messaging.saaj.packaging.mime.util.LineInputStream;
-
 import java.util.*;
 
 /**
@@ -401,12 +399,7 @@ public class HotProblems {
         if (null == lists || lists.length == 0) {
             return null;
         }
-        Queue<ListNode> queue = new PriorityQueue<>(lists.length, new Comparator<ListNode>() {
-            @Override
-            public int compare(ListNode o1, ListNode o2) {
-                return Integer.compare(o1.val, o2.val);
-            }
-        });
+        Queue<ListNode> queue = new PriorityQueue<>(lists.length, Comparator.comparingInt(o -> o.val));
         ListNode dummy = new ListNode(0);
         ListNode p = dummy;
         for (ListNode node : lists) {
@@ -503,8 +496,115 @@ public class HotProblems {
 
     // -------最长有效括号 start >>--------
 
+    /**
+     * 定义 dp[i] 表示下标i字符结尾的最长有效括号的长度。我们将 dp 数组全部初始化为0。显然有效的字符串一定以 ‘)’ 结尾，
+     * 因此哦们可以知道以 '('结尾的子串对应的dp值必定为0，我们只需要求解 '(' 在dp数组中对应位置的值。
+     *
+     * 从前往后遍历字符串求解dp值，我们每两个字符检查一次：
+     * 1、s[i] = ')'且 s[i - 1] = '('， 也就是字符串形如 ‘......()’, 所以有
+     *                  dp[i] = dp[i - 2] + 2;
+     * 2、s[i] = ')'且 s[i - 1] = ')', 也就是字符串形如 '......))'， 我们可以推出：
+     *   如果 s[i - dp[i - 1] - 1] = '(', 那么
+     *                  dp[i] = dp[i - 1] + dp[i - dp[i - 1] - 2] + 2
+     *
+     * @param s candidate of string
+     * @return validated count character
+     */
     public int longestValidParentheses(String s) {
-        return 0;
+        int[] dp = new int[s.length()];
+        int result = 0;
+        for (int i = 1; i < s.length(); i++) {
+            if (s.charAt(i) == ')') {
+                if (s.charAt(i - 1) == '(') {
+                    dp[i] = (i >= 2 ? dp[i - 2] : 0) + 2;
+                } else if (i - dp[i - 1] > 0 && s.charAt(i - dp[i - 1] - 1) == '(') {
+                    int before = i - dp[i - 1] >= 2 ? dp[i - dp[i - 1] - 2] : 0;
+                    dp[i] = before + 2 + dp[i - 1];
+                }
+                result = Math.max(result, dp[i]);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 使用栈来实现。
+     *
+     * 我们始终保持栈底元素为当前已经遍历过的元素中，【最后一个没有被匹配的右括号的下标】，这样的做法主要是考虑了边界条件的处理。
+     * 栈里其他元素维护左括号的下标：
+     * 1、对于遇到的每个 '('， 我们将他的下标放入栈中。
+     * 2、对于遇到的每个 ')'，我们先弹出栈顶元素表示匹配了当前右括号：
+     *  如果栈为空，说明当前的右括号为没有配匹配的右括号，我们将其下标放入栈中来更新我们之前提到的 【最后一个没有被匹配的右括号的下标】
+     *  如果栈不为空，当前右括号的下标减去栈顶元素即为 【以该右括号为结尾的最长有效括号的长度】
+     *
+     * 我们从前往后遍历字符串并更新答案即可。
+     * 需要注意的是： 如果栈一开始为空，第一个字符为左括号的时候我们会将其放入栈中， 这样就不满足提及的 【最后一个没有被匹配的右括号的下标】，
+     * 为了保持统一，我们在一开始的时候放入一个值为 -1 的元素。
+     *
+     * @param s candidate of string
+     * @return validated character count
+     */
+    public int longestValidParentheses_v2(String s) {
+        int result = 0;
+        Stack<Integer> stack = new Stack<>();
+        stack.add(-1);
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') {
+                stack.add(i);
+            } else {
+                stack.pop();
+                if (stack.isEmpty()) {
+                    stack.push(i);
+                } else {
+                    result = Math.max(result, i - stack.peek());
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 在此方法中，我们利用两个计数器 left 和 right。首先，我们从左到右遍历字符串，对于遇到的每个 '(', 我们增加 left 计数器，
+     * 对于遇到的每个 right 计数器。每当left 计数器 与 right 计数器相等时， 我们计算当前有效字符串的长度，并且记录目前为止找到的 最长字符串。
+     * 当 right 计数器 比 left 计数器大时，我们将left 和 right 计数器同时变为 0。
+     *
+     * 这样的做法贪心地考虑了以当前字符下标结尾的有效括号长度，每次当右括号数量多于左括号数量的时候之前的字符我们都扔掉不再考虑，重新从下一个字符开始计算，但这样会漏掉一种情况，就是遍历的时候左括号的数量始终大于右括号的数量，即 (() ，这种时候最长有效括号是求不出来的。
+     * 解决的方法也很简单，我们只需要从右往左遍历用类似的方法计算即可，只是这个时候判断条件反了过来：
+     *
+     * 当 left 计数器比 right 计数器大时，我们将 left 和 right 计数器同时变回 0
+     * 当 left 计数器与 right 计数器相等时，我们计算当前有效字符串的长度，并且记录目前为止找到的最长子字符串
+     *
+     * @param s candidate of string
+     * @return validated count character
+     */
+    public int longestValidParentheses_v3(String s) {
+        int left = 0, right = 0, result = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') {
+                left++;
+            } else {
+                right++;
+            }
+            if (left == right) {
+                result = Math.max(result, 2 * right);
+            } else if (right > left) {
+                left = right = 0;
+            }
+        }
+        left = right = 0;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            if (s.charAt(i) == '(') {
+                left++;
+            } else {
+                right++;
+            }
+            if (left == right) {
+                result = Math.max(result, 2 * left);
+            } else if (right < left) {
+                left = right = 0;
+            }
+        }
+        return result;
     }
 
     // -------最长有效括号 << end --------
@@ -518,9 +618,6 @@ public class HotProblems {
         @Override
         public String toString() {
             return String.valueOf(val);
-        }
-
-        ListNode() {
         }
 
         ListNode(int val) {

@@ -110,6 +110,31 @@ public class HotProblemTests {
         }
     }
 
+    @Test
+    public void testLongestValidParentheses() {
+        assertEquals(problem.longestValidParentheses("(()"), 2);
+        assertEquals(problem.longestValidParentheses("()(()"), 2);
+        assertEquals(problem.longestValidParentheses(")()())"), 4);
+        assertEquals(problem.longestValidParentheses(""), 0);
+        assertEquals(problem.longestValidParentheses("(((()))))"), 8);
+        assertEquals(problem.longestValidParentheses("))()())))((()))"), 6);
+
+
+        assertEquals(problem.longestValidParentheses_v2("(()"), 2);
+        assertEquals(problem.longestValidParentheses_v2("()(()"), 2);
+        assertEquals(problem.longestValidParentheses_v2(")()())"), 4);
+        assertEquals(problem.longestValidParentheses_v2(""), 0);
+        assertEquals(problem.longestValidParentheses_v2("(((()))))"), 8);
+        assertEquals(problem.longestValidParentheses_v2("))()())))((()))"), 6);
+
+        assertEquals(problem.longestValidParentheses_v3("(()"), 2);
+        assertEquals(problem.longestValidParentheses_v3("()(()"), 2);
+        assertEquals(problem.longestValidParentheses_v3(")()())"), 4);
+        assertEquals(problem.longestValidParentheses_v3(""), 0);
+        assertEquals(problem.longestValidParentheses_v3("(((()))))"), 8);
+        assertEquals(problem.longestValidParentheses_v3("))()())))((()))"), 6);
+    }
+
     private List<HotProblems.ListNode> getListNodes() {
         List<HotProblems.ListNode> param = new ArrayList<>();
         HotProblems.ListNode node1 = new HotProblems.ListNode(5);
