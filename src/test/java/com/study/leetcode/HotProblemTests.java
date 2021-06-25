@@ -135,6 +135,22 @@ public class HotProblemTests {
         assertEquals(problem.longestValidParentheses_v3("))()())))((()))"), 6);
     }
 
+    @Test
+    public void testSearchRange() {
+        int[] arr = {5,7,7,8,8,10};
+        int[] arr2 = {5,7,7,8,8,9,10};
+        assertEquals(problem.searchRange(arr, 8)[1], 4);
+        assertEquals(problem.searchRange(arr, 8)[0], 3);
+        assertEquals(problem.searchRange(arr, 6)[0], -1);
+        assertEquals(problem.searchRange(arr, 6)[1], -1);
+        assertEquals(problem.searchRange(arr2, 5)[1], 0);
+        assertEquals(problem.searchRange(arr2, 5)[0], 0);
+        assertEquals(problem.searchRange(arr2, 9)[0], 5);
+        assertEquals(problem.searchRange(arr2, 9)[1], 5);
+        assertEquals(problem.searchRange(arr2, 10)[1], 6);
+        assertEquals(problem.searchRange(arr2, 10)[0], 6);
+    }
+
     private List<HotProblems.ListNode> getListNodes() {
         List<HotProblems.ListNode> param = new ArrayList<>();
         HotProblems.ListNode node1 = new HotProblems.ListNode(5);

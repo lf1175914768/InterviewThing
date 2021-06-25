@@ -609,6 +609,36 @@ public class HotProblems {
 
     // -------最长有效括号 << end --------
 
+    // -------在排序数组中查找元素的第一个和最后一个位置 start >>--------
+
+    public int[] searchRange(int[] nums, int target) {
+        int[] result = {-1, -1};
+        if (null == nums || nums.length == 0) {
+            return result;
+        }
+
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            int middle = (right - left) / 2 + left;
+            if (nums[middle] == target) {
+                left = right = middle;
+                while (left >= 0 && nums[left] == target) left--;
+                result[0] = left + 1;
+                while (right < nums.length && nums[right] == target) right++;
+                result[1] = right - 1;
+                return result;
+            }
+            if (nums[middle] < target) {
+                left = middle + 1;
+            } else {
+                right = middle - 1;
+            }
+        }
+        return result;
+    }
+
+    // -------在排序数组中查找元素的第一个和最后一个位置 << end --------
+
     ///////-------------helper class-------------------
 
     public static class ListNode {
