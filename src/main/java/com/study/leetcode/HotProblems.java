@@ -1,6 +1,8 @@
 package com.study.leetcode;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 热题
@@ -638,6 +640,91 @@ public class HotProblems {
     }
 
     // -------在排序数组中查找元素的第一个和最后一个位置 << end --------
+
+    // -------组合总和 start >>--------
+
+    /**
+     * 不加剪枝的情况下，使用idx 表示按照一定的顺序迭代进行递归，保证没有重复性。
+     *
+     * @param candidates arrays of candidates
+     * @param target target
+     * @return list of result list
+     */
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> result = new ArrayList<>();
+
+        combinationSumRecursive(candidates, target, result, new ArrayList<>(), 0);
+        return result;
+    }
+
+    private void combinationSumRecursive(int[] candidates, int leftTarget, List<List<Integer>> result, List<Integer> temp, int idx) {
+        if (idx == candidates.length) {
+            return;
+        }
+        if (leftTarget == 0) {
+            result.add(new ArrayList<>(temp));
+            return;
+        }
+
+        if (leftTarget - candidates[idx] >= 0) {
+            temp.add(candidates[idx]);
+            combinationSumRecursive(candidates, leftTarget - candidates[idx], result, temp, idx);
+            temp.remove(temp.size() - 1);
+        }
+        combinationSumRecursive(candidates, leftTarget, result, temp, idx + 1);
+    }
+
+    /**
+     * 如果 target 减去一个数得到负数，那么减去一个更大的数依然是负数， 同样搜索不到结果。所以我们可以对输入数组进行排序，添加相关逻辑达到进一步剪枝的目的。
+     *
+     * 排序是为了提高搜索速度，对于解决这个问题来说非必要。但是搜索问题一般复杂度较高，能剪枝就尽量剪枝。
+     *
+     * @param candidates arrays of candidates
+     * @param target target
+     * @return list of result list
+     */
+    public List<List<Integer>> combinationSum_v2(int[] candidates, int target) {
+        int len = candidates.length;
+        List<List<Integer>> res = new ArrayList<>();
+        if (len == 0) {
+            return res;
+        }
+
+        // 排序是剪枝的前提
+        Arrays.sort(candidates);
+        Deque<Integer> path = new ArrayDeque<>();
+        combinationSumRecursive_v2(candidates, 0, len, target, path, res);
+        return res;
+    }
+
+    private void combinationSumRecursive_v2(int[] candidates, int begin, int len, int target, Deque<Integer> path, List<List<Integer>> res) {
+        // 由于进入更深层的时候，小于0的部分被剪枝，因此递归终止条件只判断等于0的情况
+        if (target == 0) {
+            res.add(new ArrayList<>(path));
+            return;
+        }
+
+        for (int i = begin; i < len; i++) {
+            // 重点理解这里的剪枝， 前提是候选数组已经有序
+            if (target - candidates[i] < 0) {
+                break;
+            }
+            path.addLast(candidates[i]);
+            combinationSumRecursive_v2(candidates, i, len, target - candidates[i], path, res);
+            path.removeLast();
+        }
+    }
+
+    // -------组合总和 << end --------
+
+    // -------组合总和 start >>--------
+
+    public List<List<Integer>> permute(int[] nums) {
+        return null;
+    }
+
+
+    // -------组合总和 << end --------
 
     ///////-------------helper class-------------------
 

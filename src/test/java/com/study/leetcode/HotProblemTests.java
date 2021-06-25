@@ -151,6 +151,15 @@ public class HotProblemTests {
         assertEquals(problem.searchRange(arr2, 10)[0], 6);
     }
 
+    @Test
+    public void testCombinationSum() {
+        int[] arr = {2,3,6,7};
+        List<List<Integer>> lists = problem.combinationSum(arr, 7);
+        System.out.println(lists);
+
+        System.out.println(problem.combinationSum_v2(arr, 7));
+    }
+
     private List<HotProblems.ListNode> getListNodes() {
         List<HotProblems.ListNode> param = new ArrayList<>();
         HotProblems.ListNode node1 = new HotProblems.ListNode(5);
