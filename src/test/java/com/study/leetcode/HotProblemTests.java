@@ -83,8 +83,8 @@ public class HotProblemTests {
 
     @Test
     public void testMergeKLists() {
-        List<HotProblems.ListNode> param = getListNodes();
-        HotProblems.ListNode node = problem.mergeKLists(param.toArray(new HotProblems.ListNode[0]));
+        List<ListNode> param = getListNodes();
+        ListNode node = problem.mergeKLists(param.toArray(new ListNode[0]));
         while (node != null) {
             System.out.print(node.val + "  ");
             node = node.next;
@@ -93,8 +93,8 @@ public class HotProblemTests {
 
     @Test
     public void testMergeKLists_v2() {
-        List<HotProblems.ListNode> param = getListNodes();
-        HotProblems.ListNode result = problem.mergeKLists_v2(param.toArray(new HotProblems.ListNode[0]));
+        List<ListNode> param = getListNodes();
+        ListNode result = problem.mergeKLists_v2(param.toArray(new ListNode[0]));
         while (result != null) {
             System.out.print(result.val + "  ");
             result = result.next;
@@ -160,21 +160,96 @@ public class HotProblemTests {
         System.out.println(problem.combinationSum_v2(arr, 7));
     }
 
-    private List<HotProblems.ListNode> getListNodes() {
-        List<HotProblems.ListNode> param = new ArrayList<>();
-        HotProblems.ListNode node1 = new HotProblems.ListNode(5);
-        HotProblems.ListNode node2 = new HotProblems.ListNode(4, node1);
-        HotProblems.ListNode node3 = new HotProblems.ListNode(1, node2);
+    @Test
+    public void testMinWindow() {
+        assertEquals(problem.minWindow("ADOBECODEBANC", "ABC"), "BANC");
+        assertEquals(problem.minWindow("a", "a"), "a");
+        assertEquals(problem.minWindow("a", "aa"), "");
+    }
+
+    @Test
+    public void testCheckInclusion() {
+        assertTrue(problem.checkInclusion("ab", "eidbaooo"));
+        assertFalse(problem.checkInclusion("ab", "eidboaoo"));
+        assertFalse(problem.checkInclusion("abc", "ccccbbbbaaaa"));
+    }
+
+    @Test
+    public void testLengthOfLongestSubstring() {
+        assertEquals(problem.lengthOfLongestSubstring("abcabcbb"), 3);
+        assertEquals(problem.lengthOfLongestSubstring("bbbbb"), 1);
+        assertEquals(problem.lengthOfLongestSubstring("pwwkew"), 3);
+    }
+
+    @Test
+    public void testNetworkDelayTime() {
+        int[][] times = new int[3][3];
+        times[0] = new int[] {2,1,1};
+        times[1] = new int[] {2,3,1};
+        times[2] = new int[] {3,4,1};
+        assertEquals(problem.networkDelayTime(times, 4, 2), 2);
+        times = new int[1][3];
+        times[0] = new int[] {1,2,1};
+        assertEquals(problem.networkDelayTime(times, 2, 1), 1);
+        assertEquals(problem.networkDelayTime(times, 2, 2), -1);
+    }
+
+    @Test
+    public void testMaxProfit() {
+        int[] prices = new int[] {7,1,5,3,6,4};
+        assertEquals(problem.maxProfit(prices), 5);
+        assertEquals(problem.maxProfit_v1(prices), 5);
+
+        prices = new int[] {7,6,4,3,1};
+        assertEquals(problem.maxProfit(prices), 0);
+        assertEquals(problem.maxProfit_v1(prices), 0);
+    }
+
+    @Test
+    public void testMaxProfitWithInfinity() {
+        int[] prices = new int[] {7,1,5,3,6,4};
+        assertEquals(problem.maxProfit_infinity(prices), 7);
+        assertEquals(problem.maxProfit_infinity_v2(prices), 7);
+
+        prices = new int[] {7,6,4,3,1};
+        assertEquals(problem.maxProfit_infinity(prices), 0);
+        assertEquals(problem.maxProfit_infinity_v2(prices), 0);
+
+        prices = new int[] {1,2,3,4,5};
+        assertEquals(problem.maxProfit_infinity(prices), 4);
+        assertEquals(problem.maxProfit_infinity_v2(prices), 4);
+    }
+
+    @Test
+    public void testMaxProfitWithCool() {
+        int[] prices = new int[] {3,3,5,0,0,3,1,4};
+        assertEquals(problem.maxProfit_withCool(prices), 6);
+        assertEquals(problem.maxProfit_withCool_v2(prices), 6);
+
+        prices = new int[] {1,2,3,4,5};
+        assertEquals(problem.maxProfit_withCool(prices), 4);
+        assertEquals(problem.maxProfit_withCool_v2(prices), 4);
+
+        prices = new int[] {7,6,4,3,1};
+        assertEquals(problem.maxProfit_withCool(prices), 0);
+        assertEquals(problem.maxProfit_withCool_v2(prices), 0);
+    }
+
+    private List<ListNode> getListNodes() {
+        List<ListNode> param = new ArrayList<>();
+        ListNode node1 = new ListNode(5);
+        ListNode node2 = new ListNode(4, node1);
+        ListNode node3 = new ListNode(1, node2);
         param.add(node3);
 
-        HotProblems.ListNode node4 = new HotProblems.ListNode(7);
-        HotProblems.ListNode node5 = new HotProblems.ListNode(3, node4);
-        HotProblems.ListNode node6 = new HotProblems.ListNode(1, node5);
+        ListNode node4 = new ListNode(7);
+        ListNode node5 = new ListNode(3, node4);
+        ListNode node6 = new ListNode(1, node5);
         param.add(node6);
 
-        HotProblems.ListNode node7 = new HotProblems.ListNode(10);
-        HotProblems.ListNode node8 = new HotProblems.ListNode(6, node7);
-        HotProblems.ListNode node9 = new HotProblems.ListNode(2, node8);
+        ListNode node7 = new ListNode(10);
+        ListNode node8 = new ListNode(6, node7);
+        ListNode node9 = new ListNode(2, node8);
         param.add(node9);
         return param;
     }

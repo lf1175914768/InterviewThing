@@ -17,7 +17,6 @@ import com.study.interview.chain.JudgeHasCircle;
 import com.study.interview.chain.Node;
 import com.study.interview.dynamicprogramming.MaxSumOfSubArray;
 import com.study.interview.dynamicprogramming.NPersonSeatOtherPlace;
-import sun.security.util.Length;
 
 public class InterviewTest {
 	
