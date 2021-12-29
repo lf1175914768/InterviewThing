@@ -1,5 +1,6 @@
 package com.study.leetcode;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -465,6 +466,120 @@ public class TreeProblems {
     }
 
     // -------删除二叉搜索树中的节点 << end --------
+
+    // -------不同的二叉搜索树II start >>--------
+
+    /**
+     * 给你一个整数 n ，请你生成并返回所有由 n 个节点组成且节点值从 1 到 n 互不相同的不同 二叉搜索树 。可以按 任意顺序 返回答案。
+     *
+     * 解析思路：
+     * 可以利用一下查找二叉树的性质。左子树的所有值小于根节点，右子树的所有值大于根节点。
+     * 如果求 1...n的所有可能。只需要把 1 作为根节点，[]作为左子树，[2..n] 的所有可能作为右子树。
+     * 把 2 作为根节点，[1]作为左子树，[3..n] 的所有可能作为右子树。
+     * 把 3 作为根节点，[1,2]作为左子树，[4..n] 的所有可能作为右子树。
+     * ...
+     * 把 n 作为根节点，[1..n-1]作为左子树，[] 的所有可能作为右子树。
+     *
+     * 至于，[2..n]的所有可能以及其他情况的所有可能，可以利用上面的方法，把每个数字作为根节点，然后把所有可能的左子树和右子树组合起来即可。
+     * 如果只有一个数字，那么所有可能就是一种情况，把该数字作为一棵树，而如果湿 []， 那就返回null
+     */
+    public List<TreeNode> generateTrees(int n) {
+        List<TreeNode> ans = new ArrayList<>();
+        if (n == 0) {
+            return ans;
+        }
+        return getAns(1, n);
+    }
+
+    private List<TreeNode> getAns(int start, int end) {
+        List<TreeNode> ans = new ArrayList<>();
+        // 此时没有数字，将 null 加入结果中
+        if (start > end) {
+            ans.add(null);
+            return ans;
+        }
+        // 只有一个数字，当前数字作为一棵树加入结果中
+        if (start == end) {
+            TreeNode tree = new TreeNode(start);
+            ans.add(tree);
+            return ans;
+        }
+        // 尝试每个数字作为根节点
+        for (int i = start; i <= end; i++) {
+            // 得到所有可能的左子树
+            List<TreeNode> leftTrees = getAns(start, i - 1);
+            // 得到所有可能的右子树
+            List<TreeNode> rightTrees = getAns(i + 1, end);
+            // 左子树和右子树两两组合
+            for (TreeNode leftTree : leftTrees) {
+                for (TreeNode rightTree : rightTrees) {
+                    TreeNode root = new TreeNode(i);
+                    root.left = leftTree;
+                    root.right = rightTree;
+                    // 加入到最终结果中
+                    ans.add(root);
+                }
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 利用上面的解法，就是分别把每个数字作为根节点，然后考虑左子树和右子树的可能，
+     * 就是求出长度为 1 的所有可能，长度为 2 的所有可能... 直到 n。
+     * 但是我们注意到，求长度为 2 的所有可能的时候，我们需要求 [1 2] 的所有可能，[2 3] 的所有可能，这只是 n = 3 的情况。如果 n = 100，我们需要
+     * 求的更多了，[1 2],[2 3],[3 4]...[99 100] 太多了。能不能优化呢？
+     * 仔细观察，我们可以发现长度是 2 的所有可能其实只有两种结构。
+     * x             y
+     *  \           /
+     *   y         x
+     * 看之前推导的 [1 2] 和 [2 3]， 只是数字不一样，结构是完全一样的。
+     * 所以我们 n = 100 的时候，求长度是 2 的所有情况的时候，我们没必要把 [1 2], [2 3], [3 4]...[99 100] 所有的情况都求出来，只需要将 [1 2]
+     * 的所有情况求出即可。
+     * 推广到任意长度 len， 我们只需要求 [1 2 3 ... len] 的所有情况就可以了。下一个问题随之而来，这些 [2 3], [3 4] ... [99 100] 没求的怎么办呢？
+     * 举个例子。 n = 100，此时我们求把 98 作为根节点的所有情况，根据之前的推导，我们需要长度是 97 的 [1 2 3 ...97] 的所有情况作为左子树，
+     * 长度是 2 的 [99 100] 的所有情况作为右子树。
+     * [1 2 3 ... len] 的所有情况刚好是 [1 2 ..len] ，已经求出来了，但 [99 100] 怎么办呢？ 我们只求了 [1 2] 的所有情况。
+     * 答案很明显了，在 [1 2] 的所有情况每个数字加一个偏差 98， 即加上根节点的值就可以了。
+     */
+    public List<TreeNode> generateTrees_v2(int n) {
+        ArrayList<TreeNode>[] dp = new ArrayList[n + 1];
+        dp[0] = new ArrayList<>();
+        if (n == 0) {
+            return dp[0];
+        }
+        dp[0].add(null);
+        // 长度为 1 到 n
+        for (int len = 1; len <= n; len++) {
+            dp[len] = new ArrayList<>();
+            // 将不同的数字作为根节点，只需要考虑到 len
+            for (int root = 1; root <= len; root++) {
+                int left = root - 1;   // 左子树的长度
+                int right = len - root;    // 右子树的长度
+                for (TreeNode leftTree : dp[left]) {
+                    for (TreeNode rightTree : dp[right]) {
+                        TreeNode treeRoot = new TreeNode(root);
+                        treeRoot.left = leftTree;
+                        // 克隆右子树并且加上偏差
+                        treeRoot.right = generateTreeClone(rightTree, root);
+                        dp[len].add(treeRoot);
+                    }
+                }
+            }
+        }
+        return dp[n];
+    }
+
+    private TreeNode generateTreeClone(TreeNode n, int offset) {
+        if (n == null)
+            return null;
+        TreeNode node = new TreeNode(n.val + offset);
+        node.left = generateTreeClone(n.left, offset);
+        node.right = generateTreeClone(n.right, offset);
+        return node;
+    }
+
+    // -------不同的二叉搜索树II << end --------
 
     // -------组合总和 start >>--------
 

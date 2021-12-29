@@ -3,6 +3,8 @@ package com.study.leetcode;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class TreeProblemTests {
@@ -212,6 +214,18 @@ public class TreeProblemTests {
         assertEquals(root.left.val, 4);
         assertEquals(root.left.left.val, 2);
         assertNull(root.left.right);
+    }
+
+    @Test
+    public void testGenerateTrees() {
+        List<TreeNode> treeNodes = problem.generateTrees(1);
+        assertEquals(treeNodes.size(), 1);
+        List<TreeNode> treeNodes2 = problem.generateTrees(2);
+        assertEquals(treeNodes2.size(), 2);
+        assertEquals(problem.generateTrees(3).size(), 5);
+        assertEquals(problem.generateTrees_v2(1).size(), 1);
+        assertEquals(problem.generateTrees_v2(2).size(), 2);
+        assertEquals(problem.generateTrees_v2(3).size(), 5);
     }
 
     /**
