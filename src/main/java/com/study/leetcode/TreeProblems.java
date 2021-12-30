@@ -1,8 +1,6 @@
 package com.study.leetcode;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class TreeProblems {
 
@@ -417,7 +415,7 @@ public class TreeProblems {
     // -------删除二叉搜索树中的节点 start >>--------
 
     /**
-     * 给定一个二叉搜索树的根节点 root 和一个值 key，删除二叉搜索树中的 key 对应的节点，并保证二叉搜索树的性质不变。返回二叉搜索树（有可能被更新）的根节点的引用。
+     * 给定一个二叉搜索树的根节点 root 和一个值 key，删除二叉搜索树中的 key 对应的节点，并保证二叉搜索树的性质不变。返回二叉搜索树（有可能被更新）的根节点的引用。
      * 一般来说，删除节点可分为两个步骤：
      * 首先找到需要删除的节点；
      * 如果找到了，删除它。
@@ -428,7 +426,7 @@ public class TreeProblems {
      *    <li>只有一个非空节点，那么它要让这个孩子接替自己的位置</li>
      *    <li>有两个子节点，为了不破坏BST的性质，必须找到左子树中最大的那个节点；或者右子树中最小的那个节点来接替自己</li>
      * </ol>
-     *  
+     *
      *
      * 对应 leetcode 中第 450题
      *
@@ -580,6 +578,269 @@ public class TreeProblems {
     }
 
     // -------不同的二叉搜索树II << end --------
+
+    // -------二叉树的中序遍历 start >>--------
+
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        while (!stack.isEmpty() || root != null) {
+            if (root != null) {
+                stack.push(root);
+                root = root.left;
+            } else {
+                TreeNode temp = stack.pop();
+                result.add(temp.val);
+                root = temp.right;
+            }
+        }
+        return result;
+    }
+
+    // -------二叉树的中序遍历 << end --------
+
+    // -------恢复二叉搜索树 start >>--------
+
+    /**
+     * 给你二叉搜索树的根节点 root ，该树中的两个节点的值被错误地交换。请在不改变其结构的情况下，恢复这棵树。
+     *
+     * 解题思路：
+     * 首先按照中序遍历的方法进行遍历，找到两个需要交换的node，然后进行交换就行了，主要是如何找到两个需要交换的node，
+     * 例如对于序列 1 2 3 7 5 6 4，如何找到 node 7 与 4，
+     * 分别记 需要交换的节点为 x, y, 如下图：
+     * 1 2 3 7 5 6 4
+     *       x     y
+     * 用 pre 来记录上一次访问的node节点，如果满足 当前节点的值小于 上一次pre的值，那么就记录当前节点的值为 y，
+     * 上一次访问的值为 x，并且x只能记录一次，那么就能满足要求，遂有如下代码。
+     *
+     * 对应 leetcode 中 99 题
+     *
+     * @param root root tree node
+     */
+    public void recoverTree(TreeNode root) {
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode pre = null, y = null, x = null;
+        while (!stack.isEmpty() || root != null) {
+            if (root != null) {
+                stack.push(root);
+                root = root.left;
+            } else {
+                root = stack.pop();
+                if (pre != null && root.val < pre.val) {
+                    y = root;
+                    if (x == null) {
+                        x = pre;
+                    } else {
+                        break;
+                    }
+                }
+                pre = root;
+                root = root.right;
+            }
+        }
+        // swap x and y value
+        int temp = y.val;
+        y.val = x.val;
+        x.val = temp;
+    }
+
+    // -------恢复二叉搜索树 << end --------
+
+    // -------相同的树 start >>--------
+
+    /**
+     * 对应 leetcode 中的第 100 题
+     */
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) {
+            return true;
+        }
+        if (p == null || q == null || p.val != q.val) {
+            return false;
+        }
+        return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+    }
+
+    // -------相同的树 << end --------
+
+    // -------对称二叉树 start >>--------
+
+    /**
+     * 对应 leetcode 中的第101题
+     */
+    public boolean isSymmetric(TreeNode root) {
+        if (root == null)
+            return true;
+        return doIsSymmetric(root.left, root.right);
+    }
+
+    private boolean doIsSymmetric(TreeNode left, TreeNode right) {
+        if (left == null && right == null)
+            return true;
+        if (left == null || right == null || left.val != right.val)
+            return false;
+        return doIsSymmetric(left.left, right.right)
+                && doIsSymmetric(left.right, right.left);
+    }
+
+    public boolean isSymmetric_v2(TreeNode root) {
+        if (root == null || (root.left == null && root.right == null))
+            return true;
+        Queue<TreeNode> queue = new LinkedList<>();
+        // 将根节点的左右孩子节点放到队列中
+        queue.offer(root.left);
+        queue.offer(root.right);
+
+        while (!queue.isEmpty()) {
+            TreeNode left = queue.poll();
+            TreeNode right = queue.poll();
+            if (left == null && right == null)
+                continue;
+            if (left == null || right == null || left.val != right.val)
+                return false;
+            // 将左孩子的左孩子， 右孩子的右孩子放入到队列中
+            queue.offer(left.left);
+            queue.offer(right.right);
+            // 将左孩子的右孩子， 右孩子的左孩子放入到队列中
+            queue.offer(left.right);
+            queue.offer(right.left);
+        }
+        return true;
+    }
+
+    // -------对称二叉树 << end --------
+
+    // -------二叉树的层序遍历 start >>--------
+
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> result = new LinkedList<>();
+        if (root == null) {
+            return result;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            List<Integer> list = new ArrayList<>(size);
+            for (int i = 0; i < size; i++) {
+                TreeNode current = queue.poll();
+                list.add(current.val);
+                if (current.left != null) {
+                    queue.offer(current.left);
+                }
+                if (current.right != null) {
+                    queue.offer(current.right);
+                }
+            }
+            result.add(list);
+        }
+        return result;
+    }
+
+    // -------二叉树的层序遍历 << end --------
+
+    // -------路径总和 start >>--------
+
+    /**
+     * 给你二叉树的根节点 root 和一个表示目标和的整数 targetSum 。判断该树中是否存在 根节点到叶子节点 的路径，
+     * 这条路径上所有节点值相加等于目标和 targetSum 。如果存在，返回 true ；否则，返回 false 。
+     * 叶子节点 是指没有子节点的节点。
+     *
+     * 对应 leetcode 中第 112 题
+     *
+     * @param root root tree node
+     * @param targetSum target sum
+     * @return whether has path
+     */
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if (root == null)
+            return false;
+        if (root.left == null && root.right == null)
+            return targetSum == root.val;
+        return hasPathSum(root.left, targetSum - root.val)
+                || hasPathSum(root.right, targetSum - root.val);
+    }
+
+    // -------路径总和 << end --------
+
+    // -------组合总和II start >>--------
+
+    /**
+     * 给你二叉树的根节点 root 和一个整数目标和 targetSum ，找出所有 从根节点到叶子节点 路径总和等于给定目标和的路径。
+     * 叶子节点 是指没有子节点的节点。
+     *
+     * 深度优先遍历思想，加上回溯。
+     *
+     * 对应 leetcode 中第 113 题
+     */
+    public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+        List<List<Integer>> result = new ArrayList<>();
+        Deque<Integer> list = new LinkedList<>();
+        pathSumToAdd(root, targetSum, result, list);
+        return result;
+    }
+
+    private void pathSumToAdd(TreeNode root, int targetSum, List<List<Integer>> result, Deque<Integer> list) {
+        if (root == null)
+            return;
+        list.offerLast(root.val);
+        targetSum -= root.val;
+        if (root.left == null && root.right == null && targetSum == 0) {
+            result.add(new LinkedList<>(list));
+        }
+        pathSumToAdd(root.left, targetSum, result, list);
+        pathSumToAdd(root.right, targetSum, result, list);
+        list.pollLast();
+    }
+
+    /**
+     * 广度优先遍历思想
+     */
+    public List<List<Integer>> pathSum_v2(TreeNode root, int targetSum) {
+        List<List<Integer>> result = new LinkedList<>();
+        if (root == null) {
+            return result;
+        }
+        // Map 用来存放当前节点的父节点
+        Map<TreeNode, TreeNode> map = new HashMap<>();
+        Queue<TreeNode> queueNode = new LinkedList<>();
+        Queue<Integer> queueSum = new LinkedList<>();
+        queueNode.offer(root);
+        queueSum.offer(0);
+
+        while (!queueNode.isEmpty()) {
+            TreeNode node = queueNode.poll();
+            int rec = queueSum.poll() + node.val;
+            if (node.left == null && node.right == null) {
+                if (rec == targetSum) {
+                    result.add(pathSumGetPath(node, map));
+                }
+            } else {
+                if (node.left != null) {
+                    map.put(node.left, node);
+                    queueNode.offer(node.left);
+                    queueSum.offer(rec);
+                }
+                if (node.right != null) {
+                    map.put(node.right, node);
+                    queueNode.offer(node.right);
+                    queueSum.offer(rec);
+                }
+            }
+        }
+        return result;
+    }
+
+    private List<Integer> pathSumGetPath(TreeNode node, Map<TreeNode, TreeNode> map) {
+        List<Integer> temp = new LinkedList<>();
+        while (node != null) {
+            temp.add(0, node.val);
+            node = map.get(node);
+        }
+        return temp;
+    }
+
+    // -------组合总和II << end --------
 
     // -------组合总和 start >>--------
 

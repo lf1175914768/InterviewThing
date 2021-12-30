@@ -228,6 +228,129 @@ public class TreeProblemTests {
         assertEquals(problem.generateTrees_v2(3).size(), 5);
     }
 
+    @Test
+    public void testInOrderTraversal() {
+        TreeNode root = buildCommonTree();
+        List<Integer> list = problem.inorderTraversal(root);
+        assertEquals(list.get(0).intValue(), 1);
+        assertEquals(list.get(1).intValue(), 2);
+        assertEquals(list.get(2).intValue(), 3);
+        assertEquals(list.get(3).intValue(), 4);
+        assertEquals(list.get(4).intValue(), 6);
+        assertEquals(list.get(5).intValue(), 7);
+        assertEquals(list.get(6).intValue(), 9);
+
+        List<Integer> result = problem.inorderTraversal(null);
+        assertEquals(result.size(), 0);
+    }
+
+    @Test
+    public void testRecoverTree() {
+        TreeNode node2 = new TreeNode(2);
+        TreeNode node3 = new TreeNode(3, null, node2);
+        TreeNode node1 = new TreeNode(1, node3, null);
+
+        problem.recoverTree(node1);
+        assertEquals(node1.val, 3);
+        assertEquals(node2.val, 2);
+        assertEquals(node3.val, 1);
+    }
+
+    @Test
+    public void testIsSameTree() {
+        TreeNode node2 = new TreeNode(2);
+        TreeNode node3 = new TreeNode(3);
+        TreeNode node1 = new TreeNode(1, node2, node3);
+
+        TreeNode node21 = new TreeNode(2);
+        TreeNode node31 = new TreeNode(3);
+        TreeNode node11 = new TreeNode(1, node21, node31);
+        assertTrue(problem.isSameTree(node11, node1));
+
+        node1 = new TreeNode(1, node2, null);
+        node11 = new TreeNode(1, null, node21);
+        assertFalse(problem.isSameTree(node11, node1));
+
+        node3 = new TreeNode(1);
+        node1 = new TreeNode(1, node2, node3);
+
+        node31 = new TreeNode(1);
+        node11 = new TreeNode(1, node31, node21);
+        assertFalse(problem.isSameTree(node1, node11));
+    }
+
+    @Test
+    public void testIsSymmetric() {
+        TreeNode node3 = new TreeNode(3);
+        TreeNode node4 = new TreeNode(4);
+        TreeNode node2 = new TreeNode(2, node3, node4);
+
+        TreeNode node31 = new TreeNode(3);
+        TreeNode node41 = new TreeNode(4);
+        TreeNode node21 = new TreeNode(2, node41, node31);
+
+        TreeNode node1 = new TreeNode(1, node2, node21);
+        assertTrue(problem.isSymmetric(node1));
+        assertTrue(problem.isSymmetric_v2(node1));
+    }
+
+    @Test
+    public void testLevelOrder() {
+        TreeNode root = buildCommonTree();
+        List<List<Integer>> result = problem.levelOrder(root);
+        assertEquals(result.size(), 3);
+        assertEquals(result.get(0).size(), 1);
+        assertEquals(result.get(1).size(), 2);
+        assertEquals(result.get(2).size(), 4);
+        assertEquals(result.get(0).get(0).intValue(), 4);
+        assertEquals(result.get(1).get(0).intValue(), 2);
+        assertEquals(result.get(1).get(1).intValue(), 7);
+        assertEquals(result.get(2).get(0).intValue(), 1);
+        assertEquals(result.get(2).get(1).intValue(), 3);
+        assertEquals(result.get(2).get(2).intValue(), 6);
+        assertEquals(result.get(2).get(3).intValue(), 9);
+    }
+
+    @Test
+    public void testHasPathSum() {
+        TreeNode node7 = new TreeNode(7);
+        TreeNode node2 = new TreeNode(2);
+        TreeNode node11 = new TreeNode(11, node7, node2);
+        TreeNode node4_v2 = new TreeNode(4, node11, null);
+
+        TreeNode node1 = new TreeNode(1);
+        TreeNode node4 = new TreeNode(4, null, node1);
+        TreeNode node13 = new TreeNode(13);
+        TreeNode node8 = new TreeNode(8, node13, node4);
+        TreeNode node5 = new TreeNode(5, node4_v2, node8);
+        assertTrue(problem.hasPathSum(node5, 22));
+
+        node2 = new TreeNode(2);
+        TreeNode node3 = new TreeNode(3);
+        node1 = new TreeNode(1, node2, node3);
+        assertFalse(problem.hasPathSum(node1, 5));
+
+        assertFalse(problem.hasPathSum(null, 0));
+    }
+
+    @Test
+    public void testPathSum() {
+        TreeNode node7 = new TreeNode(7);
+        TreeNode node2 = new TreeNode(2);
+        TreeNode node11 = new TreeNode(11, node7, node2);
+        TreeNode node4_v2 = new TreeNode(4, node11, null);
+
+        TreeNode node1 = new TreeNode(5);
+        TreeNode node4 = new TreeNode(4, null, node1);
+        TreeNode node13 = new TreeNode(13);
+        TreeNode node8 = new TreeNode(8, node13, node4);
+        TreeNode node5 = new TreeNode(5, node4_v2, node8);
+        List<List<Integer>> lists = problem.pathSum(node5, 22);
+        assertEquals(lists.size(), 2);
+        List<List<Integer>> lists2 = problem.pathSum_v2(node5, 22);
+        assertEquals(lists2.size(), 2);
+    }
+
     /**
      * build tree
      *             4
