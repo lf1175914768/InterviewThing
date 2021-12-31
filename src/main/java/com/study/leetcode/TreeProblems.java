@@ -1,6 +1,7 @@
 package com.study.leetcode;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TreeProblems {
 
@@ -25,6 +26,9 @@ public class TreeProblems {
 
     // -------填充每一个节点的下一个右侧节点指针 start >>--------
 
+    /**
+     * 对应 leetcode 中第 116 题
+     */
     public Node connect(Node root) {
         if (root == null)
             return null;
@@ -43,8 +47,47 @@ public class TreeProblems {
         connectTwoNode(left.right, right.left);
     }
 
-
     // -------填充每一个节点的下一个右侧节点指针 << end --------
+
+    // -------填充每个节点的下一个右侧节点指针II start >>--------
+
+    /**
+     * 对应 leetcode 中第 117 题
+     */
+    public Node connect_Double(Node root) {
+        if (root == null) {
+            return null;
+        }
+        // cur 我们可以把他看成是每一层的链表
+        Node cur = root;
+        while (cur != null) {
+            // 遍历当前层的时候，为了方便操作，在下一层添加一个哑节点（注意这里是访问当前层的节点，然后把下一层的节点串起来）
+            Node dummy = new Node(0);
+            // pre表示访问下一层节点的前一个节点
+            Node pre = dummy;
+            // 然后开始遍历当前层的链表
+            while (cur != null) {
+                if (cur.left != null) {
+                    // 如果当前节点的左子节点不为空，就让pre节点的next指向他，也就是把它串起来
+                    pre.next = cur.left;
+                    // 更新pre
+                    pre = pre.next;
+                }
+                // 同理参照右子树
+                if (cur.right != null) {
+                    pre.next = cur.right;
+                    pre = pre.next;
+                }
+                // 继续访问这一行的下一个节点
+                cur = cur.next;
+            }
+            // 把下一层串联成一个链表之后，让他赋值给cur，后续继续循环，直到cur为空为止。
+            cur = dummy.next;
+        }
+        return root;
+    }
+
+    // -------填充每个节点的下一个右侧节点指针II << end --------
 
     // -------二叉树展开为链表 start >>--------
 
@@ -763,7 +806,7 @@ public class TreeProblems {
 
     // -------路径总和 << end --------
 
-    // -------组合总和II start >>--------
+    // -------路径总和II start >>--------
 
     /**
      * 给你二叉树的根节点 root 和一个整数目标和 targetSum ，找出所有 从根节点到叶子节点 路径总和等于给定目标和的路径。
@@ -840,7 +883,48 @@ public class TreeProblems {
         return temp;
     }
 
-    // -------组合总和II << end --------
+    // -------路径总和II << end --------
+
+    // -------二叉树中的最大路径和 start >>--------
+
+    /**
+     * 路径 被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径序列中 至多出现一次 。该路径 至少包含一个 节点，且不一定经过根节点。
+     * 路径和 是路径中各节点值的总和。
+     * 给你一个二叉树的根节点 root ，返回其 最大路径和 。
+     *
+     * 对应 leetcode 中第 124 题
+     *
+     * @param root root tree node
+     * @return max path sum
+     */
+    public int maxPathSum(TreeNode root) {
+        if (root == null)
+            return 0;
+        AtomicInteger globalSum = new AtomicInteger(Integer.MIN_VALUE);
+        maxPathSumDfs(root, globalSum);
+        return globalSum.get();
+    }
+
+    /**
+     * 返回经过 root 的单边分支最大和，即 Math.max(root, root + left, root + right)
+     *
+     * @param root root tree node
+     * @param globalSum global sum
+     */
+    private int maxPathSumDfs(TreeNode root, AtomicInteger globalSum) {
+        if (root == null)
+            return 0;
+        // 计算左边分支最大值，左边分支如果为负数还不如不选择
+        int leftGain = Math.max(maxPathSumDfs(root.left, globalSum), 0);
+        // 计算右边分支最大值，右边分支如果为负数还不如不选择
+        int rightGain = Math.max(maxPathSumDfs(root.right, globalSum), 0);
+        // left->root->right 作为路径与已经计算过历史最大值做比较
+        globalSum.set(Math.max(globalSum.get(), leftGain + rightGain + root.val));
+        // 返回经过 root 的单边最大分支给当前 root 的父节点使用
+        return root.val + Math.max(leftGain, rightGain);
+    }
+
+    // -------二叉树中的最大路径和 << end --------
 
     // -------组合总和 start >>--------
 

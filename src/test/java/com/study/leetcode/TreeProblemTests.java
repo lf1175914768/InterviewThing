@@ -49,6 +49,26 @@ public class TreeProblemTests {
     }
 
     @Test
+    public void testConnectDouble() {
+        TreeProblems.Node node4 = new TreeProblems.Node(4);
+        TreeProblems.Node node5 = new TreeProblems.Node(5);
+        TreeProblems.Node node2 = new TreeProblems.Node(2, node4, node5);
+
+        TreeProblems.Node node6 = new TreeProblems.Node(6);
+        TreeProblems.Node node7 = new TreeProblems.Node(7);
+        TreeProblems.Node node3 = new TreeProblems.Node(3, node6, node7);
+        TreeProblems.Node node1 = new TreeProblems.Node(1, node2, node3);
+
+        TreeProblems.Node root = problem.connect_Double(node1);
+        assertEquals(root.left.next, root.right);
+        assertNull(root.next);
+        assertEquals(node4.next, node5);
+        assertEquals(node5.next, node6);
+        assertEquals(node6.next, node7);
+        assertNull(node7.next);
+    }
+
+    @Test
     public void testFlatten() {
         TreeNode node = buildCommonTree();
         problem.flatten(node);
@@ -349,6 +369,21 @@ public class TreeProblemTests {
         assertEquals(lists.size(), 2);
         List<List<Integer>> lists2 = problem.pathSum_v2(node5, 22);
         assertEquals(lists2.size(), 2);
+    }
+
+    @Test
+    public void testMaxPathSum() {
+        TreeNode node2 = new TreeNode(2);
+        TreeNode node3 = new TreeNode(3);
+        TreeNode node1 = new TreeNode(1, node2, node3);
+        assertEquals(problem.maxPathSum(node1), 6);
+
+        TreeNode node9 = new TreeNode(9);
+        TreeNode node15 = new TreeNode(15);
+        TreeNode node7 = new TreeNode(7);
+        TreeNode node20 = new TreeNode(20, node15, node7);
+        TreeNode node_10 = new TreeNode(-10, node9, node20);
+        assertEquals(problem.maxPathSum(node_10), 42);
     }
 
     /**
