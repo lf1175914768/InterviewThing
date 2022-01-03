@@ -926,6 +926,367 @@ public class TreeProblems {
 
     // -------二叉树中的最大路径和 << end --------
 
+    // -------将有序数组转换为二叉搜索树 start >>--------
+
+    /**
+     * 对应 leetcode 中第 108 题
+     */
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return sortedArrayToBSTHelper(nums, 0, nums.length - 1);
+    }
+
+    private TreeNode sortedArrayToBSTHelper(int[] nums, int start, int end) {
+        if (start > end)
+            return null;
+        int middle = start + (end - start) / 2;
+        TreeNode root = new TreeNode(nums[middle]);
+        root.left = sortedArrayToBSTHelper(nums, start, middle - 1);
+        root.right = sortedArrayToBSTHelper(nums, middle + 1, end);
+        return root;
+    }
+
+    // -------将有序数组转换为二叉搜索树 << end --------
+
+    // -------二叉树的右视图 start >>--------
+
+    /**
+     * 我们按照 【根节点 -> 右子树 -> 左子树】的顺序访问，就可以保证每层都是最先被访问最右边的节点的。
+     *
+     * 对应 leetcode 中第 199 题
+     */
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        rightSideViewDfs(root, 0, res);
+        return res;
+    }
+
+    private void rightSideViewDfs(TreeNode root, int depth, List<Integer> res) {
+        if (root == null)
+            return;
+        // 先访问当前节点，在递归的访问右子树 和 左子树
+        if (depth == res.size()) {
+            // 如果当前节点所在深度还没有出现在 res 中，说明在该深度下当前节点是第一个被访问的节点，因此将当前节点加入 res 中
+            res.add(root.val);
+        }
+        depth++;
+        rightSideViewDfs(root.right, depth, res);
+        rightSideViewDfs(root.left, depth, res);
+    }
+
+    // -------二叉树的右视图 << end --------
+
+    // -------完全二叉树的节点个数 start >>--------
+
+    /**
+     * 给你一棵 完全二叉树 的根节点 root ，求出该树的节点个数。
+     * 完全二叉树 的定义如下：在完全二叉树中，除了最底层节点可能没填满外，其余每层节点数都达到最大值，并且最下面一层的节点都集中在该层最左边的若干位置。若最底层为第 h 层，则该层包含 1~ 2h 个节点。
+     *
+     * 对应 leetcode 中第 222 题
+     */
+    public int countNodes(TreeNode root) {
+        if (root == null)
+            return 0;
+        int level = 0;
+        TreeNode node = root;
+        while (node.left != null) {
+            level++;
+            node = node.left;
+        }
+        int low = 1 << level, high = (1 << (level + 1)) - 1;
+        while (low < high) {
+            int mid = (high - low + 1) / 2 + low;
+            if (countNodesExists(root, level, mid)) {
+                low = mid;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return low;
+    }
+
+    private boolean countNodesExists(TreeNode root, int level, int k) {
+        int bits = 1 << (level - 1);
+        TreeNode node = root;
+        while (node != null && bits > 0) {
+            if ((bits & k) == 0) {
+                node = node.left;
+            } else {
+                node = node.right;
+            }
+            bits >>= 1;
+        }
+        return node != null;
+    }
+
+    // -------完全二叉树的节点个数 << end --------
+
+    // -------二叉树搜索子树的最大键值和 start >>--------
+
+    /**
+     * 给你一棵以 root 为根的 二叉树 ，请你返回 任意 二叉搜索子树的最大键值和。
+     *
+     * 二叉搜索树的定义如下：
+     * 任意节点的左子树中的键值都 小于 此节点的键值。
+     * 任意节点的右子树中的键值都 大于 此节点的键值。
+     * 任意节点的左子树和右子树都是二叉搜索树。
+     *
+     * 解题思路：
+     * 如果我们想计算子树中 BST 的最大和，站在当前节点的视角，需要做什么呢？
+     * 1、我肯定得知道左右子树是不是合法的 BST，如果这俩儿子偶一个不是BST，以我为根的这棵树肯定不会是BST，
+     * 2、如果左右子树都是合法的 BST，我得瞅瞅左右子树加上自己还是不是合法的 BST。因为按照 BST 的定义，当前节点的值应该大于左子树的
+     *    最大值，小于右子树的最小值，否则就破坏BST 的性质。
+     * 3、因为题目要计算最大的节点之和，如果左右子树加上我自己还是一颗合法的BST，也就是说以我为根的整棵树是一颗BST，那我需要知道我们这颗
+     *    BST 的所有节点值之和是多少，方便和别的BST争个高下。
+     *
+     * 根据以上三点，站在当前节点的视角，需要知道以下具体信息：
+     * 1、左右子树是否是 BST。
+     * 2、左子树的最大值和 右子树的最小值。
+     * 3、左右子树的节点值之和。
+     *
+     * 返回一个大小为 4 的int数组，我们称之为 res，其中：
+     * res[0] 记录以 root 为根的二叉树是否是 BST，若为 1 则说明是 BST，若为 0 则说明不是 BST；
+     * res[1] 记录以 root 为根的二叉树所有节点中的最小值；
+     * res[2] 记录以 root 为根的二叉树所有节点中的最大值；
+     * res[3] 记录以 root 为根的二叉树所有节点值之和。
+     * 其实就是之前分析中说到的几个值放到了 res 数组中，最重要的是，我们要试图通过 left 和 right 正确推导出 res 数组。
+     *
+     * 对应 leetcode 总第 1373 题
+     */
+    public int maxSumBST(TreeNode root) {
+        AtomicInteger maxSum = new AtomicInteger();
+        maxSumBSTTraverse(root, maxSum);
+        return maxSum.get();
+    }
+
+    private int[] maxSumBSTTraverse(TreeNode root, AtomicInteger maxSum) {
+        // base case
+        if (root == null)
+            return new int[] {
+                    1, Integer.MAX_VALUE, Integer.MIN_VALUE, 0
+            };
+        // 递归计算左右子树
+        int[] left = maxSumBSTTraverse(root.left, maxSum);
+        int[] right = maxSumBSTTraverse(root.right, maxSum);
+
+        /* 后序遍历位置 */
+        int[] res = new int[4];
+        // 这个if 在判断以 root为根的二叉树是不是 BST
+        if (left[0] == 1 && right[0] == 1
+                && root.val > left[2] && root.val < right[1]) {
+            // 以 root 为根的二叉树是 BST
+            res[0] = 1;
+            // 计算以 root 为根的这颗BST的最小值
+            res[1] = Math.min(left[1], root.val);
+            // 计算以 root 为根的这颗BST的最大值
+            res[2] = Math.max(right[2], root.val);
+            // 计算以 root 为根的这颗BST的所有节点之和
+            res[3] = left[3] + right[3] + root.val;
+            // 更新全局变量
+            maxSum.set(Math.max(maxSum.get(), res[3]));
+        } else {
+            // 以root为根的二叉树不是 BST
+            res[0] = 0;
+        }
+
+        return res;
+    }
+
+    // -------二叉树搜索子树的最大键值和 << end --------
+
+    // -------二叉树的序列化与反序列化 start >>--------
+
+    /**
+     * 前序遍历二叉树的序列化
+     *
+     * 对应 leetcode 中第 297 题
+     */
+    public String serialize(TreeNode root) {
+        StringBuilder sb = new StringBuilder();
+        serializeToSB(root, sb);
+        return sb.toString();
+    }
+
+    private void serializeToSB(TreeNode root, StringBuilder sb) {
+        if (root == null) {
+            sb.append("#").append(",");
+            return;
+        }
+        sb.append(root.val).append(",");
+        serializeToSB(root.left, sb);
+        serializeToSB(root.right, sb);
+    }
+
+    /**
+     * 前序遍历反序列化
+     */
+    public TreeNode deserialize(String data) {
+        Deque<String> nodes = new LinkedList<>();
+        for (String s : data.split(",")) {
+            nodes.addLast(s);
+        }
+        return deserializeSB(nodes);
+    }
+
+    private TreeNode deserializeSB(Deque<String> nodes) {
+        if (nodes.isEmpty())
+            return null;
+        String first = nodes.removeFirst();
+        if ("#".equals(first))
+            return null;
+        TreeNode root = new TreeNode(Integer.parseInt(first));
+
+        root.left = deserializeSB(nodes);
+        root.right = deserializeSB(nodes);
+        return root;
+    }
+
+    /**
+     * 后序遍历 序列化
+     */
+    public String serialize_v2(TreeNode root) {
+        StringBuilder sb = new StringBuilder();
+        serializeToSB_v2(root, sb);
+        return sb.toString();
+    }
+
+    private void serializeToSB_v2(TreeNode root, StringBuilder sb) {
+        if (root == null) {
+            sb.append("#").append(",");
+            return;
+        }
+        serializeToSB_v2(root.left, sb);
+        serializeToSB_v2(root.right, sb);
+        sb.append(root.val).append(",");
+    }
+
+    /**
+     * 后续遍历 反序列化
+     */
+    public TreeNode deserialize_v2(String data) {
+        Deque<String> nodes = new LinkedList<>();
+        for (String s : data.split(",")) {
+            nodes.addLast(s);
+        }
+        return deserializeSB_v2(nodes);
+    }
+
+    private TreeNode deserializeSB_v2(Deque<String> nodes) {
+        if (nodes.isEmpty())
+            return null;
+        String last = nodes.removeLast();
+        if ("#".equals(last))
+            return null;
+        TreeNode root = new TreeNode(Integer.parseInt(last));
+        root.right = deserializeSB_v2(nodes);
+        root.left = deserializeSB_v2(nodes);
+        return root;
+    }
+
+    /**
+     * 层序遍历序列化
+     */
+    public String serialize_levelOrder(TreeNode root) {
+        if (root == null)
+            return "";
+        StringBuilder sb = new StringBuilder();
+        // 初始化队列，将root 加入队列
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
+
+        while (!q.isEmpty()) {
+            TreeNode cur = q.poll();
+            if (cur == null) {
+                sb.append("#").append(",");
+                continue;
+            }
+            sb.append(cur.val).append(",");
+            q.offer(cur.left);
+            q.offer(cur.right);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 层序遍历 反序列化
+     */
+    public TreeNode deserialize_levelOrder(String data) {
+        if (data.isEmpty())
+            return null;
+        String[] nodes = data.split(",");
+        // 第一个元素就是 root 的值
+        TreeNode root = new TreeNode(Integer.parseInt(nodes[0]));
+        // 队列 q 记录父节点，将 root 加入队列
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
+
+        for (int i = 1; i < nodes.length;) {
+            // 队列中存的都是父节点
+            TreeNode parent = q.poll();
+            // 父节点对应的左侧子节点的值
+            String left = nodes[i++];
+            if (!"#".equals(left)) {
+                parent.left = new TreeNode(Integer.parseInt(left));
+                q.offer(parent.left);
+            } else {
+                parent.left = null;
+            }
+            // 父节点对应的右侧子节点的值
+            String right = nodes[i++];
+            if (!"#".equals(right)) {
+                parent.right = new TreeNode(Integer.parseInt(right));
+                q.offer(parent.right);
+            } else {
+                parent.right = null;
+            }
+        }
+        return root;
+    }
+
+    // -------二叉树的序列化与反序列化 << end --------
+
+    // -------二叉树的最近公共祖先 start >>--------
+
+    /**
+     * 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+     * 百度百科中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，
+     * 满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+     *
+     * 解题思路：
+     * 1、这个函数是干嘛的？
+     * 我们可以这么定义这个函数：给该函数输入三个参数 root, p, q。然会返回一个节点。
+     * case 1：如果p 和 q 都在以root为根的树中，函数返回的即是 p 和 q 的最近公共祖先节点。
+     * case 2：如果 p 和 q 都不在以root为根的树中，函数返回的是 null。
+     * case 3：如果 p 和 q 只有一个存在于 root 为根的树中，函数返回那个节点。
+     * 2、函数的参数中，变量是什么？
+     * 函数参数中的变量是root，因为这个函数会递归的调用 root.left 和 root.right；至于 q 和 p，我们要求他俩的公共祖先，肯定是不会变化的。
+     * 3、得到函数的递归结果，你该干啥？
+     * 先想base case，如果root为空，肯定返回null。如果root本身就是p 或者 q，即使有一个不存在于以root为根的树中，按照情况3的定义，也应该返回
+     * root 节点。
+     * 然后是真正的挑战了，用递归调用的结果 left 和 right 来搞点事情，我们可以分情况讨论：
+     * case 1：如果 p 和 q 都在以 root 为根的树中，那么left 和 right一定分别是 p 和 q。
+     * case 2：如果 p 和 q 都不在以 root 为根的树中，直接返回 null。
+     * case 3：如果 p 和 q 只有一个存在于以 root 为根的树中，函数返回该节点。
+     *
+     * 对应 leetcode 中第236题。
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        // 只要当前根节点是 p 和 q中的任意一个，就返回
+        if (root == null || root == q || root == p) return root;
+        // 根节点不是 p 和 q中的任意一个，那么就继续分别往左子树和右子树中找 p 和 q
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        // p 和 a 都没找到，那就没有
+        if (left == null && right == null) return null;
+        // 左子树中没有 p，也没有q，就返回右子树的结果
+        if (left == null) return right;
+        // 右子树中没有 p，也没有q，就返回左子树中的结果
+        if (right == null) return left;
+        // 左右子树都找到 p 和 q了，那就说明p 和 q分别在左右两个子树上，所以此时的最近公共祖先就是 root
+        return root;
+    }
+
+    // -------二叉树的最近公共祖先 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

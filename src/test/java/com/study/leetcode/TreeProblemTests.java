@@ -386,6 +386,74 @@ public class TreeProblemTests {
         assertEquals(problem.maxPathSum(node_10), 42);
     }
 
+    @Test
+    public void testRightSideView() {
+        TreeNode root = buildCommonTree();
+        List<Integer> view = problem.rightSideView(root);
+        assertEquals(view.size(), 3);
+        assertEquals(view.get(0).intValue(), 4);
+        assertEquals(view.get(1).intValue(), 7);
+        assertEquals(view.get(2).intValue(), 9);
+    }
+
+    @Test
+    public void testMaxSumBST() {
+        TreeNode node2 = new TreeNode(2);
+        TreeNode node4 = new TreeNode(4);
+        TreeNode node4_1 = new TreeNode(4, node2, node4);
+
+        TreeNode node4_2 = new TreeNode(4);
+        TreeNode node6 = new TreeNode(6);
+        TreeNode node5 = new TreeNode(5, node4_2, node6);
+        TreeNode node2_1 = new TreeNode(2);
+        TreeNode node3 = new TreeNode(3, node2_1, node5);
+        TreeNode node1 = new TreeNode(1, node4_1, node3);
+        assertEquals(problem.maxSumBST(node1), 20);
+    }
+
+    @Test
+    public void testSerializeAndDeserialize() {
+        TreeNode root = buildCommonTree();
+        String tree = problem.serialize(root);
+        assertEquals(tree, "4,2,1,#,#,3,#,#,7,6,#,#,9,#,#,");
+        TreeNode node = problem.deserialize(tree);
+        assertEquals(node.val, 4);
+        assertEquals(node.left.val, 2);
+        assertEquals(node.right.val, 7);
+        assertEquals(node.left.left.val, 1);
+        assertEquals(node.left.right.val, 3);
+        assertEquals(node.right.left.val, 6);
+        assertEquals(node.right.right.val, 9);
+
+        TreeNode node_v2 = problem.deserialize_v2(problem.serialize_v2(root));
+        assertEquals(node_v2.val, 4);
+        assertEquals(node_v2.left.val, 2);
+        assertEquals(node_v2.right.val, 7);
+        assertEquals(node_v2.left.left.val, 1);
+        assertEquals(node_v2.left.right.val, 3);
+        assertEquals(node_v2.right.left.val, 6);
+        assertEquals(node_v2.right.right.val, 9);
+
+        TreeNode node_v3 = problem.deserialize_levelOrder(problem.serialize_levelOrder(root));
+        assertEquals(node_v3.val, 4);
+        assertEquals(node_v3.left.val, 2);
+        assertEquals(node_v3.right.val, 7);
+        assertEquals(node_v3.left.left.val, 1);
+        assertEquals(node_v3.left.right.val, 3);
+        assertEquals(node_v3.right.left.val, 6);
+        assertEquals(node_v3.right.right.val, 9);
+    }
+
+    @Test
+    public void testLowestCommonAncestor() {
+        TreeNode root = buildCommonTree();
+        TreeNode node3 = root.left.right, node1 = root.left.left, node6 = root.right.left, node7 = root.right;
+        TreeNode node1_2_ancestor = problem.lowestCommonAncestor(root, node1, node3);
+        assertEquals(node1_2_ancestor.val, 2);
+        assertEquals(problem.lowestCommonAncestor(root, node6, node7).val, 7);
+        assertEquals(problem.lowestCommonAncestor(root, node6, node3).val, 4);
+    }
+
     /**
      * build tree
      *             4
