@@ -4,8 +4,13 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 动态规划相关的题目
- */
+ * <p>description: 动态规划相关的题目  </p>
+ * <p>className:  DynamicProblems </p>
+ * <p>create time:  2022/1/6 15:52 </p>
+ *
+ * @author feng.liu
+ * @since 1.0
+ **/
 public class DynamicProblems {
 
 
