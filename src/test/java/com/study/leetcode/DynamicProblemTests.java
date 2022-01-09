@@ -19,5 +19,6 @@ public class DynamicProblemTests {
         int[] param = new int[] {10,9,2,5,3,7,101,18};
         int length = problems.lengthOfLIS(param);
         assertEquals(length, 4);
+        assertEquals(problems.lengthOfLIS_v2(param), 4);
     }
 }
