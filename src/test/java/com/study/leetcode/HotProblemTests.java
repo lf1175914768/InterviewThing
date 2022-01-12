@@ -235,6 +235,13 @@ public class HotProblemTests {
         assertEquals(problem.maxProfit_withCool_v2(prices), 0);
     }
 
+    @Test
+    public void testReverse() {
+//        assertEquals(problem.reverse(123), 321);
+//        assertEquals(problem.reverse(-123), -321);
+        assertEquals(problem.reverse(1200), 21);
+    }
+
     private List<ListNode> getListNodes() {
         List<ListNode> param = new ArrayList<>();
         ListNode node1 = new ListNode(5);

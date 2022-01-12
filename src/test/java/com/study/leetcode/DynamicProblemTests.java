@@ -21,4 +21,16 @@ public class DynamicProblemTests {
         assertEquals(length, 4);
         assertEquals(problems.lengthOfLIS_v2(param), 4);
     }
+
+    @Test
+    public void testMinFallingPathSum() {
+        int[][] matrix = new int[][] {{2,1,3}, {6,5,4}, {7,8,9}};
+        assertEquals(problems.minFallingPathSum(matrix), 13);
+        matrix = new int[][] {{-19,57}, {-40,-5}};
+        assertEquals(problems.minFallingPathSum(matrix), -59);
+        matrix = new int[][] {{-48}};
+        assertEquals(problems.minFallingPathSum(matrix), -48);
+        matrix = new int[][] {{17,82}, {1,-44}};
+        assertEquals(problems.minFallingPathSum(matrix), -27);
+    }
 }

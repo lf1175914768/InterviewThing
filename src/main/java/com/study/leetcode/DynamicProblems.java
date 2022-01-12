@@ -83,6 +83,41 @@ public class DynamicProblems {
 
     // -------组合总和 start >>--------
 
+    /**
+     * 下降路径最小和
+     *
+     * 对应 leetcode 中第931题
+     */
+    public int minFallingPathSum(int[][] matrix) {
+        int[] dp = new int[matrix[0].length];
+        for (int i = 0; i < dp.length; i++) {
+            dp[i] = matrix[0][i];
+        }
+        int row = 0, res = Integer.MAX_VALUE;
+        while (++row < matrix.length) {
+            int pre = dp[0];
+            for (int i = 0; i < dp.length; i++) {
+                int minValue = dp[i];
+                if (i > 0) {
+                    minValue = Math.min(minValue, pre);
+                }
+                if (i < dp.length - 1) {
+                    minValue = Math.min(minValue, dp[i + 1]);
+                }
+                pre = dp[i];
+                dp[i] = matrix[row][i] + minValue;
+            }
+        }
+        for (int i = 0; i < dp.length; i++) {
+            res = Math.min(res, dp[i]);
+        }
+        return res;
+    }
+
+    // -------组合总和 << end --------
+
+    // -------组合总和 start >>--------
+
     public List<List<Integer>> permute1(int[] nums) {
         return null;
     }
