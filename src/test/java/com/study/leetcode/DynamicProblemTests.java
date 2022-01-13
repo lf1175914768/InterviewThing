@@ -33,4 +33,24 @@ public class DynamicProblemTests {
         matrix = new int[][] {{17,82}, {1,-44}};
         assertEquals(problems.minFallingPathSum(matrix), -27);
     }
+
+    @Test
+    public void testFindTargetSumWays() {
+        int[] params = new int[] {1,1,1,1,1};
+        assertEquals(problems.findTargetSumWays(params, 3), 5);
+        assertEquals(problems.findTargetSumWays_v2(params, 3), 5);
+        assertEquals(problems.findTargetSumWays_v3(params, 3), 5);
+        params = new int[] {1};
+        assertEquals(problems.findTargetSumWays(params, 1), 1);
+        assertEquals(problems.findTargetSumWays_v2(params, 1), 1);
+        assertEquals(problems.findTargetSumWays_v3(params, 1), 1);
+        params = new int[] {0,0,0,0,0,0,0,0,1};
+        assertEquals(problems.findTargetSumWays(params, 1), 256);
+        assertEquals(problems.findTargetSumWays_v2(params, 1), 256);
+        assertEquals(problems.findTargetSumWays_v3(params, 1), 256);
+        params = new int[] {100};
+        assertEquals(problems.findTargetSumWays(params, -200), 0);
+        assertEquals(problems.findTargetSumWays_v2(params, -200), 0);
+        assertEquals(problems.findTargetSumWays_v3(params, -200), 0);
+    }
 }

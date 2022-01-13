@@ -2,6 +2,7 @@ package com.study.leetcode;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <p>description: 动态规划相关的题目  </p>
@@ -81,7 +82,145 @@ public class DynamicProblems {
 
     // -------最长递增子序列 << end --------
 
-    // -------组合总和 start >>--------
+    // -------目标和 start >>--------
+
+    /**
+     * 给你一个整数数组 nums 和一个整数 target 。
+     * 向数组中的每个整数前添加 '+' 或 '-' ，然后串联起所有整数，可以构造一个 表达式 ：
+     * 例如，nums = [2, 1] ，可以在 2 之前添加 '+' ，在 1 之前添加 '-' ，然后串联起来得到表达式 "+2-1" 。
+     * 返回可以通过上述方法构造的、运算结果等于 target 的不同 表达式 的数目。
+     *
+     * 解题思路：
+     * 使用回溯的方法，进行解题
+     *
+     * 对应 leetcode 中第 494 题
+     */
+    public int findTargetSumWays(int[] nums, int target) {
+        if (nums.length == 0) return 0;
+        AtomicInteger result = new AtomicInteger();
+        findTargetSumWaysBackTrack(nums, 0, target, result);
+        return result.get();
+    }
+
+    private void findTargetSumWaysBackTrack(int[] nums, int i, int rest, AtomicInteger result) {
+        // base case
+        if (i == nums.length) {
+            if (rest == 0) {
+                // 说明恰好凑出 target
+                result.getAndIncrement();
+            }
+            return;
+        }
+        // 给 nums[i] 选择 “-” 号
+        rest += nums[i];
+        findTargetSumWaysBackTrack(nums, i + 1, rest, result);
+        // 撤销选择
+        rest -= nums[i];
+
+        // 给 nums[i] 选择 “+” 号
+        rest -= nums[i];
+        findTargetSumWaysBackTrack(nums, i + 1, rest, result);
+        // 撤销选择
+//        rest += nums[i];
+    }
+
+    /**
+     * 首先，我们把 nums 划分为两个子集 A 和 B，分别代表分配 + 的数和分配 - 的数，那么他们和 target 存在如下关系：
+     * sum(A) - sum(B) = target
+     * sum(A) = target + sum(B)
+     * sum(A) + sum(A) = target + sum(B) + sum(A)
+     * 2 * sum(A) = target + sum(nums)
+     *
+     * 综上，可以推出 sum(A) = (target + sum(nums)) / 2, 也就是把原来的问题转化成： nums 存在几个子集A，使得 A 中元素的和为
+     * (target + sum(nums)) / 2 ?
+     *
+     * Note:
+     * 上面的推导有缺陷，因为 背包问题需要 背包的容量是非负整数，但是 target + sum(nums) 有可能是负数，比如 nums = {100}, target = -200
+     * 所以正式推导如下：
+     * sum(A) - sum(B) = target
+     * sum(A) = sum(nums) - sum(B)
+     * sum(nums) - 2 * sum(B) = target
+     * sum(B) = (sum(nums) - target) / 2
+     * 由于数组 nums 中的元素都是非负整数, sum(B) 必须是非负偶数，若不成立，可直接返回 0，这样的话，可以将上面的问题解决掉
+     *
+     * 好的，变成标准的背包问题：
+     * 有一个背包，容量为 sum，现在给你N个物品，第 i个物品的重量为 nums[i - 1] (1 <= i <= N),每个物品只有一个，请问你有几种不同的方法能够恰好装满这个背包？
+     *
+     * 第一步要明确两点：【状态】和【选择】。
+     *      对于背包问题，这个都是一样的，状态就是【背包的容量】和【可选择的物品】，选择就是【装进背包】和【不装进背包】。
+     * 第二步要明确 dp 数组的定义：
+     *      dp[i][j] = x 表示，若只在前 i 个物品中选择， 若当前背包的容量为 j，则最多有x中方法可以恰好装满背包。
+     *      根据这个定义，显然 dp[0][..] = 0,因为没有物品的话，根本没办法装背包； dp[..][0] = 1, 因为如果背包的最大载重为 0，【什么都不装】就是唯一的一种装法。
+     *      我们所求的答案就是 dp[N][sum]， 即使用所有 N个物品，有几种方法可以装满容量为 sum 的背包。
+     * 第三步，根据【选择】，思考状态转移的逻辑。
+     *      如果不把 nums[i] 算入子集，或者说你不把这第 i 个物品装入背包，那么恰好装满背包的方法就取决于上一个状态 dp[i - 1][j],继承之前的结果。
+     *      如果把 nums[i] 算入子集，或者说你把这第 i 个物品装入背包，那么只要看前 i-1 个物品有几种方法可以装满 j - nums[i - 1] 的重量就行了，所以取决于 dp[i-1][j-nums[i-1]]
+     *       ps: 注意我们说的 i 是从1开始的，而数组 nums 的索引是从 0 开始算的，所以 nums[i - 1]代表的是第 i 个物品的重量，j - nums[i - 1]就是背包装入物品 i之后还剩下的重量。
+     * 由于 dp[i][j] 为装满背包的总方法数，所以应该以上两种选择的结果求和，得到状态转移方程
+     * dp[i][j] = dp[i-1][j] + dp[i-1][j-nums[i-1]]
+     *
+     */
+    public int findTargetSumWays_v2(int[] nums, int target) {
+        int sum = 0;
+        for (int num : nums) {
+            sum += num;
+        }
+        // 这两种情况，不可能存在合法的子集划分
+        if (sum < target || (target + sum) % 2 == 1)
+            return 0;
+        return findTargetSumWaysSubSet(nums, (sum - target) / 2);
+    }
+
+    private int findTargetSumWaysSubSet(int[] nums, int sum) {
+        int n = nums.length;
+        int[][] dp = new int[n + 1][sum + 1];
+        // base case
+        for (int i = 0; i <= n; i++) {
+            dp[i][0] = 1;
+        }
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j <= sum; j++) {
+                if (j >= nums[i - 1]) {
+                    // 两种选择的结果之和
+                    dp[i][j] = dp[i - 1][j] + dp[i - 1][j - nums[i - 1]];
+                } else {
+                    // 背包的空间不足，只能选择不装物品 i
+                    dp[i][j] = dp[i - 1][j];
+                }
+            }
+        }
+        return dp[n][sum];
+    }
+
+    /**
+     * 这个是上面 第二种方法的 空间压缩版
+     */
+    public int findTargetSumWays_v3(int[] nums, int target) {
+        int sum = 0;
+        for (int num : nums) {
+            sum += num;
+        }
+        if (sum < target || (target + sum) % 2 == 1)
+            return 0;
+
+        int n = nums.length, total = (sum - target) / 2;
+        int[] dp = new int[total + 1];
+        // base case
+        dp[0] = 1;
+        for (int i = 1; i <= n; i++) {
+            // j 要从后往前遍历
+            for (int j = total; j >= 0; j--) {
+                if (j - nums[i - 1] >= 0) {
+                    dp[j] = dp[j] + dp[j - nums[i - 1]];
+                }
+            }
+        }
+        return dp[total];
+    }
+
+    // -------目标和 << end --------
+
+    // -------下降路径最小和 start >>--------
 
     /**
      * 下降路径最小和
@@ -114,7 +253,7 @@ public class DynamicProblems {
         return res;
     }
 
-    // -------组合总和 << end --------
+    // -------下降路径最小和 << end --------
 
     // -------组合总和 start >>--------
 

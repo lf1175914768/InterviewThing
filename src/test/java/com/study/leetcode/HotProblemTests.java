@@ -25,8 +25,8 @@ public class HotProblemTests {
 
     @Test
     public void testLongestPalindrome_v2() {
-        String result = problem.longestPalindrome_v2("aacabdkacaa");
-        System.out.println(result);
+        assertEquals(problem.longestPalindrome_v2("aacabdkacaa"), "aca");
+        assertEquals(problem.longestPalindrome_v3("aacabdkacaa"), "aca");
     }
 
     @Test

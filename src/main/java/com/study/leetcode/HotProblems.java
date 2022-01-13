@@ -78,6 +78,30 @@ public class HotProblems {
         return s.substring(maxEnd - maxLength + 1, maxEnd + 1);
     }
 
+    public String longestPalindrome_v3(String s) {
+        if (null == s || s.length() == 0)
+            return "";
+        int start = 0,end = 0;
+        for (int i = 0; i < s.length(); i++) {
+            int len1 = longestPalindromeExpandAroundCenter(s, i, i);
+            int len2 = longestPalindromeExpandAroundCenter(s, i, i + 1);
+            int len = Math.max(len1, len2);
+            if (len > end - start) {
+                start = i - (len - 1) / 2;
+                end = i + len / 2;
+            }
+        }
+        return s.substring(start, end + 1);
+    }
+
+    private int longestPalindromeExpandAroundCenter(String s, int left, int right) {
+        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            left--;
+            right++;
+        }
+        return right - left - 1;
+    }
+
     /**
      * Manacher's Algorithm 马拉车算法
      * <p>
