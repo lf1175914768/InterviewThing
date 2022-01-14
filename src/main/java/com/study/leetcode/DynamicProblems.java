@@ -255,6 +255,101 @@ public class DynamicProblems {
 
     // -------下降路径最小和 << end --------
 
+    // -------编辑距离 start >>--------
+
+    /**
+     * 给你两个单词 word1 和 word2，请你计算出将 word1 转换成 word2 所使用的最少操作数。
+     * 你可以对一个单词进行如下三种操作：
+     * 1、插入一个字符
+     * 2、删除一个字符
+     * 3、替换一个字符
+     *
+     * 对应 leetcode 中第 72 题
+     */
+    public int minDistance(String word1, String word2) {
+        return minDistanceTraverse(word1, word1.length() - 1, word2, word2.length() - 1); 
+    }
+
+    /**
+     * 定义函数的返回值是 word1[0..word1end] 和 word2[0..word2end]的最小编辑距离
+     */
+    private int minDistanceTraverse(String word1, int word1end, String word2, int word2end) {
+        // base case
+        if (word1end == -1)
+            return word2end + 1;
+        if (word2end == -1)
+            return word1end + 1;
+        // 本来就相等，不需要任何操作
+        // word1[0..word1end] 和 word2[0..word2end] 的最小编辑距离就等于
+        // word1[0..word1end - 1] 和 word2[0..word2end - 1]
+        if (word1.charAt(word1end) == word2.charAt(word2end))
+            return minDistanceTraverse(word1, word1end - 1, word2, word2end - 1);
+        // 我直接在 word1[word1end] 插入一个和 word2[word2end] 一样的字符，那么 word2[word2end] 就被匹配了
+        // 前移 word2end ,继续跟 word1end 对比
+        int insert = minDistanceTraverse(word1, word1end, word2, word2end - 1);
+        // 直接把 word1[word1end] 这个字符删掉，前移 word1end， 继续跟 word2end 对比
+        int delete = minDistanceTraverse(word1, word1end - 1, word2, word2end);
+        // 直接把 word1[word1end] 替换成 word2[word2end], 这样的话，他俩就匹配了，同时前移 word1end, word2end 继续对比
+        int replace = minDistanceTraverse(word1, word1end - 1, word2, word2end - 1);
+        return Math.min(insert, Math.min(delete, replace)) + 1;
+    }
+
+    /**
+     * 动态规划解法：
+     * dp数组的定义如下：
+     * dp[i-1][j-1] 存储 s1[0..i] 和 s2[0..j] 的最小编辑距离
+     * 但是 dp 数组的base case 是 i，j 等于 -1，而数组索引至少是0，所以dp数组会偏移一位。
+     */
+    public int minDistance_v2(String word1, String word2) {
+        int m = word1.length(), n = word2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++)
+            dp[i][0] = i;
+        for (int j = 1; j <= n; j++)
+            dp[0][j] = j;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    int min = Math.min(dp[i][j - 1], dp[i - 1][j]);
+                    dp[i][j] = Math.min(min, dp[i - 1][j - 1]) + 1;
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    /**
+     * 上面的解法的 dp 数组压缩版
+     */
+    public int minDistance_v3(String word1, String word2) {
+        int m = word1.length(), n = word2.length();
+        int len = Math.min(m, n), maxCount = Math.max(m, n);
+        boolean mIsShort = len == m;
+        String sShort = mIsShort ? word1 : word2, sLong = mIsShort ? word2 : word1;
+        int[] dp = new int[len + 1];
+        for (int i = 0; i <= len; i++) {
+            dp[i] = i;
+        }
+        for (int i = 1; i <= maxCount; i++) {
+            dp[0] = i;
+            int pre = i - 1;
+            for (int j = 1; j <= len; j++) {
+                int preOn = dp[j];
+                if (sLong.charAt(i - 1) == sShort.charAt(j - 1)) {
+                    dp[j] = pre;
+                } else {
+                    dp[j] = Math.min(dp[j], Math.min(dp[j - 1], pre)) + 1;
+                }
+                pre = preOn;
+            }
+        }
+        return dp[len];
+    }
+
+    // -------编辑距离 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

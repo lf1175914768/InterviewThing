@@ -53,4 +53,26 @@ public class DynamicProblemTests {
         assertEquals(problems.findTargetSumWays_v2(params, -200), 0);
         assertEquals(problems.findTargetSumWays_v3(params, -200), 0);
     }
+
+    @Test
+    public void testMinDistance() {
+        assertEquals(problems.minDistance("horse", "ros"), 3);
+        assertEquals(problems.minDistance_v2("horse", "ros"), 3);
+        assertEquals(problems.minDistance_v3("horse", "ros"), 3);
+        assertEquals(problems.minDistance("ros", "horse"), 3);
+        assertEquals(problems.minDistance_v2("ros", "horse"), 3);
+        assertEquals(problems.minDistance_v3("ros", "horse"), 3);
+        assertEquals(problems.minDistance("intention", "execution"), 5);
+        assertEquals(problems.minDistance_v2("intention", "execution"), 5);
+        assertEquals(problems.minDistance_v3("intention", "execution"), 5);
+        assertEquals(problems.minDistance("execution", "intention"), 5);
+        assertEquals(problems.minDistance_v2("execution", "intention"), 5);
+        assertEquals(problems.minDistance_v3("execution", "intention"), 5);
+        assertEquals(problems.minDistance("rad", "apple"), 5);
+        assertEquals(problems.minDistance_v2("rad", "apple"), 5);
+        assertEquals(problems.minDistance_v3("rad", "apple"), 5);
+        assertEquals(problems.minDistance("apple", "rad"), 5);
+        assertEquals(problems.minDistance_v2("apple", "rad"), 5);
+        assertEquals(problems.minDistance_v3("apple", "rad"), 5);
+    }
 }
