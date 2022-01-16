@@ -260,4 +260,67 @@ public class HotProblemTests {
         param.add(node9);
         return param;
     }
+
+    @Test
+    public void testPermute() {
+        int[] param = new int[] {1,2,3};
+        assertEquals(problem.permute(param).size(), 6);
+        param = new int[] {0, 1};
+        assertEquals(problem.permute(param).size(), 2);
+        param = new int[] {1};
+        assertEquals(problem.permute(param).size(), 1);
+    }
+
+    @Test
+    public void testRotate() {
+        int[][] matrix = new int[][] {{1,2,3}, {4,5,6}, {7,8,9}};
+        problem.rotate(matrix);
+        assertEquals(matrix[0][0], 7);
+        assertEquals(matrix[0][1], 4);
+        assertEquals(matrix[0][2], 1);
+        assertEquals(matrix[1][0], 8);
+        assertEquals(matrix[1][1], 5);
+        assertEquals(matrix[1][2], 2);
+    }
+
+    @Test
+    public void testCanJump() {
+        int[] param = new int[] {2,3,1,1,4};
+        assertTrue(problem.canJump(param));
+        assertTrue(problem.canJump_v2(param));
+        param = new int[] {3,2,1,0,4};
+        assertFalse(problem.canJump(param));
+        assertFalse(problem.canJump_v2(param));
+    }
+
+    @Test
+    public void testMerge() {
+        int[][] params = new int[][] {{1,3}, {2,6}, {8,10}, {15,18}};
+        int[][] rs = problem.merge(params);
+        assertEquals(problem.merge(params).length, 3);
+        assertEquals(rs[0][0], 1);
+        assertEquals(rs[0][1], 6);
+        assertEquals(rs[1][0], 8);
+        assertEquals(rs[1][1], 10);
+    }
+
+    @Test
+    public void testUniquePaths() {
+        assertEquals(problem.uniquePaths(3, 7), 28);
+        assertEquals(problem.uniquePaths_v2(3, 7), 28);
+        assertEquals(problem.uniquePaths(3, 2), 3);
+        assertEquals(problem.uniquePaths_v2(3, 2), 3);
+        assertEquals(problem.uniquePaths(7, 3), 28);
+        assertEquals(problem.uniquePaths_v2(7, 3), 28);
+        assertEquals(problem.uniquePaths(3, 3), 6);
+        assertEquals(problem.uniquePaths_v2(3, 3), 6);
+    }
+
+    @Test
+    public void testMinPathSum() {
+        int[][] grid = new int[][] {{1,3,1}, {1,5,1}, {4,2,1}};
+        assertEquals(problem.minPathSum(grid), 7);
+        grid = new int[][] {{1,2,3}, {4,5,6}};
+        assertEquals(problem.minPathSum(grid), 12);
+    }
 }
