@@ -78,6 +78,30 @@ public class HotProblems {
         return s.substring(maxEnd - maxLength + 1, maxEnd + 1);
     }
 
+    public String longestPalindrome_v3(String s) {
+        if (null == s || s.length() == 0)
+            return "";
+        int start = 0,end = 0;
+        for (int i = 0; i < s.length(); i++) {
+            int len1 = longestPalindromeExpandAroundCenter(s, i, i);
+            int len2 = longestPalindromeExpandAroundCenter(s, i, i + 1);
+            int len = Math.max(len1, len2);
+            if (len > end - start) {
+                start = i - (len - 1) / 2;
+                end = i + len / 2;
+            }
+        }
+        return s.substring(start, end + 1);
+    }
+
+    private int longestPalindromeExpandAroundCenter(String s, int left, int right) {
+        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            left--;
+            right++;
+        }
+        return right - left - 1;
+    }
+
     /**
      * Manacher's Algorithm 马拉车算法
      * <p>
@@ -713,14 +737,6 @@ public class HotProblems {
 
     // -------组合总和 << end --------
 
-    // -------组合总和 start >>--------
-
-    public List<List<Integer>> permute(int[] nums) {
-        return null;
-    }
-
-    // -------组合总和 << end --------
-
     // -------计算不同的岛屿数量 start >>--------
 
     /**
@@ -1352,6 +1368,237 @@ public class HotProblems {
 
     // -------买卖股票的最佳时机III << end --------
 
+    // -------整数反转 start >>--------
+
+    /**
+     * 给你一个 32 位的有符号整数 x ，返回将 x 中的数字部分反转后的结果。
+     * 如果反转后整数超过 32 位的有符号整数的范围 [−231,  231 − 1] ，就返回 0。
+     * 假设环境不允许存储 64 位整数（有符号或无符号）。
+     *
+     * 对应 leetcode 中第 7 题
+     */
+    public int reverse(int x) {
+        int result = 0;
+        while (x != 0) {
+            if (result < Integer.MIN_VALUE / 10 || result > Integer.MAX_VALUE / 10)
+                return 0;
+            int digit = x % 10;
+            result = result * 10 + digit;
+            x /= 10;
+        }
+        return result;
+    }
+
+    // -------整数反转 << end --------
+
+    // -------全排列 start >>--------
+
+    /**
+     * 给定一个不含重复数字的数组 nums ，返回其 所有可能的全排列 。你可以 按任意顺序 返回答案。
+     *
+     * 使用 回溯的解法进行求解
+     *
+     * 对应 leetcode 中第 46 题
+     */
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> result = new LinkedList<>();
+        boolean[] used = new boolean[nums.length];
+        permuteTraverse(nums, used, new LinkedList<>(), result);
+        return result;
+    }
+
+    private void permuteTraverse(int[] nums, boolean[] used, Deque<Integer> list, List<List<Integer>> result) {
+        if (list.size() == nums.length) {
+            result.add(new ArrayList<>(list));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (!used[i]) {
+                used[i] = true;
+                list.offerLast(nums[i]);
+                permuteTraverse(nums, used, list, result);
+                list.removeLast();
+                used[i] = false;
+            }
+        }
+    }
+
+    // -------全排列 << end --------
+
+    // -------旋转图像 start >>--------
+
+    /**
+     * 给定一个 n × n 的二维矩阵 matrix 表示一个图像。请你将图像顺时针旋转 90 度。
+     * 你必须在 原地 旋转图像，这意味着你需要直接修改输入的二维矩阵。请不要 使用另一个矩阵来旋转图像。
+     *
+     * 解题思路：
+     * 经证明，发现可以先通过水平轴翻转，然后在根据主对角线翻转 得到
+     *
+     * 对应 leetcode 中第 48 题
+     */
+    public void rotate(int[][] matrix) {
+        int n = matrix.length;
+        // 水平上下旋转
+        for (int i = 0; i < n / 2; i++) {
+            for (int j = 0; j < n; j++) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[n - 1 -i][j];
+                matrix[n - 1 - i][j] = temp;
+            }
+        }
+        // 主对角线旋转
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = temp;
+            }
+        }
+    }
+
+    // -------旋转图像 << end --------
+
+    // -------跳跃游戏 start >>--------
+
+    /**
+     * 给定一个非负整数数组 nums ，你最初位于数组的 第一个下标 。
+     * 数组中的每个元素代表你在该位置可以跳跃的最大长度。
+     * 判断你是否能够到达最后一个下标。
+     *
+     * 对应 leetcode 中第 55 题
+     */
+    public boolean canJump(int[] nums) {
+        int n = nums.length;
+        int i = 0;
+        boolean[] jump = new boolean[n];
+        jump[0] = true;
+        while (jump[i] && i < n - 1) {
+            for (int j = i + 1; j < n && j - i <= nums[i]; j++) {
+                jump[j] = true;
+            }
+            i++;
+        }
+        return jump[n - 1];
+    }
+
+    /**
+     * 如果某一个作为起跳点的格子可以跳跃的距离是 3，那么表示后面 3个格子都可以作为起跳点。
+     * 可以对每一个能作为起跳点 的格子都尝试跳一次，把能跳到最远的距离不断更新。
+     * 如果可以一直跳到最后，就成功了。
+     */
+    public boolean canJump_v2(int[] nums) {
+        int k = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (i > k) return false;
+            k = Math.max(k, i + nums[i]);
+        }
+        return true;
+    }
+
+    // -------跳跃游戏 << end --------
+
+    // -------合并区间 start >>--------
+
+    /**
+     * 以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi] 。请你合并所有重叠的区间，
+     * 并返回一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间。
+     *
+     * 对应 leetcode 中第 56 题
+     */
+    public int[][] merge(int[][] intervals) {
+        Arrays.sort(intervals, Comparator.comparingInt(a -> a[0]));
+        int minValue = intervals[0][0], maxValue = intervals[0][1], index = 0;
+        int[][] res = new int[intervals.length][2];
+        for (int i = 1; i < intervals.length; i++) {
+            if (intervals[i][0] > maxValue) {
+                res[index][0] = minValue;
+                res[index][1] = maxValue;
+                index++;
+                minValue = intervals[i][0];
+                maxValue = intervals[i][1];
+            } else {
+                maxValue = Math.max(maxValue, intervals[i][1]);
+            }
+        }
+        res[index][0] = minValue;
+        res[index][1] = maxValue;
+        return Arrays.copyOfRange(res, 0, index + 1);
+    }
+
+    // -------合并区间 << end --------
+
+    // -------不同路径 start >>--------
+
+    /**
+     * 一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。
+     * 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。
+     * 问总共有多少条不同的路径？
+     *
+     * 解题思路:
+     * dp 数组的定义: dp[i][j] 表示从开始的 [0,0] 到达 [i,j] 共有 dp[i][j] 条路径.
+     * 那么对于 dp[i][j] 来说,由于只能 向右或者向下走,所以 [i,j] 的来源只能是 [i-1,j] 或者 [i,j-1] ,
+     * 对于 dp 数组的定义,分别对应 dp[i-1][j] 和 dp[i][j-1] ,所以有递推公式, dp[i][j] = dp[i-1][j] + dp[i][j-1]
+     * 同时考虑 base case, dp[..][0] = 1 , dp[0][..] = 1, 显然,只能通过直线到达,所以值都为 1.
+     *
+     * 对应 leetcode 中第 62 题
+     */
+    public int uniquePaths(int m, int n) {
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            dp[i][0] = 1;
+        }
+        for (int j = 1; j < n; j++) {
+            dp[0][j] = 1;
+        }
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                dp[i][j] = dp[i-1][j] + dp[i][j-1];
+            }
+        }
+        return dp[m-1][n-1];
+    }
+
+    /**
+     * 上面解法的 dp 数组压缩版
+     */
+    public int uniquePaths_v2(int m, int n) {
+        int min = Math.min(m, n), max = Math.max(m, n);
+        int[] dp = new int[min];
+        Arrays.fill(dp, 1);
+        for (int i = 1; i < max; i++) {
+            for (int j = 1; j < min; j++) {
+                dp[j] += dp[j - 1];
+            }
+        }
+        return dp[min - 1];
+    }
+
+    // -------不同路径 << end --------
+
+    // -------最小路径和 start >>--------
+
+    /**
+     * 给定一个包含非负整数的 m x n 网格 grid ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
+     * 说明：每次只能向下或者向右移动一步。
+     *
+     * 对应 leetcode 中第 64 题
+     */
+    public int minPathSum(int[][] grid) {
+        for (int i = 1; i < grid.length; i++) {
+            grid[i][0] += grid[i - 1][0];
+        }
+        for (int j = 1; j < grid[0].length; j++) {
+            grid[0][j] += grid[0][j - 1];
+        }
+        for (int i = 1; i < grid.length; i++) {
+            for (int j = 1; j < grid[0].length; j++) {
+                grid[i][j] += Math.min(grid[i-1][j], grid[i][j - 1]);
+            }
+        }
+        return grid[grid.length - 1][grid[0].length - 1];
+    }
+
+    // -------最小路径和 << end --------
 
     // -------组合总和 start >>--------
 
