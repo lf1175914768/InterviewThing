@@ -75,4 +75,55 @@ public class DynamicProblemTests {
         assertEquals(problems.minDistance_v2("apple", "rad"), 5);
         assertEquals(problems.minDistance_v3("apple", "rad"), 5);
     }
+
+    @Test
+    public void testMaxEnvelopes() {
+        int[][] params = new int[][] {{5,4}, {6,4}, {6,7}, {2,3}};
+        assertEquals(problems.maxEnvelopes(params), 3);
+    }
+
+    @Test
+    public void testMaxSubArray() {
+        int[] param = new int[] {-2,1,-3,4,-1,2,1,-5,4};
+        assertEquals(problems.maxSubArray(param), 6);
+        assertEquals(problems.maxSubArray_v2(param), 6);
+        param = new int[] {1};
+        assertEquals(problems.maxSubArray(param), 1);
+        assertEquals(problems.maxSubArray_v2(param), 1);
+        param = new int[] {5,4,-1,7,8};
+        assertEquals(problems.maxSubArray(param), 23);
+        assertEquals(problems.maxSubArray_v2(param), 23);
+    }
+
+    @Test
+    public void testLongestCommonSubsequence() {
+        assertEquals(problems.longestCommonSubsequence("abcde", "ace"), 3);
+        assertEquals(problems.longestCommonSubsequence_v2("abcde", "ace"), 3);
+        assertEquals(problems.longestCommonSubsequence_v3("abcde", "ace"), 3);
+        assertEquals(problems.longestCommonSubsequence("abc", "abc"), 3);
+        assertEquals(problems.longestCommonSubsequence_v2("abc", "abc"), 3);
+        assertEquals(problems.longestCommonSubsequence_v3("abc", "abc"), 3);
+        assertEquals(problems.longestCommonSubsequence("abc", "def"), 0);
+        assertEquals(problems.longestCommonSubsequence_v2("abc", "def"), 0);
+        assertEquals(problems.longestCommonSubsequence_v3("abc", "def"), 0);
+    }
+
+    @Test
+    public void testMinDistanceOfDeletion() {
+        assertEquals(problems.minDistanceOfDeletion("sea", "eat"), 2);
+        assertEquals(problems.minDistanceOfDeletion_v2("sea", "eat"), 2);
+    }
+
+    @Test
+    public void testChange() {
+        int[] coins = new int[] {1, 2, 5};
+        assertEquals(problems.change(5, coins), 4);
+        assertEquals(problems.change_v2(5, coins), 4);
+        coins = new int[] {2};
+        assertEquals(problems.change(3, coins), 0);
+        assertEquals(problems.change_v2(3, coins), 0);
+        coins = new int[] {10};
+        assertEquals(problems.change(10, coins), 1);
+        assertEquals(problems.change_v2(10, coins), 1);
+    }
 }
