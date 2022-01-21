@@ -7,6 +7,116 @@ import java.util.*;
  */
 public class HotProblems {
 
+    // -------二分搜索 start >>--------
+
+    /**
+     * 普通的二分搜索
+     */
+    public int binarySearch(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {   // 注意这里的 小于等于
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return -1;
+    }
+
+    public int binarySearch_v2(int[] nums, int target) {
+        int left = 0, right = nums.length;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        if (left >= nums.length) {
+            return -1;
+        }
+        return nums[left] == target ? left : -1;
+    }
+
+    /**
+     * 搜索最左侧的下标
+     */
+    public int binaryLeftSearch(int[] nums, int target) {
+        int left = 0, right = nums.length;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                // 包括 nums[mid] == target 和 nums[mid] > target
+                right = mid;
+            }
+        }
+        if (left >= nums.length) {
+            return -1;
+        }
+        return nums[left] == target ? left : -1;
+    }
+
+    public int binaryLeftSearch_v2(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                // 包括 nums[mid] == target 和 nums[mid] > target
+                right = mid - 1;
+            }
+        }
+        if (left >= nums.length) {
+            return -1;
+        }
+        return nums[left] == target ? left : -1;
+    }
+
+    /**
+     * 搜索最右侧的下标
+     */
+    public int binaryRightSearch(int[] nums, int target) {
+        int left = 0, right = nums.length;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] <= target) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        if (left - 1 <= 0)
+            return -1;
+        return nums[left - 1] == target ? left - 1 : -1;
+    }
+
+    public int binaryRightSearch_v2(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] <= target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        if (left - 1 <= 0)
+            return -1;
+        return nums[left - 1] == target ? left - 1 : -1;
+    }
+
+    // -------二分搜索 << end --------
+
     // -- 最长回文子串 start >> --
     public String longestPalindrome(String s) {
         if (null == s || s.length() == 0) {
@@ -1599,6 +1709,122 @@ public class HotProblems {
     }
 
     // -------最小路径和 << end --------
+
+    // -------爬楼梯 start >>--------
+
+    /**
+     * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
+     * 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+     * 注意：给定 n 是一个正整数。
+     *
+     * 对应 leetcode 中第 70题
+     */
+    public int climbStairs(int n) {
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        return dp[n];
+    }
+
+    // -------爬楼梯 << end --------
+
+    // -------颜色分类 start >>--------
+
+    /**
+     * 给定一个包含红色、白色和蓝色，一共 n 个元素的数组，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。
+     * 此题中，我们使用整数 0、1 和 2 分别表示红色、白色和蓝色。
+     *
+     * 对应 leetcode 中第 75 题
+     */
+    public void sortColors(int[] nums) {
+        int len = nums.length;
+        if (len < 2) {
+            return;
+        }
+        // all in [0, zero) = 0
+        // all in [zero, i) = 1
+        // all in [two, len) = 2
+
+        int zero = 0;
+        int two = len;
+        int i = 0;
+        while (i < two) {
+            if (nums[i] == 0) {
+                int temp = nums[i];
+                nums[i] = nums[zero];
+                nums[zero] = temp;
+
+                zero++;
+                i++;
+            } else if (nums[i] == 1) {
+                i++;
+            } else {
+                two--;
+
+                int tmp = nums[i];
+                nums[i] = nums[two];
+                nums[two] = tmp;
+            }
+        }
+    }
+
+    // -------颜色分类 << end --------
+
+    // -------子集 start >>--------
+
+    /**
+     * 给你一个整数数组 nums ，数组中的元素 互不相同 。返回该数组所有可能的子集（幂集）。
+     * 解集 不能 包含重复的子集。你可以按 任意顺序 返回解集。
+     *
+     * 对应 leetcode 中第 78 题
+     */
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        subsetsBackTrack(nums, 0, new LinkedList<>(), result);
+        return result;
+    }
+
+    private void subsetsBackTrack(int[] nums, int start, Deque<Integer> list, List<List<Integer>> result) {
+        result.add(new ArrayList<>(list));
+        for (int i = start; i < nums.length; i++) {
+            list.offerLast(nums[i]);
+            subsetsBackTrack(nums, i + 1, list, result);
+            list.removeLast();
+        }
+    }
+
+    // -------子集 << end --------
+
+    // -------子集II start >>--------
+
+    /**
+     * 给你一个整数数组 nums ，其中可能包含重复元素，请你返回该数组所有可能的子集（幂集）。
+     * 解集 不能 包含重复的子集。返回的解集中，子集可以按 任意顺序 排列。
+     *
+     * 对应 leetcode 中第 90 题
+     */
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+        subsetsWithDupBacktrack(nums, 0, new LinkedList<>(), result);
+        return result;
+    }
+
+    private void subsetsWithDupBacktrack(int[] nums, int start, Deque<Integer> list, List<List<Integer>> result) {
+        result.add(new ArrayList<>(list));
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i - 1])
+                continue;
+            list.offerLast(nums[i]);
+            subsetsWithDupBacktrack(nums, i + 1, list, result);
+            list.removeLast();
+        }
+    }
+
+    // -------子集II << end --------
 
     // -------组合总和 start >>--------
 

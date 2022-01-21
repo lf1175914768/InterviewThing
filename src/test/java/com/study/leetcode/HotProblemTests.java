@@ -18,6 +18,40 @@ public class HotProblemTests {
     }
 
     @Test
+    public void testBinarySearch() {
+        int[] params = new int[] {1,2,3,4,5,6,7,8,9};
+        assertEquals(problem.binarySearch(params, 4), 3);
+        assertEquals(problem.binarySearch(params, 10), -1);
+        assertEquals(problem.binarySearch(params, -1), -1);
+        assertEquals(problem.binarySearch_v2(params, -1), -1);
+        assertEquals(problem.binarySearch_v2(params, 10), -1);
+        assertEquals(problem.binarySearch_v2(params, 5), 4);
+
+        params = new int[] {1,2,3,3,3,3,8,9,15,28};
+        assertEquals(problem.binaryLeftSearch(params, 3), 2);
+        assertEquals(problem.binaryLeftSearch_v2(params, 3), 2);
+        assertEquals(problem.binaryLeftSearch(params, 8), 6);
+        assertEquals(problem.binaryLeftSearch_v2(params, 8), 6);
+        assertEquals(problem.binaryLeftSearch(params, -1), -1);
+        assertEquals(problem.binaryLeftSearch_v2(params, -1), -1);
+        assertEquals(problem.binaryLeftSearch(params, 29), -1);
+        assertEquals(problem.binaryLeftSearch_v2(params, 29), -1);
+        assertEquals(problem.binaryLeftSearch(params, 16), -1);
+        assertEquals(problem.binaryLeftSearch_v2(params, 16), -1);
+
+        assertEquals(problem.binaryRightSearch(params, 3), 5);
+        assertEquals(problem.binaryRightSearch_v2(params, 3), 5);
+        assertEquals(problem.binaryRightSearch(params, 8), 6);
+        assertEquals(problem.binaryRightSearch_v2(params, 8), 6);
+        assertEquals(problem.binaryRightSearch(params, -1), -1);
+        assertEquals(problem.binaryRightSearch_v2(params, -1), -1);
+        assertEquals(problem.binaryRightSearch(params, 29), -1);
+        assertEquals(problem.binaryRightSearch_v2(params, 29), -1);
+        assertEquals(problem.binaryRightSearch(params, 16), -1);
+        assertEquals(problem.binaryRightSearch_v2(params, 16), -1);
+    }
+
+    @Test
     public void testLongestPalindrome() {
         String result = problem.longestPalindrome("aacabdkacaa");
         System.out.println(result);
@@ -322,5 +356,46 @@ public class HotProblemTests {
         assertEquals(problem.minPathSum(grid), 7);
         grid = new int[][] {{1,2,3}, {4,5,6}};
         assertEquals(problem.minPathSum(grid), 12);
+    }
+
+    @Test
+    public void testClimbStairs() {
+        assertEquals(problem.climbStairs(2), 2);
+        assertEquals(problem.climbStairs(3), 3);
+        assertEquals(problem.climbStairs(4), 5);
+    }
+
+    @Test
+    public void testSortColors() {
+        int[] params = new int[] {2,0,2,1,1,0};
+        problem.sortColors(params);
+        assertEquals(params[0], 0);
+        assertEquals(params[1], 0);
+        assertEquals(params[2], 1);
+        assertEquals(params[3], 1);
+        assertEquals(params[4], 2);
+        assertEquals(params[5], 2);
+        params = new int[] {2, 0 ,1};
+        problem.sortColors(params);
+        assertEquals(params[0], 0);
+        assertEquals(params[1], 1);
+        assertEquals(params[2], 2);
+    }
+
+    @Test
+    public void testSubsets() {
+        int[] params = new int[] {1,2,3};
+        List<List<Integer>> results = problem.subsets(params);
+        assertEquals(results.size(), 8);
+    }
+
+    @Test
+    public void testSubsetsWithDup() {
+        int[] params = new int[] {1,2,2};
+        List<List<Integer>> results = problem.subsetsWithDup(params);
+        assertEquals(results.size(), 6);
+        params = new int[] {0};
+        results = problem.subsetsWithDup(params);
+        assertEquals(results.size(), 2);
     }
 }
