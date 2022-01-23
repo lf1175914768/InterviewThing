@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -397,5 +398,80 @@ public class HotProblemTests {
         params = new int[] {0};
         results = problem.subsetsWithDup(params);
         assertEquals(results.size(), 2);
+    }
+
+    @Test
+    public void testExists() {
+        char[][] board = new char[][] {{'A','B','C','E'}, {'S','F','C','S'}, {'A','D','E','E'}};
+        assertTrue(problem.exist(board, "ABCCED"));
+        assertTrue(problem.exist(board, "SEE"));
+        assertFalse(problem.exist(board, "ABCB"));
+        board = new char[][] {{'a'}};
+        assertTrue(problem.exist(board, "a"));
+    }
+
+    @Test
+    public void testLargestRectangleArea() {
+        int[] params = new int[] {2,1,5,6,2,3};
+        assertEquals(problem.largestRectangleArea(params), 10);
+        assertEquals(problem.largestRectangleArea_v2(params), 10);
+        params = new int[] {2,4};
+        assertEquals(problem.largestRectangleArea(params), 4);
+        assertEquals(problem.largestRectangleArea_v2(params), 4);
+        params = new int[] {1,2,3,4,5};
+        assertEquals(problem.largestRectangleArea(params), 9);
+        assertEquals(problem.largestRectangleArea_v2(params), 9);
+    }
+
+    @Test
+    public void testMaximalRectangle() {
+        char[][] rectangle = new char[][] {{'1','0','1','0','0'}, {'1','0','1','1','1'}, {'1','1','1','1','1'}, {'1','0','0','1','0'}};
+        assertEquals(problem.maximalRectangle(rectangle), 6);
+        rectangle = new char[][] {{}};
+        assertEquals(problem.maximalRectangle(rectangle), 0);
+        rectangle = new char[][] {{'0'}};
+        assertEquals(problem.maximalRectangle(rectangle), 0);
+        rectangle = new char[][]{{'1'}};
+        assertEquals(problem.maximalRectangle(rectangle), 1);
+    }
+
+    @Test
+    public void testLongestConsecutive() {
+        int[] params = new int[] {100,4,200,1,3,2};
+        assertEquals(problem.longestConsecutive(params), 4);
+        assertEquals(problem.longestConsecutive_v2(params), 4);
+        params = new int[] {0,3,7,2,5,8,4,6,0,1};
+        assertEquals(problem.longestConsecutive(params), 9);
+        assertEquals(problem.longestConsecutive_v2(params), 9);
+    }
+
+    @Test
+    public void testWordBreak() {
+        List<String> words = new ArrayList<>();
+        words.add("leet");
+        words.add("code");
+        assertTrue(problem.wordBreak("leetcode", words));
+        assertTrue(problem.wordBreak_v2("leetcode", words));
+        words.clear();
+        words.add("apple");
+        words.add("pen");
+        assertTrue(problem.wordBreak("applepenapple", words));
+        assertTrue(problem.wordBreak_v2("applepenapple", words));
+        words = Arrays.asList("cats", "dog", "sand", "and", "cat");
+        assertFalse(problem.wordBreak("catsandog", words));
+        assertFalse(problem.wordBreak_v2("catsandog", words));
+        words = Arrays.asList("a","aa","aaa","aaaa","aaaaa","aaaaaa","aaaaaaa","aaaaaaaa","aaaaaaaaa","aaaaaaaaaa");
+        assertFalse(problem.wordBreak("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab", words));
+        assertFalse(problem.wordBreak_v2("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab", words));
+    }
+
+    @Test
+    public void testDetectCycle() {
+        ListNode node4 = new ListNode(4);
+        ListNode node0 = new ListNode(0, node4);
+        ListNode node2 = new ListNode(2, node0);
+        ListNode node3 = new ListNode(3, node2);
+        node4.next = node2;
+        assertEquals(problem.detectCycle(node3).val, 2);
     }
 }

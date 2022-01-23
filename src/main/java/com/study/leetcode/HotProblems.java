@@ -1826,6 +1826,364 @@ public class HotProblems {
 
     // -------子集II << end --------
 
+    // -------单词搜索 start >>--------
+
+    /**
+     * 给定一个 m x n 二维字符网格 board 和一个字符串单词 word 。如果 word 存在于网格中，返回 true ；否则，返回 false 。
+     * 单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母不允许被重复使用。
+     *
+     * 对应 leetcode 中第 79 题
+     */
+    public boolean exist(char[][] board, String word) {
+        boolean[][] visited = new boolean[board.length][board[0].length];
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (existWords(board, i, j, word, 0, visited)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean existWords(char[][] board, int row, int col, String word, int curChar, boolean[][] visited) {
+        if (curChar == word.length())
+            return true;
+        if (row < 0 || col < 0 || row >= board.length || col >= board[0].length || visited[row][col]) {
+            return false;
+        }
+        if (board[row][col] != word.charAt(curChar))
+            return false;
+        visited[row][col] = true;
+        boolean result =  existWords(board, row + 1, col, word, curChar + 1, visited)
+                || existWords(board, row - 1, col, word, curChar + 1, visited)
+                || existWords(board, row, col + 1, word, curChar + 1, visited)
+                || existWords(board, row, col - 1, word, curChar + 1, visited);
+        visited[row][col] = false;
+        return result;
+    }
+
+    // -------单词搜索 << end --------
+
+    // -------柱状图中最大的矩形 start >>--------
+
+    /**
+     * 给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1 。
+     * 求在该柱状图中，能够勾勒出来的矩形的最大面积。
+     *
+     * 使用单调栈的方法进行解答
+     *
+     * 对应 leetcode 中第 84 题
+     */
+    public int largestRectangleArea(int[] heights) {
+        int len = heights.length;
+        int res = 0;
+        Deque<Integer> stack = new ArrayDeque<>(len);
+        for (int i = 0; i < len; i++) {
+            // 这个while 很关键，因为有可能不止一个柱形的最大宽度可以被计算出来
+            while (!stack.isEmpty() && heights[i] < heights[stack.peekLast()]) {
+                int curHeight = heights[stack.pollLast()];
+                while (!stack.isEmpty() && heights[stack.peekLast()] == curHeight) {
+                    stack.pollLast();
+                }
+                int curWidth;
+                if (stack.isEmpty()) {
+                    curWidth = i;
+                } else {
+                    curWidth = i - stack.peekLast() - 1;
+                }
+                res = Math.max(res, curHeight * curWidth);
+            }
+            stack.offerLast(i);
+        }
+
+        while (!stack.isEmpty()) {
+            int curHeight = heights[stack.pollLast()];
+            while (!stack.isEmpty() && heights[stack.peekLast()] == curHeight) {
+                stack.pollLast();
+            }
+            int curWidth;
+            if (stack.isEmpty()) {
+                curWidth = len;
+            } else {
+                curWidth = len - stack.peekLast() - 1;
+            }
+            res = Math.max(res, curHeight * curWidth);
+        }
+        return res;
+    }
+
+    /**
+     * 上面方法的简化版，在开头和末尾分别添加 0
+     * 因为上面的代码需要考虑两种特殊的情况，
+     * 1、弹栈的时候，栈为空
+     * 2、遍历完成以后，栈中还有元素。
+     * 然后在开头添加 0 的时候，由于它一定比输入数组里任何一个元素小，它肯定不会出栈，因此栈一定不会为空。
+     * 在末尾添加 0 的时候，也正是因为它一定比输入数组中的任何一个元素小，他会让所有输入数组里的元素出栈。
+     */
+    public int largestRectangleArea_v2(int[] heights) {
+        int[] newHeights = new int[heights.length + 2];
+        System.arraycopy(heights, 0, newHeights, 1, heights.length);
+        Deque<Integer> stack = new ArrayDeque<>();
+        int res = 0;
+        for (int i = 0; i < newHeights.length; i++) {
+            while (!stack.isEmpty() && newHeights[stack.peekLast()] > newHeights[i]) {
+                int height = newHeights[stack.pollLast()];
+                int width = i - stack.peekLast() - 1;
+                res = Math.max(res, height * width);
+            }
+            stack.offerLast(i);
+        }
+        return res;
+    }
+
+    // -------柱状图中最大的矩形 << end --------
+
+    // -------最大矩形 start >>--------
+
+    /**
+     * 给定一个仅包含 0 和 1 、大小为 rows x cols 的二维二进制矩阵，找出只包含 1 的最大矩形，并返回其面积。
+     *
+     * 解题思路：
+     * 遍历每个点，求以这个点为矩阵的右下角的所有矩阵面积。那么如何找出这样的矩阵呢？
+     * 如果我们知道了以这个点结尾的连续 1 的个数的话，问题就变得简单了。
+     * 1、首先求出高度是 1 的矩形面积，也就是它自身的数，
+     * 2、然后向上扩展一行，高度增加 1，选出当前列最小的数字，作为矩阵的宽，求出面积。
+     * 3、然后继续向上扩展，重复步骤 2 .
+     *
+     * 对应 leetcode 中第 85 题
+     */
+    public int maximalRectangle(char[][] matrix) {
+        if (matrix.length == 0) {
+            return 0;
+        }
+        // 保存以当前数字结尾的连续 1 的个数
+        int[][] width = new int[matrix.length][matrix[0].length];
+        int maxArea = 0;
+        for (int row = 0; row < matrix.length; row++) {
+            for (int col = 0; col < matrix[0].length; col++) {
+                // 更新width
+                if (matrix[row][col] == '1') {
+                    if (col == 0) {
+                        width[row][col] = 1;
+                    } else {
+                        width[row][col] = width[row][col - 1] + 1;
+                    }
+                }
+                // 记录所有行中最小的数
+                int minWidth = width[row][col];
+                // 向上扩展行
+                for (int upRow = row; upRow >= 0 && width[upRow][col] > 0; upRow--) {
+                    int height = row - upRow + 1;
+                    // 找最小的数作为矩阵的宽
+                    minWidth = Math.min(minWidth, width[upRow][col]);
+                    maxArea = Math.max(maxArea, height * minWidth);
+                }
+            }
+        }
+        return maxArea;
+    }
+
+    // -------最大矩形 << end --------
+
+    // -------最长连续序列 start >>--------
+
+    /**
+     * 给定一个未排序的整数数组 nums ，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。
+     * 请你设计并实现时间复杂度为 O(n) 的算法解决此问题。
+     *
+     * 解题思路：
+     *  使用哈希表的方式进行解答，对于每一个 nums 中的元素，只判断满足当前元素没有左侧边界的情况进入内层循环，
+     *  而对于所有的元素来说，每一个元素最终至多只会走一遍内层循环。大大优化了算法的效率。
+     *
+     * 对应 leetcode 中第 128 题
+     */
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> set = new HashSet<>(nums.length);
+        for (int num : nums) {
+            set.add(num);
+        }
+        int result = 0;
+        for (int num : nums) {
+            if (!set.contains(num - 1)) {
+                int currentNum = num + 1;
+                int curCount = 1;
+                while (set.contains(currentNum)) {
+                    currentNum += 1;
+                    curCount += 1;
+                }
+                result = Math.max(result, curCount);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 解题思路：
+     * 用 hashmap 存储每个端点值对应的连续区间的长度。
+     * 若数已经在 hashmap 中，跳过不做处理
+     * 若是新的数字加入：
+     *  取出其左右相邻数已有的连续区间长度 left 和 right
+     *  计算当前数的区间长度为 cur_length = left + right + 1;
+     *  根据 cur_length 更新最大长度 max_length 的值
+     *  更新区间两端点的值
+     */
+    public int longestConsecutive_v2(int[] nums) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int result = 0;
+        for (int num : nums) {
+            // 当map中不包含num，也就是说num 第一次出现
+            if (!map.containsKey(num)) {
+                // 左连续区间的长度
+                int left = map.getOrDefault(num - 1, 0);
+                // 右连续区间的长度
+                int right = map.getOrDefault(num + 1, 0);
+                // 当前连续区间的总长度
+                int curLen = left + right + 1;
+                result = Math.max(result, curLen);
+                map.put(num, curLen);
+                map.put(num - left, curLen);
+                map.put(num + right, curLen);
+            }
+        }
+        return result;
+    }
+
+    // -------最长连续序列 << end --------
+
+    // -------单词拆分 start >>--------
+
+    /**
+     * 给你一个字符串 s 和一个字符串列表 wordDict 作为字典。请你判断是否可以利用字典中出现的单词拼接出 s 。
+     * 注意：不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。
+     *
+     * 解题思路：
+     * DFS
+     *
+     * 对应 leetcode 中第 139 题
+     */
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Map<Character, List<String>> map = new HashMap<>();
+        for (String word : wordDict) {
+            map.computeIfAbsent(word.charAt(0), k -> new ArrayList<>()).add(word);
+        }
+        // 1: 访问且为 true， -1： 访问且为false
+        int[] visited = new int[s.length()];
+        return wordBreakTraverse(s, 0, map, visited);
+    }
+
+    private boolean wordBreakTraverse(String s, int start, Map<Character, List<String>> map, int[] visited) {
+        if (start == s.length()) {
+            return true;
+        }
+        if (start > s.length()) {
+            return false;
+        }
+        // 剪枝防止重复计算
+        if (visited[start] == 1) {
+            return true;
+        } else if (visited[start] == -1) {
+            return false;
+        }
+
+        char c = s.charAt(start);
+        if (!map.containsKey(c)) {
+            return false;
+        }
+        for (String word : map.get(c)) {
+            if (s.startsWith(word, start)
+                    && wordBreakTraverse(s, start + word.length(), map, visited)) {
+                visited[start] = 1;
+                return true;
+            }
+        }
+        visited[start] = -1;
+        return false;
+    }
+
+    /**
+     * 使用动态规划的方法进行解答：
+     * s 喘能否分解为单词表的单词
+     * 将大问题分解为规模小一点的子问题：
+     *  1、前 i 个字符的子串，能否分解盛单词
+     *  2、剩余子串，是否为单个单词。
+     *
+     * 定义 dp[i] 长度为 i 的 s[0:i - 1]子串是否能拆分盛单词。题目求 dp[s.length]
+     *
+     * 状态转移方程：
+     * 类似的，我们用指针 j 去划分 s[0:i] 子串，
+     * s[0:i] 子串对应 dp[i + 1],它是否为 true(s[0:i] 能否break)，取决于两点：
+     *  它的前缀子串 s[0:j-1] 的 dp[j]，是否为 true
+     *  剩余子串 s[j:i], 是否是单词表的单词
+     *
+     * base case：
+     *  dp[0] = true。即，长度为 0 的 s[0:-1] 能拆分盛单词表单词， （这看似荒谬，但这只是为了让边界情况也能套用状态转移方程而已）
+     *  当 j = 0时， s[0:i] 的 dp[i + 1],取决于 s[0:-1] 的 dp[0], 和，剩余子串 s[0:i] 是否时单个单词。
+     *  只有让 dp[0] 为真，dp[i + 1]才会只取决于 s[0:i] 是否为单个单词，才能用上这个状态转移方程。
+     */
+    public boolean wordBreak_v2(String s, List<String> wordDict) {
+        Set<String> wordDictSet = new HashSet<>(wordDict);
+        boolean[] dp = new boolean[s.length() + 1];
+        dp[0] = true;
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && wordDictSet.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[s.length()];
+    }
+
+    // -------单词拆分 << end --------
+
+    // -------环形链表II start >>--------
+
+    /**
+     *`给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+     * 如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，
+     * 评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。
+     * 如果 pos 是 -1，则在该链表中没有环。注意：pos 不作为参数进行传递，仅仅是为了标识链表的实际情况。
+     * 不允许修改 链表。
+     *
+     * 解题思路：使用双指针法
+     * 设两指针第一次相遇， fast，slow都指向链表头部 head，fast每轮走 2 步，slow 每轮走 1 步。
+     * 第一种结果：
+     *    fast 指针走过链表末端，说明链表无环，直接返回 null
+     * 第二种结果：
+     *    当 fast == slow 时，两指针在环中第一次相遇。 假设链表共有 a + b 个节点，其中链表头部到链表入口右 a 个节点。链表环有 b 个节点
+     *    设两指针分别走了 f, s 步，则有：
+     *    1、fast 走的步数是 slow 的两倍，即 f = 2s;
+     *    2、fast 比 slow 多走了n个环的长度，即 f = s + nb;
+     *    以上两式相减得：f = 2nb, s = nb,即 fast 和 slow指针分别走了 2n 个，n 个环的周长。
+     *
+     * 目前情况分析：
+     *    如果让指针从链表头部一直向前走并统计步数 k， 那么所有 走到链表入口节点时的步数是 k = a + nb
+     *    而目前， slow 指针走过的步数是 nb 步。因此我们只要想办法让 slow 再走 a 步停下来，就可以到环的入口。
+     *    但是我们不知道 a 的值，但是我们可以使用双指针法。我们构建一个指针，此指针需要有如下性质：
+     *      此指针 和 slow 一起向前走 a 步后，两者在入口节点重合。那么从哪里走到入口节点需要 a 步呢？答案就是链表头部 head
+     *
+     * 对应 leetcode 中第 142 题
+     */
+    public ListNode detectCycle(ListNode head) {
+        ListNode fast = head, slow = head;
+        do {
+            if (fast == null || fast.next == null)
+                return null;
+            fast = fast.next.next;
+            slow = slow.next;
+        } while (fast != slow);
+        fast = head;
+        while (slow != fast) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        return slow;
+    }
+
+    // -------环形链表II << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

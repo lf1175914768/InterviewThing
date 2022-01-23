@@ -454,6 +454,14 @@ public class TreeProblemTests {
         assertEquals(problem.lowestCommonAncestor(root, node6, node3).val, 4);
     }
 
+    @Test
+    public void testNumTrees() {
+        assertEquals(problem.numTrees(3), 5);
+        assertEquals(problem.numTrees(1), 1);
+        assertEquals(problem.numTrees(4), 14);
+        assertEquals(problem.numTrees(5), 42);
+    }
+
     /**
      * build tree
      *             4
