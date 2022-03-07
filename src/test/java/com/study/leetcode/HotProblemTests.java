@@ -474,4 +474,53 @@ public class HotProblemTests {
         node4.next = node2;
         assertEquals(problem.detectCycle(node3).val, 2);
     }
+
+    @Test
+    public void testMaxProduct() {
+        int[] params = new int[] {2,3,-2,4};
+        assertEquals(problem.maxProduct(params), 6);
+        assertEquals(problem.maxProduct_v2(params), 6);
+        params = new int[] {-2,0,-1};
+        assertEquals(problem.maxProduct(params), 0);
+        assertEquals(problem.maxProduct_v2(params), 0);
+    }
+
+    @Test
+    public void testMajorityElement() {
+        int[] params = new int[] {3,2,3};
+        assertEquals(problem.majorityElement(params), 3);
+        params = new int[] {2,2,1,1,1,2,2};
+        assertEquals(problem.majorityElement(params), 2);
+    }
+
+    @Test
+    public void testReverseList() {
+        ListNode node4 = new ListNode(4);
+        ListNode node0 = new ListNode(0, node4);
+        ListNode node2 = new ListNode(2, node0);
+        ListNode node;
+        assertEquals((node = problem.reverseList(node2)).val, 4);
+        assertEquals(problem.reverseList_v2(node).val, 2);
+    }
+
+    @Test
+    public void testFindKthLargest() {
+        int[] pa = new int[] {3,2,1,5,6,4};
+        assertEquals(problem.findKthLargest(pa, 2), 5);
+        assertEquals(problem.findKthLargestManual(pa, 2), 5);
+        pa = new int[] {3,2,3,1,2,4,5,5,6};
+        assertEquals(problem.findKthLargest(pa, 4), 4);
+        assertEquals(problem.findKthLargestManual(pa, 4), 4);
+    }
+
+    @Test
+    public void testIsPalindrome() {
+        ListNode node1 = new ListNode(1);
+        ListNode node2 = new ListNode(2, node1);
+        ListNode node22 = new ListNode(2, node2);
+        ListNode node11 = new ListNode(1, node22);
+//        assertTrue(problem.isPalindrome(node11));
+        node22.next = new ListNode(3, node2);
+        assertTrue(problem.isPalindrome(node11));
+    }
 }

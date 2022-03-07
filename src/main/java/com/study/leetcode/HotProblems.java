@@ -2184,6 +2184,221 @@ public class HotProblems {
 
     // -------环形链表II << end --------
 
+    // -------乘积最大子数组 start >>--------
+
+    /**
+     * 给你一个整数数组 nums ，请你找出数组中乘积最大的连续子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积。
+     *
+     * 解题思路：
+     * 使用动态规划进行解题；我们可以根据正负性进行分类讨论。
+     * 考虑当前位置如果是一个负数的话，那么我们希望以他前一个位置结尾的某个段的积也是一个负数，这样就可以负负得正，并且我们希望这个积尽可能的小。
+     * 如果当前位置是一个正数的话，我们希望以他前一个位置结尾的积也是一个正数，并且希望他尽可能的大。所以我们维护两个dp 数组。转移方程如下：
+     * dpMax[i] = Math.max(dpMax[i - 1] * nums[i], dpMin[i - 1] * nums[i], nums[i])
+     * dpMin[i] = Math.min(dpMax[i - 1] * nums[i], dpMax[i - 1] * nums[i], nums[i])
+     * 它代表第 i 个元素结尾的最大子数组的乘积 dpMax[i]。 可以考虑把 nums[i] 加入第 i - 1个元素结尾的乘积最大或最小的子数组中，二者加上
+     * nums[i]， 三者取最大，就是第 i 个元素结尾的乘积中最大子数组的乘积， 同样的，最小子数组的乘积同理。
+     *
+     * 对应 leetcode 中第 152 题。
+     */
+    public int maxProduct(int[] nums) {
+        int[] dpMax = new int[nums.length];
+        int[] dpMin = new int[nums.length];
+        System.arraycopy(nums, 0, dpMax, 0, nums.length);
+        System.arraycopy(nums, 0, dpMin, 0, nums.length);
+        int res = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            dpMax[i] = Math.max(dpMax[i - 1] * nums[i], Math.max(dpMin[i - 1] * nums[i], nums[i]));
+            dpMin[i] = Math.min(dpMin[i - 1] * nums[i], Math.min(dpMax[i - 1] * nums[i], nums[i]));
+            res = Math.max(res, dpMax[i]);
+        }
+        return res;
+    }
+
+    /**
+     * 上面解法的 dp 数组压缩版
+     */
+    public int maxProduct_v2(int[] nums) {
+        int dpMax = nums[0], dpMin = nums[0], res = nums[0], pre = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            dpMax = Math.max(dpMax * nums[i], Math.max(dpMin * nums[i], nums[i]));
+            dpMin = Math.min(dpMin * nums[i], Math.min(nums[i], pre * nums[i]));
+            pre = dpMax;
+            res = Math.max(res, dpMax);
+        }
+        return res;
+    }
+
+    // -------乘积最大子数组 << end --------
+
+    // -------多数元素 start >>--------
+
+    /**
+     * 给定一个大小为 n 的数组，找到其中的多数元素。多数元素是指在数组中出现次数 大于 n/2的元素。
+     * 你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+     *
+     * 对应 leetcode 中第 169 题。
+     */
+    public int majorityElement(int[] nums) {
+        int count = 0;
+        Integer candidate = null;
+        for (int num : nums) {
+            if (count == 0) {
+                candidate = num;
+            }
+            count += (candidate == num) ? 1 : -1;
+        }
+        return candidate;
+    }
+
+    // -------多数元素 << end --------
+
+    // -------反转链表 start >>--------
+
+    /**
+     * 给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。
+     *
+     * 对应 leetcode 中第 206 题。
+     *
+     * @param head head node
+     * @return head node
+     */
+    public ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        ListNode cur = head;
+        while (cur != null) {
+            ListNode next = cur.next;
+            cur.next = prev;
+            prev = cur;
+            cur = next;
+        }
+        return prev;
+    }
+
+    /**
+     * 递归版本
+     */
+    public ListNode reverseList_v2(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode newHead = reverseList_v2(head.next);
+        head.next.next = head;
+        head.next = null;
+        return newHead;
+    }
+
+    // -------反转链表 << end --------
+
+    // -------数组中的第K个最大元素 start >>--------
+
+    /**
+     * 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。
+     * 请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
+     *
+     * 对应 leetcode 中第 215 题
+     *
+     */
+    public int findKthLargest(int[] nums, int k) {
+        PriorityQueue<Integer> queue = new PriorityQueue<>(k, Comparator.comparingInt(a -> a));
+        for (int i = 0; i < k; i++) {
+            queue.offer(nums[i]);
+        }
+        for (int i = k; i < nums.length; i++) {
+            Integer topElement = queue.peek();
+            if (nums[i] > topElement) {
+                queue.poll();
+                queue.offer(nums[i]);
+            }
+        }
+        return queue.peek();
+    }
+
+    /**
+     * 自己实现 堆
+     */
+    public int findKthLargestManual(int[] nums, int k) {
+        int[] queue = new int[k];
+        for (int i = 0; i < k; i++) {
+            queue[i] = nums[i];
+            siftUp(queue, i);
+        }
+        for (int i = k; i < nums.length; i++) {
+            if (nums[i] > queue[0]) {
+                queue[0] = nums[i];
+                siftDown(queue, 0);
+            }
+        }
+        return queue[0];
+    }
+
+    private void siftDown(int[] queue, int k) {
+        int cur = queue[k];
+        int half = queue.length >>> 1;
+        while (k < half) {
+            int child = (k << 1) + 1;
+            int right = child + 1;
+            if (right < queue.length && queue[child] > queue[right]) {
+                child = right;
+            }
+            if (cur <= queue[child]) {
+                break;
+            }
+            queue[k] = queue[child];
+            k = child;
+        }
+        queue[k] = cur;
+    }
+
+    private void siftUp(int[] queue, int k) {
+        int cur = queue[k];
+        while (k > 0) {
+            int parent = (k - 1) >>> 1;
+            if (cur >= queue[parent]) {
+                break;
+            }
+            queue[k] = queue[parent];
+            k = parent;
+        }
+        queue[k] = cur;
+    }
+
+    // -------数组中的第K个最大元素 << end --------
+
+    // -------回文链表 start >>--------
+
+    /**
+     * 给你一个单链表的头节点 head ，请你判断该链表是否为回文链表。如果是，返回 true ；否则，返回 false 。
+     *
+     * 对应 leetcode 中第 234 题。
+     */
+    public boolean isPalindrome(ListNode head) {
+        if (head == null || head.next == null) {
+            return true;
+        }
+        ListNode fast = head, slow = head;
+        ListNode pre = null, prepre = null;
+        while (fast != null && fast.next != null) {
+            pre = slow;
+            slow = slow.next;
+            fast = fast.next.next;
+            pre.next = prepre;
+            prepre = pre;
+        }
+        if (fast != null) {
+            slow = slow.next;
+        }
+        while (pre != null && slow != null) {
+            if (pre.val != slow.val) {
+                return false;
+            }
+            pre = pre.next;
+            slow = slow.next;
+        }
+        return true;
+    }
+
+    // -------回文链表 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {
