@@ -2399,13 +2399,161 @@ public class HotProblems {
 
     // -------回文链表 << end --------
 
-    // -------组合总和 start >>--------
+    // -------除自身以外数组的乘积 start >>--------
 
-    public List<List<Integer>> permute1(int[] nums) {
-        return null;
+    /**
+     * 给你一个整数数组 nums，返回 数组 answer ，其中 answer[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积 。
+     * 题目数据 保证 数组 nums之中任意元素的全部前缀元素和后缀的乘积都在  32 位 整数范围内。
+     * 请不要使用除法，且在 O(n) 时间复杂度内完成此题。
+     *
+     * 对应 leetcode 中第 238 题
+     */
+    public int[] productExceptSelf(int[] nums) {
+        int[] res = new int[nums.length];
+        int p = 1, q = 1;
+        for (int i = 0; i < nums.length; i++) {
+            res[i] = p;
+            p *= nums[i];
+        }
+        for (int i = nums.length - 1; i >= 0; i--) {
+            res[i] *= q;
+            q *= nums[i];
+        }
+        return res;
     }
 
-    // -------组合总和 << end --------
+    // -------除自身以外数组的乘积 << end --------
+
+    // -------完全平方数 start >>--------
+
+    /**
+     * 给你一个整数 n ，返回 和为 n 的完全平方数的最少数量 。
+     * 完全平方数 是一个整数，其值等于另一个整数的平方；换句话说，其值等于一个整数自乘的积。例如，1、4、9 和 16 都是完全平方数，而 3 和 11 不是。
+     *
+     * 使用动态规划进行求解
+     * 首先初始化 长度为 n + 1 的数组 dp，每个位置都为 0
+     * 如果 n 为 0，则结果为 0
+     * 对数组进行遍历，下标为i，每次都将当前数字先更新为 最大的结果，即 dp[i] = i
+     * 动态转移方程： dp[i] = MIN(dp[i], dp[i - j * j] + 1), i 表示当前数字， j * j 表示平方数
+     *
+     * 对应 leetcode 中第 279题。
+     */
+    public int numSquares(int n) {
+        int[] dp = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            dp[i] = i;   // 最坏的情况就是 每次 +1
+            for (int j = 1; i - j * j >= 0; j++) {
+                dp[i] = Math.min(dp[i], dp[i - j * j] + 1);
+            }
+        }
+        return dp[n];
+    }
+
+    // -------完全平方数 << end --------
+
+    // -------字符串解码 start >>--------
+
+    /**
+     * 给定一个经过编码的字符串，返回它解码后的字符串。
+     * 编码规则为: k[encoded_string]，表示其中方括号内部的 encoded_string 正好重复 k 次。注意 k 保证为正整数。
+     * 你可以认为输入字符串总是有效的；输入字符串中没有额外的空格，且输入的方括号总是符合格式要求的。
+     * 此外，你可以认为原始数据不包含数字，所有的数字只表示重复的次数 k ，例如不会出现像 3a 或 2[4] 的输入。
+     *
+     * 对应 leetcode 中第 394 题
+     */
+    public String decodeString(String s) {
+        StringBuilder res = new StringBuilder();
+        int multi = 0;
+        Deque<Integer> stack_multi = new LinkedList<>();
+        Deque<String> stack_res = new LinkedList<>();
+        for (Character c : s.toCharArray()) {
+            if (c == '[') {
+                stack_multi.addLast(multi);
+                stack_res.addLast(res.toString());
+                multi = 0;
+                res.delete(0, res.length());
+            } else if (c == ']') {
+                StringBuilder tmp = new StringBuilder();
+                int cur_multi = stack_multi.removeLast();
+                for (int i = 0; i < cur_multi; i++) {
+                    tmp.append(res);
+                }
+                res = new StringBuilder(stack_res.removeLast() + tmp);
+            } else if (Character.isDigit(c)) {
+                multi = multi * 10 + (c - '0');
+            } else {
+                res.append(c);
+            }
+        }
+        return res.toString();
+    }
+
+    // -------字符串解码 << end --------
+
+    // -------回文子串 start >>--------
+
+    /**
+     * 给你一个字符串 s ，请你统计并返回这个字符串中 回文子串 的数目。
+     * 回文字符串 是正着读和倒过来读一样的字符串。
+     * 子字符串 是字符串中的由连续字符组成的一个序列。
+     * 具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
+     *
+     * 使用动态规划实现
+     * dp[i][j] 表示字符串 s 在[i, j] 区间的子串是否是一个回文串。
+     * 状态转移方程：当 s[i] = s[j] && (j - i < 2 || dp[i + 1][j - 1]) 时， dp[i][j] = true, 否则为 false
+     *
+     * 对应 leetcode 中第 647 题
+     */
+    public int countSubstrings(String s) {
+        boolean[][] dp = new boolean[s.length()][s.length()];
+        int ans = 0;
+        for (int j = 0; j < s.length(); j++) {
+            for (int i = 0; i <= j; i++) {
+                if (s.charAt(i) == s.charAt(j) && (j - i < 2 || dp[i + 1][j - 1])) {
+                    dp[i][j] = true;
+                    ans++;
+                }
+            }
+        }
+        return ans;
+    }
+
+    // -------回文子串 << end --------
+
+    // -------最短无序连续子数组 start >>--------
+
+    /**
+     * 给你一个整数数组 nums ，你需要找出一个 连续子数组 ，如果对这个子数组进行升序排序，那么整个数组都会变为升序排序。
+     * 请你找出符合题意的 最短 子数组，并输出它的长度。
+     *
+     * 假设把这个数组分成三段，左段和右段是标准的升序数组，中序数组虽是无序的，但满足最小值大于 左段的最大值，最大值小于右段的最小值。
+     * 那么我们就可以找 中断的左右边界，我们分别定义为 begin 和 end；分两头开始遍历：
+     * 从左到右维护一个最大值 max， 在进入右段之前，那么遍历到的 nums[i] 都是小于 max 的， 我们要求的 end 就是遍历中最后一个小于 max元素的位置。
+     * 同理，从右到左维护一个最小值 min，在进入左段之前，那么遍历到的 nums[i] 也都是大于 min 的，要求的 begin 也就是最后一个大于 min 元素的位置。
+     *
+     * 对应 leetcode 中第 581 题。
+     */
+    public int findUnsortedSubArray(int[] nums) {
+        int len = nums.length, min = nums[len - 1], max = nums[0];
+        int begin = 0, end = -1;
+        for (int i = 0; i < len; i++) {
+            if (nums[i] < max) {
+                // 从左到右维护最大值，寻找右边界
+                end = i;
+            } else {
+                max = nums[i];
+            }
+            if (nums[len - 1 - i] > min) {
+                // 从右到左维护最小值，寻找左边界
+                begin = len - i -1;
+            } else {
+                min = nums[len - i - 1];
+            }
+        }
+        return end - begin + 1;
+    }
+
+    // -------最短无序连续子数组 << end --------
 
     ///////-------------helper class-------------------
 

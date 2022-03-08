@@ -519,8 +519,49 @@ public class HotProblemTests {
         ListNode node2 = new ListNode(2, node1);
         ListNode node22 = new ListNode(2, node2);
         ListNode node11 = new ListNode(1, node22);
-//        assertTrue(problem.isPalindrome(node11));
+        assertTrue(problem.isPalindrome(node11));
         node22.next = new ListNode(3, node2);
         assertTrue(problem.isPalindrome(node11));
+    }
+
+    @Test
+    public void testProductExceptSelf() {
+        int [] pa = new int[] {1,2,3,4};
+        int[] res = problem.productExceptSelf(pa);
+        assertEquals(res[0], 24);
+        assertEquals(res[1], 12);
+        assertEquals(res[2], 8);
+        assertEquals(res[3], 6);
+
+        pa = new int[] {-1,1,0,-3,3};
+        res = new int[] {0,0,9,0,0};
+        assertArrayEquals(problem.productExceptSelf(pa), res);
+    }
+
+    @Test
+    public void testNumSquare() {
+        assertEquals(problem.numSquares(12), 3);
+        assertEquals(problem.numSquares(13), 2);
+    }
+
+    @Test
+    public void testDecodeString() {
+        assertEquals(problem.decodeString("3[a]2[bc]"), "aaabcbc");
+        assertEquals(problem.decodeString("3[a2[c]]"), "accaccacc");
+        assertEquals(problem.decodeString("2[abc]3[cd]ef"), "abcabccdcdcdef");
+    }
+
+    @Test
+    public void testCountSubstrings() {
+        assertEquals(problem.countSubstrings("abc"), 3);
+        assertEquals(problem.countSubstrings("aaa"), 6);
+    }
+
+    @Test
+    public void testFindUnsortedSubArray() {
+        int[] pa = new int[] {2,6,4,8,10,9,15};
+        assertEquals(problem.findUnsortedSubArray(pa), 5);
+        pa = new int[] {1,2,3,4};
+        assertEquals(problem.findUnsortedSubArray(pa), 0);
     }
 }
