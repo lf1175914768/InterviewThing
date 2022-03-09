@@ -564,4 +564,38 @@ public class HotProblemTests {
         pa = new int[] {1,2,3,4};
         assertEquals(problem.findUnsortedSubArray(pa), 0);
     }
+
+    @Test
+    public void testFindAnagrams() {
+        Integer[] res = new Integer[] {0, 6};
+        assertArrayEquals(problem.findAnagrams("cbaebabacd", "abc").toArray(new Integer[0]), res);
+        res = new Integer[] {0,1,2};
+        assertArrayEquals(problem.findAnagrams("abab", "ab").toArray(new Integer[0]), res);
+        res = new Integer[] {};
+        assertArrayEquals(problem.findAnagrams("dabsadl", "cw").toArray(new Integer[0]), res);
+    }
+
+    @Test
+    public void testDailyTemperatures() {
+        int[] pa = new int[] {73,74,75,71,69,72,76,73};
+        int[] res = new int[] {1,1,4,2,1,1,0,0};
+        assertArrayEquals(problem.dailyTemperatures(pa), res);
+        assertArrayEquals(problem.dailyTemperatures_v2(pa), res);
+        pa = new int[] {30,40,50,60};
+        res = new int[] {1,1,1,0};
+        assertArrayEquals(problem.dailyTemperatures(pa), res);
+        assertArrayEquals(problem.dailyTemperatures_v2(pa), res);
+        pa = new int[] {89,62,70,58,47,47,46,76,100,70};
+        res = new int[] {8,1,5,4,3,2,1,1,0,0};
+        assertArrayEquals(problem.dailyTemperatures(pa), res);
+        assertArrayEquals(problem.dailyTemperatures_v2(pa), res);
+    }
+
+    @Test
+    public void testFindDuplicate() {
+        int[] pa = new int[] {1,3,4,2,2};
+        assertEquals(problem.findDuplicate(pa), 2);
+        pa = new int[] {3,1,3,4,2};
+        assertEquals(problem.findDuplicate(pa), 3);
+    }
 }

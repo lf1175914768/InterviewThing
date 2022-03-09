@@ -2555,6 +2555,140 @@ public class HotProblems {
 
     // -------最短无序连续子数组 << end --------
 
+    // -------找到字符串中所有字母异位词 start >>--------
+
+    /**
+     * 给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
+     * 异位词 指由相同字母重排列形成的字符串（包括相同的字符串）。
+     *
+     * 使用 滑动窗口 方法实现
+     *
+     * 对应 leetcode 中第 438 题
+     */
+    public List<Integer> findAnagrams(String s, String p) {
+        int n = s.length(), m = p.length();
+        List<Integer> res = new ArrayList<>();
+        if (n < m)
+            return res;
+        int[] pCnt = new int[26];
+        int[] sCnt = new int[26];
+
+        for (int i = 0; i < m; i++) {
+            pCnt[p.charAt(i) - 'a']++;
+        }
+        int left = 0;
+        for (int right = 0; right < n; right++) {
+            int curRight = s.charAt(right) - 'a';
+            sCnt[curRight]++;
+            while (sCnt[curRight] > pCnt[curRight]) {
+                int curLeft = s.charAt(left) - 'a';
+                sCnt[curLeft]--;
+                left++;
+            }
+            if (right - left + 1 == m) {
+                res.add(left);
+            }
+        }
+        return res;
+    }
+
+    // -------找到字符串中所有字母异位词 << end --------
+
+    // -------每日温度 start >>--------
+
+    /**
+     * 给定一个整数数组 temperatures ，表示每天的温度，返回一个数组 answer ，其中 answer[i] 是指在第 i 天之后，
+     * 才会有更高的温度。如果气温在这之后都不会升高，请在该位置用 0 来代替。
+     *
+     * 使用 单调栈的方法进行实现。
+     *
+     * 对应 leetcode 中第 739题。
+     */
+    public int[] dailyTemperatures(int[] temperatures) {
+        int[] res = new int[temperatures.length];
+        if (temperatures.length == 0) {
+            return res;
+        }
+        Deque<Integer> stackValue = new LinkedList<>();
+        Deque<Integer> stackIndex = new LinkedList<>();
+        stackValue.offerLast(temperatures[temperatures.length - 1]);
+        stackIndex.offerLast(temperatures.length - 1);
+
+        for (int i = temperatures.length - 2; i >= 0; i--) {
+            int value = temperatures[i];
+            while (!stackValue.isEmpty() && stackValue.getLast() <= value) {
+                stackValue.removeLast();
+                stackIndex.removeLast();
+            }
+            if (stackValue.isEmpty()) {
+                res[i] = 0;
+            } else {
+                res[i] = stackIndex.getLast() - i;
+            }
+            stackValue.offerLast(value);
+            stackIndex.offerLast(i);
+        }
+        return res;
+    }
+
+    public int[] dailyTemperatures_v2(int[] temperatures) {
+        int length = temperatures.length;
+        int[] ans = new int[length];
+        Deque<Integer> stack = new LinkedList<>();
+        for (int i = 0; i < length; i++) {
+            int temperature = temperatures[i];
+            while (!stack.isEmpty() && temperature > temperatures[stack.peek()]) {
+                int preIndex = stack.pop();
+                ans[preIndex] = i - preIndex;
+            }
+            stack.push(i);
+        }
+        return ans;
+    }
+
+    // -------每日温度 << end --------
+
+    // -------寻找重复数 start >>--------
+
+    /**
+     * 给定一个包含 n + 1 个整数的数组 nums ，其数字都在 [1, n] 范围内（包括 1 和 n），可知至少存在一个重复的整数。
+     * 假设 nums 只有 一个重复的整数 ，返回 这个重复的数 。
+     * 你设计的解决方案必须 不修改 数组 nums 且只用常量级 O(1) 的额外空间。
+     *
+     * 使用环形链表的方式解答此题：
+     * 如果数组中没有重复的数，以数组 [1,3,4,2] 为例，我们将数组下标 n 和数 nums[n] 建立一个映射关系 f(n)，为：
+     * 0 -> 1 , 1 -> 3 , 2 -> 4, 3 -> 2.
+     * 我们从下标0 出发，根据 f(n) 计算出一个值，以这个值为新的下标，再用这个函数计算，可以产生一个类似链表的序列。
+     * 0 -> 1 -> 3 -> 2 -> 4 -> null.
+     * 如果数组中有重复的数，以数组 [1,3,4,2,2] 为例，我们将数组下标 n 和数 nums[n] 建立一个映射关系 f(n)，为：
+     * 0 -> 1 , 1 -> 3 , 2 -> 4, 3 -> 2, 4 -> 2.
+     * 同样的，可以产生一个类似链表一样的序列。
+     * 0 -> 1 -> 3 -> 2 -> 4 -> 2 -> 4 -> 2 ...
+     * 这里的 2 -> 4 是一个循环。
+     *
+     * 综上，可以得出两个结论：
+     * 1. 数组中有一个重复的数 <==> 链表中存在环
+     * 2. 找到数组中的重复数 <==> 找到链表的环入口
+     *
+     * 对应 leetcode 中第 287 题。
+     */
+    public int findDuplicate(int[] nums) {
+        int slow = 0;
+        int fast = 0;
+        do {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+        } while (slow != fast);
+        int pre = 0;
+        while (pre != slow) {
+            pre = nums[pre];
+            slow = nums[slow];
+        }
+        return pre;
+    }
+
+    // -------寻找重复数 << end --------
+
     ///////-------------helper class-------------------
 
     public static class State {
