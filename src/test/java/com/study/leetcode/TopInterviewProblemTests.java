@@ -82,4 +82,59 @@ public class TopInterviewProblemTests {
         param = new int[] {1,2,3,4,5,6};
         assertEquals(problems.findPeakElement(param), 5);
     }
+
+    @Test
+    public void testPartition() {
+        List<List<String>> rs = problems.partition("aab");
+        List<List<String>> rs2 = problems.partition_v2("aab");
+        assertEquals(rs.size(), 2);
+        assertEquals(rs2.size(), 2);
+        String[] tmp1 = new String[] {"a","a","b"};
+        String[] tmp2 = new String[] {"aa","b"};
+        assertArrayEquals(rs.get(0).toArray(new String[0]), tmp1);
+        assertArrayEquals(rs2.get(0).toArray(new String[0]), tmp1);
+        assertArrayEquals(rs.get(1).toArray(new String[0]), tmp2);
+        assertArrayEquals(rs2.get(1).toArray(new String[0]), tmp2);
+        assertEquals(problems.partition("a").size(), 1);
+        assertEquals(problems.partition_v2("a").size(), 1);
+    }
+
+    @Test
+    public void testCopyRandomList() {
+        TopInterviewProblems.RandomNode node5 = problems.new RandomNode(1);
+        TopInterviewProblems.RandomNode node4 = problems.new RandomNode(10, node5);
+        TopInterviewProblems.RandomNode node3 = problems.new RandomNode(11, node4, node5);
+        TopInterviewProblems.RandomNode node2 = problems.new RandomNode(13, node3);
+        TopInterviewProblems.RandomNode node1 = problems.new RandomNode(7, node2);
+        node2.random = node1;
+        node4.random = node3;
+        node5.random = node1;
+
+        TopInterviewProblems.RandomNode node = problems.copyRandomList(node1);
+        assertEquals(node.val, 7);
+        assertEquals(node.next.val, 13);
+        assertEquals(node.next.next.val, 11);
+        assertEquals(node.next.next.next.val, 10);
+        assertEquals(node.next.next.next.next.val, 1);
+
+        TopInterviewProblems.RandomNode newNode = problems.copyRandomList_v2(node1);
+        assertEquals(newNode.val, 7);
+        assertEquals(newNode.next.val, 13);
+        assertEquals(newNode.next.next.val, 11);
+        assertEquals(newNode.next.next.next.val, 10);
+        assertEquals(newNode.next.next.next.next.val, 1);
+    }
+
+    @Test
+    public void testRotate() {
+        int[] param = new int[] {1,2,3,4,5,6,7};
+        problems.rotate(param, 3);
+        int[] result = new int[] {5,6,7,1,2,3,4};
+        assertArrayEquals(param, result);
+
+        param = new int[] {-1,-100,3,99};
+        result = new int[] {3,99,-1,-100};
+        problems.rotate(param, 6);
+        assertArrayEquals(param, result);
+    }
 }

@@ -1,7 +1,6 @@
 package com.study.leetcode;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>description: top 面试题  </p>
@@ -280,4 +279,209 @@ public class TopInterviewProblems {
     }
 
     // -------寻找峰值 << end --------
+
+    // -------分割回文串 start >>--------
+
+    /**
+     * 给你一个字符串 s，请你将 s 分割成一些子串，使每个子串都是 回文串 。返回 s 所有可能的分割方案。
+     * 回文串 是正着读和反着读都一样的字符串。
+     *
+     * 使用回溯算法进行实现。
+     *
+     * 对应 leetcode 中第 131 题。
+     */
+    public List<List<String>> partition(String s) {
+        List<List<String>> result = new ArrayList<>();
+        if (null == s || s.length() == 0) {
+            return result;
+        }
+        char[] arr = s.toCharArray();
+        Deque<String> path = new LinkedList<>();
+        partitionDfs(arr, 0, s.length(), path, result);
+        return result;
+    }
+
+    private void partitionDfs(char[] arr, int index, int end, Deque<String> path, List<List<String>> result) {
+        if (index == end) {
+            result.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = index; i < end; i++) {
+            if (!partitionCheckPass(arr, index, i)) {
+                continue;
+            }
+            path.offerLast(String.valueOf(arr, index, i - index + 1));
+            partitionDfs(arr, i + 1, end, path, result);
+            path.removeLast();
+        }
+    }
+
+    private boolean partitionCheckPass(char[] arr, int start, int end) {
+        while (start < end) {
+            if (arr[start] != arr[end]) {
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
+    }
+
+    /**
+     * 使用动态规划进行处理
+     */
+    public List<List<String>> partition_v2(String s) {
+        List<List<String>> result = new ArrayList<>();
+        if (null == s || s.length() == 0) {
+            return result;
+        }
+        boolean[][] dp = new boolean[s.length()][s.length()];
+        for (int right = 0; right < s.length(); right++) {
+            for (int left = right; left >= 0; left--) {
+                if (s.charAt(left) == s.charAt(right) && (right - left <= 2 || dp[left + 1][right - 1])) {
+                    dp[left][right] = true;
+                }
+            }
+        }
+        Deque<String> stack = new ArrayDeque<>();
+        partitionV2Dfs(s, 0, s.length(), dp, stack, result);
+        return result;
+    }
+
+    private void partitionV2Dfs(String s, int index, int length, boolean[][] dp, Deque<String> stack, List<List<String>> result) {
+        if (index == length) {
+            result.add(new ArrayList<>(stack));
+            return;
+        }
+        for (int i = index; i < length; i++) {
+            if (dp[index][i]) {
+                stack.addLast(s.substring(index, i + 1));
+                partitionV2Dfs(s, i + 1, length, dp, stack, result);
+                stack.removeLast();
+            }
+        }
+    }
+
+    // -------分割回文串 << end --------
+
+    // -------复制带随机指针的链表 start >>--------
+
+    /**
+     * 给你一个长度为 n 的链表，每个节点包含一个额外增加的随机指针 random ，该指针可以指向链表中的任何节点或空节点。
+     * 构造这个链表的 深拷贝。 深拷贝应该正好由 n 个 全新 节点组成，其中每个新节点的值都设为其对应的原节点的值。新节点的 next 指针和
+     * random 指针也都应指向复制链表中的新节点，并使原链表和复制链表中的这些指针能够表示相同的链表状态。复制链表中的指针都不应指向原链表中的节点 。
+     * 例如，如果原链表中有 X 和 Y 两个节点，其中 X.random --> Y 。那么在复制链表中对应的两个节点 x 和 y ，同样有 x.random --> y 。
+     * 返回复制链表的头节点。
+     * 用一个由 n 个节点组成的链表来表示输入/输出中的链表。每个节点用一个 [val, random_index] 表示：
+     *
+     * val：一个表示 Node.val 的整数。
+     * random_index：随机指针指向的节点索引（范围从 0 到 n-1）；如果不指向任何节点，则为  null 。
+     * 你的代码 只 接受原链表的头节点 head 作为传入参数。
+     *
+     * 对应 leetcode 中第 138 题。
+     */
+    public RandomNode copyRandomList(RandomNode head) {
+        for (RandomNode p = head; p != null; p = p.next.next) {
+            RandomNode q = new RandomNode(p.val);
+            q.next = p.next;
+            p.next = q;
+        }
+
+        for (RandomNode p = head; p != null; p = p.next.next) {
+            // 复制 random 指针
+            if (p.random != null)
+                p.next.random = p.random.next;
+        }
+
+        // 拆分两个链表，并复原原链表
+        RandomNode dummy = new RandomNode(-1), cur = dummy;
+        for (RandomNode p = head; p != null; p = p.next) {
+            RandomNode q = p.next;
+            cur.next = q;
+            cur = cur.next;
+            p.next = q.next;
+        }
+        return dummy.next;
+    }
+
+    /**
+     * 回溯算法的实现
+     */
+    public RandomNode copyRandomList_v2(RandomNode head) {
+        if (head == null)
+            return null;
+        Map<RandomNode, RandomNode> hash = new HashMap<>();
+        return copyRandomListDfs(head, hash);
+    }
+
+    private RandomNode copyRandomListDfs(RandomNode node, Map<RandomNode, RandomNode> hash) {
+        if (node == null) {
+            return null;
+        }
+        if (hash.containsKey(node))
+            return hash.get(node);
+        RandomNode clone = new RandomNode(node.val);  // 复制节点
+        hash.put(node, clone);    // 建立源节点到复制节点的映射
+        clone.next = copyRandomListDfs(node.next, hash);
+        clone.random = copyRandomListDfs(node.random, hash);
+        return clone;
+    }
+
+    // -------复制带随机指针的链表 << end --------
+
+    // -------轮转数组 start >>--------
+
+    /**
+     * 给你一个数组，将数组中的元素向右轮转 k 个位置，其中 k 是非负数。
+     *
+     * 对应 leetcode 中第 189 题。
+     */
+    public void rotate(int[] nums, int k) {
+        k %= nums.length;
+        rotateReverse(nums, 0, nums.length - 1);
+        rotateReverse(nums, 0, k - 1);
+        rotateReverse(nums, k, nums.length - 1);
+    }
+
+    private void rotateReverse(int[] nums, int start, int end) {
+        while (start < end) {
+            int tmp = nums[start];
+            nums[start] = nums[end];
+            nums[end] = tmp;
+            start++;
+            end--;
+        }
+    }
+
+
+    // -------轮转数组 << end --------
+
+    ////// --------------helper class----------------
+
+    class RandomNode {
+        int val;
+        RandomNode next;
+        RandomNode random;
+
+        RandomNode(int val) {
+            this.val = val;
+        }
+
+        RandomNode(int val, RandomNode next) {
+            this(val, next, null);
+        }
+
+        RandomNode(int val, RandomNode next, RandomNode random) {
+            this.val = val;
+            this.next = next;
+            this.random = random;
+        }
+
+        @Override
+        public String toString() {
+            return "RandomNode{" +
+                    "val=" + val +
+                    '}';
+        }
+    }
 }
