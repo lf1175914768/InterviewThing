@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * <p>description:  top 面试题 test </p>
@@ -136,5 +135,63 @@ public class TopInterviewProblemTests {
         result = new int[] {3,99,-1,-100};
         problems.rotate(param, 6);
         assertArrayEquals(param, result);
+    }
+
+    @Test
+    public void testOddEvenList() {
+        ListNode node1 = new ListNode(1);
+        ListNode node2 = new ListNode(2, node1);
+        ListNode node3 = new ListNode(3, node2);
+        ListNode node4 = new ListNode(4, node3);
+        ListNode node5 = new ListNode(5, node4);
+        ListNode head = problems.oddEvenList(node5);
+        assertEquals(head.val, 5);
+        assertEquals(head.next.val, 3);
+        assertEquals(head.next.next.val, 1);
+        assertEquals(head.next.next.next.val, 4);
+        assertEquals(head.next.next.next.next.val, 2);
+        node1 = new ListNode(1);
+        head = problems.oddEvenList(node1);
+        assertEquals(head.val, 1);
+        node2 = new ListNode(2, node1);
+        head = problems.oddEvenList(node2);
+        assertEquals(head.val, 2);
+        assertEquals(head.next.val, 1);
+        node3 = new ListNode(3, node2);
+        head = problems.oddEvenList(node3);
+        assertEquals(head.val, 3);
+        assertEquals(head.next.val, 1);
+        assertEquals(head.next.next.val, 2);
+    }
+
+    @Test
+    public void testIncreasingTriplet() {
+        int[] param = new int[] {1,2,3,4,5};
+        assertTrue(problems.increasingTriplet(param));
+        param = new int[] {5,4,3,2,1};
+        assertFalse(problems.increasingTriplet(param));
+        param = new int[] {2,1,5,0,4,6};
+        assertTrue(problems.increasingTriplet(param));
+    }
+
+    @Test
+    public void testGetSum() {
+        assertEquals(problems.getSum(4, 5), 9);
+        assertEquals(problems.getSum(4, 2), 6);
+        assertEquals(problems.getSum(47, 22), 69);
+    }
+
+    @Test
+    public void testKthSmallest() {
+        int[][] matrix = new int[][] {{1,5,9}, {10,11,13}, {12,13,15}};
+        assertEquals(problems.kthSmallest(matrix, 8), 13);
+        matrix = new int[][] {{5}};
+        assertEquals(problems.kthSmallest(matrix, 1), 5);
+    }
+
+    @Test
+    public void testLongestSubstring() {
+        assertEquals(problems.longestSubstring("aaabb", 3), 3);
+        assertEquals(problems.longestSubstring("ababbc", 2), 5);
     }
 }

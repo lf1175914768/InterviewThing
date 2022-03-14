@@ -456,6 +456,156 @@ public class TopInterviewProblems {
 
     // -------轮转数组 << end --------
 
+    // -------奇偶链表 start >>--------
+
+    /**
+     * 给定单链表的头节点 head ，将所有索引为奇数的节点和索引为偶数的节点分别组合在一起，然后返回重新排序的列表。
+     * 第一个节点的索引被认为是 奇数 ， 第二个节点的索引为 偶数 ，以此类推。
+     * 请注意，偶数组和奇数组内部的相对顺序应该与输入时保持一致。
+     * 你必须在 O(1) 的额外空间复杂度和 O(n) 的时间复杂度下解决这个问题。
+     *
+     * 对应 leetcode 中第328 题。
+     */
+    public ListNode oddEvenList(ListNode head) {
+        ListNode dummy = new ListNode(0), cur = dummy, pre = dummy;
+        for (ListNode p = head; p != null; p = p.next) {
+            ListNode node = p.next;
+            cur.next = node;
+            cur = cur.next;
+            pre = p;
+            if (node != null) {
+                p.next = node.next;
+            }
+        }
+        pre.next = dummy.next;
+        return head;
+    }
+
+    // -------奇偶链表 << end --------
+
+    // -------递增的三元子序列 start >>--------
+
+    /**
+     * 给你一个整数数组 nums ，判断这个数组中是否存在长度为 3 的递增子序列。
+     * 如果存在这样的三元组下标 (i, j, k) 且满足 i < j < k ，使得 nums[i] < nums[j] < nums[k] ，返回 true ；否则，返回 false 。
+     *
+     * 对应 leetcode 中第 334 题。
+     */
+    public boolean increasingTriplet(int[] nums) {
+        int n = nums.length;
+        if (n < 3)
+            return false;
+        int first = nums[0], second = Integer.MAX_VALUE;
+        for (int i = 1; i < n; i++) {
+            int num = nums[i];
+            if (num > second) {
+                return true;
+            } else if (num > first) {
+                second = num;
+            } else {
+                first = num;
+            }
+        }
+        return false;
+    }
+
+    // -------递增的三元子序列 << end --------
+
+    // -------两整数之和 start >>--------
+
+    /**
+     * 给你两个整数 a 和 b ，不使用 运算符 + 和 - ​​​​​​​，计算并返回两整数之和。
+     *
+     * 对应 leetcode 中第 371 题。
+     */
+    public int getSum(int a, int b) {
+        while (b != 0) {
+            int carry = (a & b) << 1;
+            a = a ^ b;
+            b = carry;
+        }
+        return a;
+    }
+
+    // -------两整数之和 << end --------
+
+    // -------有序矩阵中第K小的元素 start >>--------
+
+    /**
+     * 给你一个 n x n 矩阵 matrix ，其中每行和每列元素均按升序排序，找到矩阵中第 k 小的元素。
+     * 请注意，它是 排序后 的第 k 小元素，而不是第 k 个 不同 的元素。
+     * 你必须找到一个内存复杂度优于 O(n2) 的解决方案。
+     *
+     * 利用小根堆 归并排序。
+     *
+     * 对应 leetcode 中第 378 题。
+     */
+    public int kthSmallest(int[][] matrix, int k) {
+        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+        int n = matrix.length;
+        for (int i = 0; i < n; i++) {
+            pq.offer(new int[] {matrix[i][0], i, 0});
+        }
+        for (int i = 0; i < k - 1; i++) {
+            int[] now = pq.poll();
+            if (now[2] < n - 1) {
+                pq.offer(new int[] {matrix[now[1]][now[2] + 1], now[1], now[2] + 1});
+            }
+        }
+        return pq.poll()[0];
+    }
+
+    // -------有序矩阵中第K小的元素 << end --------
+
+    // -------至少有K个重复字符的最长子串 start >>--------
+
+    /**
+     * 给你一个字符串 s 和一个整数 k ，请你找出 s 中的最长子串， 要求该子串中的每一字符出现次数都不少于 k 。返回这一子串的长度。
+     *
+     * 当确定了窗口内所包含的字符数量时，区间重新具有了二段性质。
+     * 首先我们知道 【答案子串的左边界左侧的字符以及右边界右侧的字符一定不会出现在子串中，否则就不会是最优解】，但如果我们只从该性质出发的话，朴素解法
+     * 应该是使用一个滑动窗口，不断的调整滑动窗口的左右边界，使其满足【左边界左侧的字符以及右边界右侧的字符一定不会出现在窗口中】，这实际上是双指针解法，
+     * 但是如果不先敲定（枚举）出答案所包含的字符数量的话，这里的双指针是不具有单调性的。
+     * 换句话说，只利用这一性质是没法完成逻辑的。
+     * 这时候我们面临的问题是： 性质是正确的，但是还无法直接使用。
+     * 因此我们需要先利用字符数量有限性（可枚举）作为切入点，是的【答案子串的左边界左侧的字符以及右边界右侧的字符一定不会出现在子串中】这一性质
+     * 在双指针的实现下具有单调性
+     *
+     * 对应 leetcode中第 395 题。
+     */
+    public int longestSubstring(String s, int k) {
+        int ans = 0, n = s.length();
+        int[] cnt = new int[26];
+        for (int p = 1; p <= 26; p++) {
+            Arrays.fill(cnt, 0);
+            // tot 代表[j, i] 区间所有的字符种类数量，sum代表满足【出现次数不少于k】的字符种类数量
+            for (int i = 0, j = 0, tot = 0, sum = 0; i < n; i++) {
+                int rightIndex = s.charAt(i) - 'a';
+                cnt[rightIndex]++;
+                // 如果添加到 cnt之后为1，说明字符总数+1
+                if (cnt[rightIndex] == 1)
+                    tot++;
+                if (cnt[rightIndex] == k)
+                    sum++;
+                // 当区间所包含的字符种类数量tot超过了当前限定的数量p，那么我们要删除一些字母，即【左指针】右移
+                while (tot > p) {
+                    int leftIndex = s.charAt(j++) - 'a';
+                    cnt[leftIndex]--;
+                    if (cnt[leftIndex] == 0)
+                        tot--;
+                    if (cnt[leftIndex] == k - 1)
+                        sum--;
+                }
+                // 当所有的字符都符合要求，更新答案
+                if (tot == sum)
+                    ans = Math.max(ans, i - j + 1);
+            }
+        }
+        return ans;
+    }
+
+    // -------至少有K个重复字符的最长子串 << end --------
+
     ////// --------------helper class----------------
 
     class RandomNode {
