@@ -126,4 +126,14 @@ public class DynamicProblemTests {
         assertEquals(problems.change(10, coins), 1);
         assertEquals(problems.change_v2(10, coins), 1);
     }
+
+    @Test
+    public void testRob2() {
+        int[] param = new int[] {2,3,2};
+        assertEquals(problems.rob2(param), 3);
+        param = new int[] {1,2,3,1};
+        assertEquals(problems.rob2(param), 4);
+        param = new int[] {1,2,3};
+        assertEquals(problems.rob2(param), 3);
+    }
 }

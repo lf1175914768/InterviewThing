@@ -100,11 +100,11 @@ public class TopInterviewProblemTests {
 
     @Test
     public void testCopyRandomList() {
-        TopInterviewProblems.RandomNode node5 = problems.new RandomNode(1);
-        TopInterviewProblems.RandomNode node4 = problems.new RandomNode(10, node5);
-        TopInterviewProblems.RandomNode node3 = problems.new RandomNode(11, node4, node5);
-        TopInterviewProblems.RandomNode node2 = problems.new RandomNode(13, node3);
-        TopInterviewProblems.RandomNode node1 = problems.new RandomNode(7, node2);
+        TopInterviewProblems.RandomNode node5 = new TopInterviewProblems.RandomNode(1);
+        TopInterviewProblems.RandomNode node4 = new TopInterviewProblems.RandomNode(10, node5);
+        TopInterviewProblems.RandomNode node3 = new TopInterviewProblems.RandomNode(11, node4, node5);
+        TopInterviewProblems.RandomNode node2 = new TopInterviewProblems.RandomNode(13, node3);
+        TopInterviewProblems.RandomNode node1 = new TopInterviewProblems.RandomNode(7, node2);
         node2.random = node1;
         node4.random = node3;
         node5.random = node1;
@@ -193,5 +193,13 @@ public class TopInterviewProblemTests {
     public void testLongestSubstring() {
         assertEquals(problems.longestSubstring("aaabb", 3), 3);
         assertEquals(problems.longestSubstring("ababbc", 2), 5);
+    }
+
+    @Test
+    public void testRob() {
+        int[] param = new int[] {1,2,3,1};
+        assertEquals(problems.rob(param), 4);
+        param = new int[] {2,7,9,3,1};
+        assertEquals(problems.rob(param), 12);
     }
 }
