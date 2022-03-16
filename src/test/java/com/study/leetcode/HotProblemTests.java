@@ -598,4 +598,11 @@ public class HotProblemTests {
         pa = new int[] {3,1,3,4,2};
         assertEquals(problem.findDuplicate(pa), 3);
     }
+
+    @Test
+    public void testSumOfTwoString() {
+        assertEquals(problem.sumOfTwoString("9999999", "1"), "10000000");
+        assertEquals(problem.sumOfTwoString("9999999", "9"), "10000008");
+        assertEquals(problem.sumOfTwoString("999999955555", "594"), "999999956149");
+    }
 }

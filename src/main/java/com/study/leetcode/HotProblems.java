@@ -2104,7 +2104,7 @@ public class HotProblems {
     /**
      * 使用动态规划的方法进行解答：
      * s 喘能否分解为单词表的单词
-     * 将大问题分解为规模小一点的子问题：
+     * 将大问题分解为规模小一点的子问题：san
      *  1、前 i 个字符的子串，能否分解盛单词
      *  2、剩余子串，是否为单个单词。
      *
@@ -2688,6 +2688,37 @@ public class HotProblems {
     }
 
     // -------寻找重复数 << end --------
+
+    // -------两个大数进行相加 start >>--------
+
+    public String sumOfTwoString(String s1, String s2) {
+        int s1Length = s1.length(), s2Length = s2.length();
+        String longStr = s1Length > s2Length ? s1 : s2;
+        String shortStr = s1.equals(longStr) ? s2 : s1;
+        int gap = longStr.length() - shortStr.length();
+
+        StringBuilder sb = new StringBuilder();
+        int prev = 0;
+        for (int i = shortStr.length() - 1; i >= 0; i--) {
+            int shortValue = shortStr.charAt(i) - '0';
+            int longValue = longStr.charAt(i + gap) - '0';
+            int temp = shortValue + longValue + prev;
+            prev = temp / 10;
+            sb.append(temp % 10);
+        }
+        for (int i = longStr.length() - shortStr.length() - 1; i >= 0; i--) {
+            int temp = longStr.charAt(i) - '0' + prev;
+            sb.append(temp % 10);
+            prev = temp / 10;
+        }
+        if (prev != 0) {
+            sb.append(prev);
+        }
+        return sb.reverse().toString();
+    }
+
+    // -------两个大数进行相加 << end --------
+
 
     ///////-------------helper class-------------------
 
