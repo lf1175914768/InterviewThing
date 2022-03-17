@@ -782,6 +782,46 @@ public class TreeProblems {
 
     // -------二叉树的层序遍历 << end --------
 
+    // -------二叉树的锯齿形层序遍历 start >>--------
+
+    /**
+     * 给你二叉树的根节点 root ，返回其节点值的 锯齿形层序遍历 。（即先从左往右，再从右往左进行下一层遍历，以此类推，层与层之间交替进行）。
+     *
+     * 对应 leetcode 中第 103 题。
+     */
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> result = new LinkedList<>();
+        if (root == null) {
+            return result;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        boolean isOrderLeft = true;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            Deque<Integer> levelList = new LinkedList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode current = queue.poll();
+                if (isOrderLeft) {
+                    levelList.offerLast(current.val);
+                } else {
+                    levelList.offerFirst(current.val);
+                }
+                if (current.left != null) {
+                    queue.offer(current.left);
+                }
+                if (current.right != null) {
+                    queue.offer(current.right);
+                }
+            }
+            result.add(new LinkedList<>(levelList));
+            isOrderLeft = !isOrderLeft;
+        }
+        return result;
+    }
+
+    // -------二叉树的锯齿形层序遍历 << end --------
+
     // -------路径总和 start >>--------
 
     /**

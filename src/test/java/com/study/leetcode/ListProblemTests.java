@@ -3,6 +3,11 @@ package com.study.leetcode;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class ListProblemTests {
@@ -64,5 +69,38 @@ public class ListProblemTests {
         assertEquals(node5.next, node4);
         assertEquals(node4.next, node3);
         assertEquals(node3.next, node1);
+    }
+
+    @Test
+    public void testPartition() {
+        ListNode head = buildCommonNode(Arrays.asList(1, 4, 3, 2, 5, 2));
+        int[] rs = new int[] {1,2,2,4,3,5};
+        assertArrayEquals(toArray(problem.partition(head, 3)), rs);
+
+    }
+
+    private int[] toArray(ListNode head) {
+        List<Integer> rs = new ArrayList<>();
+        for (ListNode p = head; p != null; p = p.next) {
+            rs.add(p.val);
+        }
+        int[] tmp = new int[rs.size()];
+        for (int i = 0; i < rs.size(); i++) {
+            tmp[i] = rs.get(i);
+        }
+        return tmp;
+    }
+
+    private ListNode buildCommonNode(List<Integer> arr) {
+        return buildCommonNode(arr.toArray(new Integer[0]));
+    }
+
+    private ListNode buildCommonNode(Integer[] arr) {
+        ListNode pre = null, cur = null;
+        for (int i = arr.length - 1; i >= 0; i--) {
+            cur = new ListNode(arr[i], pre);
+            pre = cur;
+        }
+        return cur;
     }
 }

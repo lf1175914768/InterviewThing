@@ -202,4 +202,23 @@ public class TopInterviewProblemTests {
         param = new int[] {2,7,9,3,1};
         assertEquals(problems.rob(param), 12);
     }
+
+    @Test
+    public void testFirstMissingPositive() {
+        int[] param = new int[] {1,2,0};
+        assertEquals(problems.firstMissingPositive(param), 3);
+        param = new int[] {3,4,-1,1};
+        assertEquals(problems.firstMissingPositive(param), 2);
+        param = new int[] {7,8,9,11,12};
+        assertEquals(problems.firstMissingPositive(param), 1);
+    }
+
+    @Test
+    public void testIsMatch() {
+        assertFalse(problems.isMatch("aa", "a"));
+        assertFalse(problems.isMatch("cb", "?a"));
+        assertFalse(problems.isMatch("acdcb", "a*c?b"));
+        assertTrue(problems.isMatch("aa", "*"));
+        assertTrue(problems.isMatch("adceb", "*a*b"));
+    }
 }
