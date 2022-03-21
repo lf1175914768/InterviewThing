@@ -7,6 +7,116 @@ import java.util.*;
  */
 public class HotProblems {
 
+    // -------二分搜索 start >>--------
+
+    /**
+     * 普通的二分搜索
+     */
+    public int binarySearch(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {   // 注意这里的 小于等于
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return -1;
+    }
+
+    public int binarySearch_v2(int[] nums, int target) {
+        int left = 0, right = nums.length;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        if (left >= nums.length) {
+            return -1;
+        }
+        return nums[left] == target ? left : -1;
+    }
+
+    /**
+     * 搜索最左侧的下标
+     */
+    public int binaryLeftSearch(int[] nums, int target) {
+        int left = 0, right = nums.length;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                // 包括 nums[mid] == target 和 nums[mid] > target
+                right = mid;
+            }
+        }
+        if (left >= nums.length) {
+            return -1;
+        }
+        return nums[left] == target ? left : -1;
+    }
+
+    public int binaryLeftSearch_v2(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                // 包括 nums[mid] == target 和 nums[mid] > target
+                right = mid - 1;
+            }
+        }
+        if (left >= nums.length) {
+            return -1;
+        }
+        return nums[left] == target ? left : -1;
+    }
+
+    /**
+     * 搜索最右侧的下标
+     */
+    public int binaryRightSearch(int[] nums, int target) {
+        int left = 0, right = nums.length;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] <= target) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        if (left - 1 <= 0)
+            return -1;
+        return nums[left - 1] == target ? left - 1 : -1;
+    }
+
+    public int binaryRightSearch_v2(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] <= target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        if (left - 1 <= 0)
+            return -1;
+        return nums[left - 1] == target ? left - 1 : -1;
+    }
+
+    // -------二分搜索 << end --------
+
     // -- 最长回文子串 start >> --
     public String longestPalindrome(String s) {
         if (null == s || s.length() == 0) {
@@ -1600,13 +1710,1015 @@ public class HotProblems {
 
     // -------最小路径和 << end --------
 
-    // -------组合总和 start >>--------
+    // -------爬楼梯 start >>--------
 
-    public List<List<Integer>> permute1(int[] nums) {
-        return null;
+    /**
+     * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
+     * 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+     * 注意：给定 n 是一个正整数。
+     *
+     * 对应 leetcode 中第 70题
+     */
+    public int climbStairs(int n) {
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        return dp[n];
     }
 
-    // -------组合总和 << end --------
+    // -------爬楼梯 << end --------
+
+    // -------颜色分类 start >>--------
+
+    /**
+     * 给定一个包含红色、白色和蓝色，一共 n 个元素的数组，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。
+     * 此题中，我们使用整数 0、1 和 2 分别表示红色、白色和蓝色。
+     *
+     * 对应 leetcode 中第 75 题
+     */
+    public void sortColors(int[] nums) {
+        int len = nums.length;
+        if (len < 2) {
+            return;
+        }
+        // all in [0, zero) = 0
+        // all in [zero, i) = 1
+        // all in [two, len) = 2
+
+        int zero = 0;
+        int two = len;
+        int i = 0;
+        while (i < two) {
+            if (nums[i] == 0) {
+                int temp = nums[i];
+                nums[i] = nums[zero];
+                nums[zero] = temp;
+
+                zero++;
+                i++;
+            } else if (nums[i] == 1) {
+                i++;
+            } else {
+                two--;
+
+                int tmp = nums[i];
+                nums[i] = nums[two];
+                nums[two] = tmp;
+            }
+        }
+    }
+
+    // -------颜色分类 << end --------
+
+    // -------子集 start >>--------
+
+    /**
+     * 给你一个整数数组 nums ，数组中的元素 互不相同 。返回该数组所有可能的子集（幂集）。
+     * 解集 不能 包含重复的子集。你可以按 任意顺序 返回解集。
+     *
+     * 对应 leetcode 中第 78 题
+     */
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        subsetsBackTrack(nums, 0, new LinkedList<>(), result);
+        return result;
+    }
+
+    private void subsetsBackTrack(int[] nums, int start, Deque<Integer> list, List<List<Integer>> result) {
+        result.add(new ArrayList<>(list));
+        for (int i = start; i < nums.length; i++) {
+            list.offerLast(nums[i]);
+            subsetsBackTrack(nums, i + 1, list, result);
+            list.removeLast();
+        }
+    }
+
+    // -------子集 << end --------
+
+    // -------子集II start >>--------
+
+    /**
+     * 给你一个整数数组 nums ，其中可能包含重复元素，请你返回该数组所有可能的子集（幂集）。
+     * 解集 不能 包含重复的子集。返回的解集中，子集可以按 任意顺序 排列。
+     *
+     * 对应 leetcode 中第 90 题
+     */
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+        subsetsWithDupBacktrack(nums, 0, new LinkedList<>(), result);
+        return result;
+    }
+
+    private void subsetsWithDupBacktrack(int[] nums, int start, Deque<Integer> list, List<List<Integer>> result) {
+        result.add(new ArrayList<>(list));
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i - 1])
+                continue;
+            list.offerLast(nums[i]);
+            subsetsWithDupBacktrack(nums, i + 1, list, result);
+            list.removeLast();
+        }
+    }
+
+    // -------子集II << end --------
+
+    // -------单词搜索 start >>--------
+
+    /**
+     * 给定一个 m x n 二维字符网格 board 和一个字符串单词 word 。如果 word 存在于网格中，返回 true ；否则，返回 false 。
+     * 单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母不允许被重复使用。
+     *
+     * 对应 leetcode 中第 79 题
+     */
+    public boolean exist(char[][] board, String word) {
+        boolean[][] visited = new boolean[board.length][board[0].length];
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (existWords(board, i, j, word, 0, visited)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean existWords(char[][] board, int row, int col, String word, int curChar, boolean[][] visited) {
+        if (curChar == word.length())
+            return true;
+        if (row < 0 || col < 0 || row >= board.length || col >= board[0].length || visited[row][col]) {
+            return false;
+        }
+        if (board[row][col] != word.charAt(curChar))
+            return false;
+        visited[row][col] = true;
+        boolean result =  existWords(board, row + 1, col, word, curChar + 1, visited)
+                || existWords(board, row - 1, col, word, curChar + 1, visited)
+                || existWords(board, row, col + 1, word, curChar + 1, visited)
+                || existWords(board, row, col - 1, word, curChar + 1, visited);
+        visited[row][col] = false;
+        return result;
+    }
+
+    // -------单词搜索 << end --------
+
+    // -------柱状图中最大的矩形 start >>--------
+
+    /**
+     * 给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1 。
+     * 求在该柱状图中，能够勾勒出来的矩形的最大面积。
+     *
+     * 使用单调栈的方法进行解答
+     *
+     * 对应 leetcode 中第 84 题
+     */
+    public int largestRectangleArea(int[] heights) {
+        int len = heights.length;
+        int res = 0;
+        Deque<Integer> stack = new ArrayDeque<>(len);
+        for (int i = 0; i < len; i++) {
+            // 这个while 很关键，因为有可能不止一个柱形的最大宽度可以被计算出来
+            while (!stack.isEmpty() && heights[i] < heights[stack.peekLast()]) {
+                int curHeight = heights[stack.pollLast()];
+                while (!stack.isEmpty() && heights[stack.peekLast()] == curHeight) {
+                    stack.pollLast();
+                }
+                int curWidth;
+                if (stack.isEmpty()) {
+                    curWidth = i;
+                } else {
+                    curWidth = i - stack.peekLast() - 1;
+                }
+                res = Math.max(res, curHeight * curWidth);
+            }
+            stack.offerLast(i);
+        }
+
+        while (!stack.isEmpty()) {
+            int curHeight = heights[stack.pollLast()];
+            while (!stack.isEmpty() && heights[stack.peekLast()] == curHeight) {
+                stack.pollLast();
+            }
+            int curWidth;
+            if (stack.isEmpty()) {
+                curWidth = len;
+            } else {
+                curWidth = len - stack.peekLast() - 1;
+            }
+            res = Math.max(res, curHeight * curWidth);
+        }
+        return res;
+    }
+
+    /**
+     * 上面方法的简化版，在开头和末尾分别添加 0
+     * 因为上面的代码需要考虑两种特殊的情况，
+     * 1、弹栈的时候，栈为空
+     * 2、遍历完成以后，栈中还有元素。
+     * 然后在开头添加 0 的时候，由于它一定比输入数组里任何一个元素小，它肯定不会出栈，因此栈一定不会为空。
+     * 在末尾添加 0 的时候，也正是因为它一定比输入数组中的任何一个元素小，他会让所有输入数组里的元素出栈。
+     */
+    public int largestRectangleArea_v2(int[] heights) {
+        int[] newHeights = new int[heights.length + 2];
+        System.arraycopy(heights, 0, newHeights, 1, heights.length);
+        Deque<Integer> stack = new ArrayDeque<>();
+        int res = 0;
+        for (int i = 0; i < newHeights.length; i++) {
+            while (!stack.isEmpty() && newHeights[stack.peekLast()] > newHeights[i]) {
+                int height = newHeights[stack.pollLast()];
+                int width = i - stack.peekLast() - 1;
+                res = Math.max(res, height * width);
+            }
+            stack.offerLast(i);
+        }
+        return res;
+    }
+
+    // -------柱状图中最大的矩形 << end --------
+
+    // -------最大矩形 start >>--------
+
+    /**
+     * 给定一个仅包含 0 和 1 、大小为 rows x cols 的二维二进制矩阵，找出只包含 1 的最大矩形，并返回其面积。
+     *
+     * 解题思路：
+     * 遍历每个点，求以这个点为矩阵的右下角的所有矩阵面积。那么如何找出这样的矩阵呢？
+     * 如果我们知道了以这个点结尾的连续 1 的个数的话，问题就变得简单了。
+     * 1、首先求出高度是 1 的矩形面积，也就是它自身的数，
+     * 2、然后向上扩展一行，高度增加 1，选出当前列最小的数字，作为矩阵的宽，求出面积。
+     * 3、然后继续向上扩展，重复步骤 2 .
+     *
+     * 对应 leetcode 中第 85 题
+     */
+    public int maximalRectangle(char[][] matrix) {
+        if (matrix.length == 0) {
+            return 0;
+        }
+        // 保存以当前数字结尾的连续 1 的个数
+        int[][] width = new int[matrix.length][matrix[0].length];
+        int maxArea = 0;
+        for (int row = 0; row < matrix.length; row++) {
+            for (int col = 0; col < matrix[0].length; col++) {
+                // 更新width
+                if (matrix[row][col] == '1') {
+                    if (col == 0) {
+                        width[row][col] = 1;
+                    } else {
+                        width[row][col] = width[row][col - 1] + 1;
+                    }
+                }
+                // 记录所有行中最小的数
+                int minWidth = width[row][col];
+                // 向上扩展行
+                for (int upRow = row; upRow >= 0 && width[upRow][col] > 0; upRow--) {
+                    int height = row - upRow + 1;
+                    // 找最小的数作为矩阵的宽
+                    minWidth = Math.min(minWidth, width[upRow][col]);
+                    maxArea = Math.max(maxArea, height * minWidth);
+                }
+            }
+        }
+        return maxArea;
+    }
+
+    // -------最大矩形 << end --------
+
+    // -------最长连续序列 start >>--------
+
+    /**
+     * 给定一个未排序的整数数组 nums ，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。
+     * 请你设计并实现时间复杂度为 O(n) 的算法解决此问题。
+     *
+     * 解题思路：
+     *  使用哈希表的方式进行解答，对于每一个 nums 中的元素，只判断满足当前元素没有左侧边界的情况进入内层循环，
+     *  而对于所有的元素来说，每一个元素最终至多只会走一遍内层循环。大大优化了算法的效率。
+     *
+     * 对应 leetcode 中第 128 题
+     */
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> set = new HashSet<>(nums.length);
+        for (int num : nums) {
+            set.add(num);
+        }
+        int result = 0;
+        for (int num : nums) {
+            if (!set.contains(num - 1)) {
+                int currentNum = num + 1;
+                int curCount = 1;
+                while (set.contains(currentNum)) {
+                    currentNum += 1;
+                    curCount += 1;
+                }
+                result = Math.max(result, curCount);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 解题思路：
+     * 用 hashmap 存储每个端点值对应的连续区间的长度。
+     * 若数已经在 hashmap 中，跳过不做处理
+     * 若是新的数字加入：
+     *  取出其左右相邻数已有的连续区间长度 left 和 right
+     *  计算当前数的区间长度为 cur_length = left + right + 1;
+     *  根据 cur_length 更新最大长度 max_length 的值
+     *  更新区间两端点的值
+     */
+    public int longestConsecutive_v2(int[] nums) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int result = 0;
+        for (int num : nums) {
+            // 当map中不包含num，也就是说num 第一次出现
+            if (!map.containsKey(num)) {
+                // 左连续区间的长度
+                int left = map.getOrDefault(num - 1, 0);
+                // 右连续区间的长度
+                int right = map.getOrDefault(num + 1, 0);
+                // 当前连续区间的总长度
+                int curLen = left + right + 1;
+                result = Math.max(result, curLen);
+                map.put(num, curLen);
+                map.put(num - left, curLen);
+                map.put(num + right, curLen);
+            }
+        }
+        return result;
+    }
+
+    // -------最长连续序列 << end --------
+
+    // -------单词拆分 start >>--------
+
+    /**
+     * 给你一个字符串 s 和一个字符串列表 wordDict 作为字典。请你判断是否可以利用字典中出现的单词拼接出 s 。
+     * 注意：不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。
+     *
+     * 解题思路：
+     * DFS
+     *
+     * 对应 leetcode 中第 139 题
+     */
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Map<Character, List<String>> map = new HashMap<>();
+        for (String word : wordDict) {
+            map.computeIfAbsent(word.charAt(0), k -> new ArrayList<>()).add(word);
+        }
+        // 1: 访问且为 true， -1： 访问且为false
+        int[] visited = new int[s.length()];
+        return wordBreakTraverse(s, 0, map, visited);
+    }
+
+    private boolean wordBreakTraverse(String s, int start, Map<Character, List<String>> map, int[] visited) {
+        if (start == s.length()) {
+            return true;
+        }
+        if (start > s.length()) {
+            return false;
+        }
+        // 剪枝防止重复计算
+        if (visited[start] == 1) {
+            return true;
+        } else if (visited[start] == -1) {
+            return false;
+        }
+
+        char c = s.charAt(start);
+        if (!map.containsKey(c)) {
+            return false;
+        }
+        for (String word : map.get(c)) {
+            if (s.startsWith(word, start)
+                    && wordBreakTraverse(s, start + word.length(), map, visited)) {
+                visited[start] = 1;
+                return true;
+            }
+        }
+        visited[start] = -1;
+        return false;
+    }
+
+    /**
+     * 使用动态规划的方法进行解答：
+     * s 喘能否分解为单词表的单词
+     * 将大问题分解为规模小一点的子问题：san
+     *  1、前 i 个字符的子串，能否分解盛单词
+     *  2、剩余子串，是否为单个单词。
+     *
+     * 定义 dp[i] 长度为 i 的 s[0:i - 1]子串是否能拆分盛单词。题目求 dp[s.length]
+     *
+     * 状态转移方程：
+     * 类似的，我们用指针 j 去划分 s[0:i] 子串，
+     * s[0:i] 子串对应 dp[i + 1],它是否为 true(s[0:i] 能否break)，取决于两点：
+     *  它的前缀子串 s[0:j-1] 的 dp[j]，是否为 true
+     *  剩余子串 s[j:i], 是否是单词表的单词
+     *
+     * base case：
+     *  dp[0] = true。即，长度为 0 的 s[0:-1] 能拆分盛单词表单词， （这看似荒谬，但这只是为了让边界情况也能套用状态转移方程而已）
+     *  当 j = 0时， s[0:i] 的 dp[i + 1],取决于 s[0:-1] 的 dp[0], 和，剩余子串 s[0:i] 是否时单个单词。
+     *  只有让 dp[0] 为真，dp[i + 1]才会只取决于 s[0:i] 是否为单个单词，才能用上这个状态转移方程。
+     */
+    public boolean wordBreak_v2(String s, List<String> wordDict) {
+        Set<String> wordDictSet = new HashSet<>(wordDict);
+        boolean[] dp = new boolean[s.length() + 1];
+        dp[0] = true;
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && wordDictSet.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[s.length()];
+    }
+
+    // -------单词拆分 << end --------
+
+    // -------环形链表II start >>--------
+
+    /**
+     *`给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+     * 如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，
+     * 评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。
+     * 如果 pos 是 -1，则在该链表中没有环。注意：pos 不作为参数进行传递，仅仅是为了标识链表的实际情况。
+     * 不允许修改 链表。
+     *
+     * 解题思路：使用双指针法
+     * 设两指针第一次相遇， fast，slow都指向链表头部 head，fast每轮走 2 步，slow 每轮走 1 步。
+     * 第一种结果：
+     *    fast 指针走过链表末端，说明链表无环，直接返回 null
+     * 第二种结果：
+     *    当 fast == slow 时，两指针在环中第一次相遇。 假设链表共有 a + b 个节点，其中链表头部到链表入口右 a 个节点。链表环有 b 个节点
+     *    设两指针分别走了 f, s 步，则有：
+     *    1、fast 走的步数是 slow 的两倍，即 f = 2s;
+     *    2、fast 比 slow 多走了n个环的长度，即 f = s + nb;
+     *    以上两式相减得：f = 2nb, s = nb,即 fast 和 slow指针分别走了 2n 个，n 个环的周长。
+     *
+     * 目前情况分析：
+     *    如果让指针从链表头部一直向前走并统计步数 k， 那么所有 走到链表入口节点时的步数是 k = a + nb
+     *    而目前， slow 指针走过的步数是 nb 步。因此我们只要想办法让 slow 再走 a 步停下来，就可以到环的入口。
+     *    但是我们不知道 a 的值，但是我们可以使用双指针法。我们构建一个指针，此指针需要有如下性质：
+     *      此指针 和 slow 一起向前走 a 步后，两者在入口节点重合。那么从哪里走到入口节点需要 a 步呢？答案就是链表头部 head
+     *
+     * 对应 leetcode 中第 142 题
+     */
+    public ListNode detectCycle(ListNode head) {
+        ListNode fast = head, slow = head;
+        do {
+            if (fast == null || fast.next == null)
+                return null;
+            fast = fast.next.next;
+            slow = slow.next;
+        } while (fast != slow);
+        fast = head;
+        while (slow != fast) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        return slow;
+    }
+
+    // -------环形链表II << end --------
+
+    // -------乘积最大子数组 start >>--------
+
+    /**
+     * 给你一个整数数组 nums ，请你找出数组中乘积最大的连续子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积。
+     *
+     * 解题思路：
+     * 使用动态规划进行解题；我们可以根据正负性进行分类讨论。
+     * 考虑当前位置如果是一个负数的话，那么我们希望以他前一个位置结尾的某个段的积也是一个负数，这样就可以负负得正，并且我们希望这个积尽可能的小。
+     * 如果当前位置是一个正数的话，我们希望以他前一个位置结尾的积也是一个正数，并且希望他尽可能的大。所以我们维护两个dp 数组。转移方程如下：
+     * dpMax[i] = Math.max(dpMax[i - 1] * nums[i], dpMin[i - 1] * nums[i], nums[i])
+     * dpMin[i] = Math.min(dpMax[i - 1] * nums[i], dpMax[i - 1] * nums[i], nums[i])
+     * 它代表第 i 个元素结尾的最大子数组的乘积 dpMax[i]。 可以考虑把 nums[i] 加入第 i - 1个元素结尾的乘积最大或最小的子数组中，二者加上
+     * nums[i]， 三者取最大，就是第 i 个元素结尾的乘积中最大子数组的乘积， 同样的，最小子数组的乘积同理。
+     *
+     * 对应 leetcode 中第 152 题。
+     */
+    public int maxProduct(int[] nums) {
+        int[] dpMax = new int[nums.length];
+        int[] dpMin = new int[nums.length];
+        System.arraycopy(nums, 0, dpMax, 0, nums.length);
+        System.arraycopy(nums, 0, dpMin, 0, nums.length);
+        int res = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            dpMax[i] = Math.max(dpMax[i - 1] * nums[i], Math.max(dpMin[i - 1] * nums[i], nums[i]));
+            dpMin[i] = Math.min(dpMin[i - 1] * nums[i], Math.min(dpMax[i - 1] * nums[i], nums[i]));
+            res = Math.max(res, dpMax[i]);
+        }
+        return res;
+    }
+
+    /**
+     * 上面解法的 dp 数组压缩版
+     */
+    public int maxProduct_v2(int[] nums) {
+        int dpMax = nums[0], dpMin = nums[0], res = nums[0], pre = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            dpMax = Math.max(dpMax * nums[i], Math.max(dpMin * nums[i], nums[i]));
+            dpMin = Math.min(dpMin * nums[i], Math.min(nums[i], pre * nums[i]));
+            pre = dpMax;
+            res = Math.max(res, dpMax);
+        }
+        return res;
+    }
+
+    // -------乘积最大子数组 << end --------
+
+    // -------多数元素 start >>--------
+
+    /**
+     * 给定一个大小为 n 的数组，找到其中的多数元素。多数元素是指在数组中出现次数 大于 n/2的元素。
+     * 你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+     *
+     * 对应 leetcode 中第 169 题。
+     */
+    public int majorityElement(int[] nums) {
+        int count = 0;
+        Integer candidate = null;
+        for (int num : nums) {
+            if (count == 0) {
+                candidate = num;
+            }
+            count += (candidate == num) ? 1 : -1;
+        }
+        return candidate;
+    }
+
+    // -------多数元素 << end --------
+
+    // -------反转链表 start >>--------
+
+    /**
+     * 给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。
+     *
+     * 对应 leetcode 中第 206 题。
+     *
+     * @param head head node
+     * @return head node
+     */
+    public ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        ListNode cur = head;
+        while (cur != null) {
+            ListNode next = cur.next;
+            cur.next = prev;
+            prev = cur;
+            cur = next;
+        }
+        return prev;
+    }
+
+    /**
+     * 递归版本
+     */
+    public ListNode reverseList_v2(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode newHead = reverseList_v2(head.next);
+        head.next.next = head;
+        head.next = null;
+        return newHead;
+    }
+
+    // -------反转链表 << end --------
+
+    // -------数组中的第K个最大元素 start >>--------
+
+    /**
+     * 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。
+     * 请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
+     *
+     * 对应 leetcode 中第 215 题
+     *
+     */
+    public int findKthLargest(int[] nums, int k) {
+        PriorityQueue<Integer> queue = new PriorityQueue<>(k, Comparator.comparingInt(a -> a));
+        for (int i = 0; i < k; i++) {
+            queue.offer(nums[i]);
+        }
+        for (int i = k; i < nums.length; i++) {
+            Integer topElement = queue.peek();
+            if (nums[i] > topElement) {
+                queue.poll();
+                queue.offer(nums[i]);
+            }
+        }
+        return queue.peek();
+    }
+
+    /**
+     * 自己实现 堆
+     */
+    public int findKthLargestManual(int[] nums, int k) {
+        int[] queue = new int[k];
+        for (int i = 0; i < k; i++) {
+            queue[i] = nums[i];
+            siftUp(queue, i);
+        }
+        for (int i = k; i < nums.length; i++) {
+            if (nums[i] > queue[0]) {
+                queue[0] = nums[i];
+                siftDown(queue, 0);
+            }
+        }
+        return queue[0];
+    }
+
+    private void siftDown(int[] queue, int k) {
+        int cur = queue[k];
+        int half = queue.length >>> 1;
+        while (k < half) {
+            int child = (k << 1) + 1;
+            int right = child + 1;
+            if (right < queue.length && queue[child] > queue[right]) {
+                child = right;
+            }
+            if (cur <= queue[child]) {
+                break;
+            }
+            queue[k] = queue[child];
+            k = child;
+        }
+        queue[k] = cur;
+    }
+
+    private void siftUp(int[] queue, int k) {
+        int cur = queue[k];
+        while (k > 0) {
+            int parent = (k - 1) >>> 1;
+            if (cur >= queue[parent]) {
+                break;
+            }
+            queue[k] = queue[parent];
+            k = parent;
+        }
+        queue[k] = cur;
+    }
+
+    // -------数组中的第K个最大元素 << end --------
+
+    // -------回文链表 start >>--------
+
+    /**
+     * 给你一个单链表的头节点 head ，请你判断该链表是否为回文链表。如果是，返回 true ；否则，返回 false 。
+     *
+     * 对应 leetcode 中第 234 题。
+     */
+    public boolean isPalindrome(ListNode head) {
+        if (head == null || head.next == null) {
+            return true;
+        }
+        ListNode fast = head, slow = head;
+        ListNode pre = null, prepre = null;
+        while (fast != null && fast.next != null) {
+            pre = slow;
+            slow = slow.next;
+            fast = fast.next.next;
+            pre.next = prepre;
+            prepre = pre;
+        }
+        if (fast != null) {
+            slow = slow.next;
+        }
+        while (pre != null && slow != null) {
+            if (pre.val != slow.val) {
+                return false;
+            }
+            pre = pre.next;
+            slow = slow.next;
+        }
+        return true;
+    }
+
+    // -------回文链表 << end --------
+
+    // -------除自身以外数组的乘积 start >>--------
+
+    /**
+     * 给你一个整数数组 nums，返回 数组 answer ，其中 answer[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积 。
+     * 题目数据 保证 数组 nums之中任意元素的全部前缀元素和后缀的乘积都在  32 位 整数范围内。
+     * 请不要使用除法，且在 O(n) 时间复杂度内完成此题。
+     *
+     * 对应 leetcode 中第 238 题
+     */
+    public int[] productExceptSelf(int[] nums) {
+        int[] res = new int[nums.length];
+        int p = 1, q = 1;
+        for (int i = 0; i < nums.length; i++) {
+            res[i] = p;
+            p *= nums[i];
+        }
+        for (int i = nums.length - 1; i >= 0; i--) {
+            res[i] *= q;
+            q *= nums[i];
+        }
+        return res;
+    }
+
+    // -------除自身以外数组的乘积 << end --------
+
+    // -------完全平方数 start >>--------
+
+    /**
+     * 给你一个整数 n ，返回 和为 n 的完全平方数的最少数量 。
+     * 完全平方数 是一个整数，其值等于另一个整数的平方；换句话说，其值等于一个整数自乘的积。例如，1、4、9 和 16 都是完全平方数，而 3 和 11 不是。
+     *
+     * 使用动态规划进行求解
+     * 首先初始化 长度为 n + 1 的数组 dp，每个位置都为 0
+     * 如果 n 为 0，则结果为 0
+     * 对数组进行遍历，下标为i，每次都将当前数字先更新为 最大的结果，即 dp[i] = i
+     * 动态转移方程： dp[i] = MIN(dp[i], dp[i - j * j] + 1), i 表示当前数字， j * j 表示平方数
+     *
+     * 对应 leetcode 中第 279题。
+     */
+    public int numSquares(int n) {
+        int[] dp = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            dp[i] = i;   // 最坏的情况就是 每次 +1
+            for (int j = 1; i - j * j >= 0; j++) {
+                dp[i] = Math.min(dp[i], dp[i - j * j] + 1);
+            }
+        }
+        return dp[n];
+    }
+
+    // -------完全平方数 << end --------
+
+    // -------字符串解码 start >>--------
+
+    /**
+     * 给定一个经过编码的字符串，返回它解码后的字符串。
+     * 编码规则为: k[encoded_string]，表示其中方括号内部的 encoded_string 正好重复 k 次。注意 k 保证为正整数。
+     * 你可以认为输入字符串总是有效的；输入字符串中没有额外的空格，且输入的方括号总是符合格式要求的。
+     * 此外，你可以认为原始数据不包含数字，所有的数字只表示重复的次数 k ，例如不会出现像 3a 或 2[4] 的输入。
+     *
+     * 对应 leetcode 中第 394 题
+     */
+    public String decodeString(String s) {
+        StringBuilder res = new StringBuilder();
+        int multi = 0;
+        Deque<Integer> stack_multi = new LinkedList<>();
+        Deque<String> stack_res = new LinkedList<>();
+        for (Character c : s.toCharArray()) {
+            if (c == '[') {
+                stack_multi.addLast(multi);
+                stack_res.addLast(res.toString());
+                multi = 0;
+                res.delete(0, res.length());
+            } else if (c == ']') {
+                StringBuilder tmp = new StringBuilder();
+                int cur_multi = stack_multi.removeLast();
+                for (int i = 0; i < cur_multi; i++) {
+                    tmp.append(res);
+                }
+                res = new StringBuilder(stack_res.removeLast() + tmp);
+            } else if (Character.isDigit(c)) {
+                multi = multi * 10 + (c - '0');
+            } else {
+                res.append(c);
+            }
+        }
+        return res.toString();
+    }
+
+    // -------字符串解码 << end --------
+
+    // -------回文子串 start >>--------
+
+    /**
+     * 给你一个字符串 s ，请你统计并返回这个字符串中 回文子串 的数目。
+     * 回文字符串 是正着读和倒过来读一样的字符串。
+     * 子字符串 是字符串中的由连续字符组成的一个序列。
+     * 具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
+     *
+     * 使用动态规划实现
+     * dp[i][j] 表示字符串 s 在[i, j] 区间的子串是否是一个回文串。
+     * 状态转移方程：当 s[i] = s[j] && (j - i < 2 || dp[i + 1][j - 1]) 时， dp[i][j] = true, 否则为 false
+     *
+     * 对应 leetcode 中第 647 题
+     */
+    public int countSubstrings(String s) {
+        boolean[][] dp = new boolean[s.length()][s.length()];
+        int ans = 0;
+        for (int j = 0; j < s.length(); j++) {
+            for (int i = 0; i <= j; i++) {
+                if (s.charAt(i) == s.charAt(j) && (j - i < 2 || dp[i + 1][j - 1])) {
+                    dp[i][j] = true;
+                    ans++;
+                }
+            }
+        }
+        return ans;
+    }
+
+    // -------回文子串 << end --------
+
+    // -------最短无序连续子数组 start >>--------
+
+    /**
+     * 给你一个整数数组 nums ，你需要找出一个 连续子数组 ，如果对这个子数组进行升序排序，那么整个数组都会变为升序排序。
+     * 请你找出符合题意的 最短 子数组，并输出它的长度。
+     *
+     * 假设把这个数组分成三段，左段和右段是标准的升序数组，中序数组虽是无序的，但满足最小值大于 左段的最大值，最大值小于右段的最小值。
+     * 那么我们就可以找 中断的左右边界，我们分别定义为 begin 和 end；分两头开始遍历：
+     * 从左到右维护一个最大值 max， 在进入右段之前，那么遍历到的 nums[i] 都是小于 max 的， 我们要求的 end 就是遍历中最后一个小于 max元素的位置。
+     * 同理，从右到左维护一个最小值 min，在进入左段之前，那么遍历到的 nums[i] 也都是大于 min 的，要求的 begin 也就是最后一个大于 min 元素的位置。
+     *
+     * 对应 leetcode 中第 581 题。
+     */
+    public int findUnsortedSubArray(int[] nums) {
+        int len = nums.length, min = nums[len - 1], max = nums[0];
+        int begin = 0, end = -1;
+        for (int i = 0; i < len; i++) {
+            if (nums[i] < max) {
+                // 从左到右维护最大值，寻找右边界
+                end = i;
+            } else {
+                max = nums[i];
+            }
+            if (nums[len - 1 - i] > min) {
+                // 从右到左维护最小值，寻找左边界
+                begin = len - i -1;
+            } else {
+                min = nums[len - i - 1];
+            }
+        }
+        return end - begin + 1;
+    }
+
+    // -------最短无序连续子数组 << end --------
+
+    // -------找到字符串中所有字母异位词 start >>--------
+
+    /**
+     * 给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
+     * 异位词 指由相同字母重排列形成的字符串（包括相同的字符串）。
+     *
+     * 使用 滑动窗口 方法实现
+     *
+     * 对应 leetcode 中第 438 题
+     */
+    public List<Integer> findAnagrams(String s, String p) {
+        int n = s.length(), m = p.length();
+        List<Integer> res = new ArrayList<>();
+        if (n < m)
+            return res;
+        int[] pCnt = new int[26];
+        int[] sCnt = new int[26];
+
+        for (int i = 0; i < m; i++) {
+            pCnt[p.charAt(i) - 'a']++;
+        }
+        int left = 0;
+        for (int right = 0; right < n; right++) {
+            int curRight = s.charAt(right) - 'a';
+            sCnt[curRight]++;
+            while (sCnt[curRight] > pCnt[curRight]) {
+                int curLeft = s.charAt(left) - 'a';
+                sCnt[curLeft]--;
+                left++;
+            }
+            if (right - left + 1 == m) {
+                res.add(left);
+            }
+        }
+        return res;
+    }
+
+    // -------找到字符串中所有字母异位词 << end --------
+
+    // -------每日温度 start >>--------
+
+    /**
+     * 给定一个整数数组 temperatures ，表示每天的温度，返回一个数组 answer ，其中 answer[i] 是指在第 i 天之后，
+     * 才会有更高的温度。如果气温在这之后都不会升高，请在该位置用 0 来代替。
+     *
+     * 使用 单调栈的方法进行实现。
+     *
+     * 对应 leetcode 中第 739题。
+     */
+    public int[] dailyTemperatures(int[] temperatures) {
+        int[] res = new int[temperatures.length];
+        if (temperatures.length == 0) {
+            return res;
+        }
+        Deque<Integer> stackValue = new LinkedList<>();
+        Deque<Integer> stackIndex = new LinkedList<>();
+        stackValue.offerLast(temperatures[temperatures.length - 1]);
+        stackIndex.offerLast(temperatures.length - 1);
+
+        for (int i = temperatures.length - 2; i >= 0; i--) {
+            int value = temperatures[i];
+            while (!stackValue.isEmpty() && stackValue.getLast() <= value) {
+                stackValue.removeLast();
+                stackIndex.removeLast();
+            }
+            if (stackValue.isEmpty()) {
+                res[i] = 0;
+            } else {
+                res[i] = stackIndex.getLast() - i;
+            }
+            stackValue.offerLast(value);
+            stackIndex.offerLast(i);
+        }
+        return res;
+    }
+
+    public int[] dailyTemperatures_v2(int[] temperatures) {
+        int length = temperatures.length;
+        int[] ans = new int[length];
+        Deque<Integer> stack = new LinkedList<>();
+        for (int i = 0; i < length; i++) {
+            int temperature = temperatures[i];
+            while (!stack.isEmpty() && temperature > temperatures[stack.peek()]) {
+                int preIndex = stack.pop();
+                ans[preIndex] = i - preIndex;
+            }
+            stack.push(i);
+        }
+        return ans;
+    }
+
+    // -------每日温度 << end --------
+
+    // -------寻找重复数 start >>--------
+
+    /**
+     * 给定一个包含 n + 1 个整数的数组 nums ，其数字都在 [1, n] 范围内（包括 1 和 n），可知至少存在一个重复的整数。
+     * 假设 nums 只有 一个重复的整数 ，返回 这个重复的数 。
+     * 你设计的解决方案必须 不修改 数组 nums 且只用常量级 O(1) 的额外空间。
+     *
+     * 使用环形链表的方式解答此题：
+     * 如果数组中没有重复的数，以数组 [1,3,4,2] 为例，我们将数组下标 n 和数 nums[n] 建立一个映射关系 f(n)，为：
+     * 0 -> 1 , 1 -> 3 , 2 -> 4, 3 -> 2.
+     * 我们从下标0 出发，根据 f(n) 计算出一个值，以这个值为新的下标，再用这个函数计算，可以产生一个类似链表的序列。
+     * 0 -> 1 -> 3 -> 2 -> 4 -> null.
+     * 如果数组中有重复的数，以数组 [1,3,4,2,2] 为例，我们将数组下标 n 和数 nums[n] 建立一个映射关系 f(n)，为：
+     * 0 -> 1 , 1 -> 3 , 2 -> 4, 3 -> 2, 4 -> 2.
+     * 同样的，可以产生一个类似链表一样的序列。
+     * 0 -> 1 -> 3 -> 2 -> 4 -> 2 -> 4 -> 2 ...
+     * 这里的 2 -> 4 是一个循环。
+     *
+     * 综上，可以得出两个结论：
+     * 1. 数组中有一个重复的数 <==> 链表中存在环
+     * 2. 找到数组中的重复数 <==> 找到链表的环入口
+     *
+     * 对应 leetcode 中第 287 题。
+     */
+    public int findDuplicate(int[] nums) {
+        int slow = 0;
+        int fast = 0;
+        do {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+        } while (slow != fast);
+        int pre = 0;
+        while (pre != slow) {
+            pre = nums[pre];
+            slow = nums[slow];
+        }
+        return pre;
+    }
+
+    // -------寻找重复数 << end --------
+
+    // -------两个大数进行相加 start >>--------
+
+    public String sumOfTwoString(String s1, String s2) {
+        int s1Length = s1.length(), s2Length = s2.length();
+        String longStr = s1Length > s2Length ? s1 : s2;
+        String shortStr = s1.equals(longStr) ? s2 : s1;
+        int gap = longStr.length() - shortStr.length();
+
+        StringBuilder sb = new StringBuilder();
+        int prev = 0;
+        for (int i = shortStr.length() - 1; i >= 0; i--) {
+            int shortValue = shortStr.charAt(i) - '0';
+            int longValue = longStr.charAt(i + gap) - '0';
+            int temp = shortValue + longValue + prev;
+            prev = temp / 10;
+            sb.append(temp % 10);
+        }
+        for (int i = longStr.length() - shortStr.length() - 1; i >= 0; i--) {
+            int temp = longStr.charAt(i) - '0' + prev;
+            sb.append(temp % 10);
+            prev = temp / 10;
+        }
+        if (prev != 0) {
+            sb.append(prev);
+        }
+        return sb.reverse().toString();
+    }
+
+    // -------两个大数进行相加 << end --------
+
 
     ///////-------------helper class-------------------
 

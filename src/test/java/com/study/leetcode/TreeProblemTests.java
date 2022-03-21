@@ -454,6 +454,27 @@ public class TreeProblemTests {
         assertEquals(problem.lowestCommonAncestor(root, node6, node3).val, 4);
     }
 
+    @Test
+    public void testNumTrees() {
+        assertEquals(problem.numTrees(3), 5);
+        assertEquals(problem.numTrees(1), 1);
+        assertEquals(problem.numTrees(4), 14);
+        assertEquals(problem.numTrees(5), 42);
+    }
+
+    @Test
+    public void testZigzagLevelOrder() {
+        TreeNode root = buildCommonTree();
+        List<List<Integer>> rs = problem.zigzagLevelOrder(root);
+        assertEquals(rs.size(), 3);
+        assertEquals(rs.get(0).get(0).intValue(), 4);
+        assertEquals(rs.get(1).get(0).intValue(), 7);
+        assertEquals(rs.get(1).get(1).intValue(), 2);
+        Integer[] arr = rs.get(2).toArray(new Integer[0]);
+        Integer[] temp = new Integer[] {1, 3, 6, 9};
+        assertArrayEquals(arr, temp);
+    }
+
     /**
      * build tree
      *             4
