@@ -331,6 +331,24 @@ public class HotProblems {
 
     // -------三数之和 start >>--------
 
+    /**
+     * 给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有和为 0 且不重复的三元组。
+     * 注意：答案中不可以包含重复的三元组。
+     *
+     * 本题的难点在于如何去除重复解。
+     * 1、特判，对于数组长度 n，如果数组为null 或者数组长度小于3，返回 [].
+     * 2、对数组进行排序
+     * 3、遍历排序后数组：
+     *     若 nums[i] > 0: 因为已经排好序，所以后面不可能有三个数加和等于0，直接返回结果。
+     *     对于重复元素：跳过，避免出现重复解
+     *     令左指针 left = i + 1， 右指针 right = n - 1， 当 left < right 时，执行循环：
+     *        当 nums[i] + nums[left] + nums[right] == 0, 执行循环，判断左界和右界是否和下一位置重复，去除重复解。
+     *        并同时将 left，right 移到下一位置，寻找新得解
+     *        若和大于0，说明 nums[right] 太大，right 左移
+     *        若和小于0，说明 nums[left] 太小，left 右移
+     *
+     * 对应 leetcode 中第 15 题
+     */
     public List<List<Integer>> threeSum(int[] nums) {
         List<List<Integer>> result = new ArrayList<>();
         if (null == nums || nums.length < 3) {
@@ -351,23 +369,23 @@ public class HotProblems {
                 continue;
             }
             int curr = nums[i];
-            int L = i + 1, R = len - 1;
-            while (L < R) {
-                int temp = curr + nums[L] + nums[R];
+            int left = i + 1, right = len - 1;
+            while (left < right) {
+                int temp = curr + nums[left] + nums[right];
                 if (temp == 0) {
                     List<Integer> list = new ArrayList<>();
                     list.add(curr);
-                    list.add(nums[L]);
-                    list.add(nums[R]);
+                    list.add(nums[left]);
+                    list.add(nums[right]);
                     result.add(list);
-                    while (L < R && nums[L + 1] == nums[L]) L++;
-                    while (L < R && nums[R - 1] == nums[R]) R--;
-                    L++;
-                    R--;
+                    while (left < right && nums[left + 1] == nums[left]) left++;
+                    while (left < right && nums[right - 1] == nums[right]) right--;
+                    left++;
+                    right--;
                 } else if (temp < 0) {
-                    L++;
+                    left++;
                 } else {
-                    R--;
+                    right--;
                 }
             }
         }
@@ -423,6 +441,11 @@ public class HotProblems {
 
     // -------有效的括号 start >>--------
 
+    /**
+     * 使用栈来实现，
+     *
+     * 对应 leetcode 中第 20 题。
+     */
     public boolean isValid(String s) {
         if (null == s || s.length() == 0) {
             return true;
@@ -595,11 +618,23 @@ public class HotProblems {
     // -------下一个排列 start >>--------
 
     /**
+     * 整数数组的一个 排列  就是将其所有成员以序列或线性顺序排列。
+     * 整数数组的 下一个排列 是指其整数的下一个字典序更大的排列。更正式地，如果数组的所有排列根据其字典顺序从小到大排列在一个容器中，
+     * 那么数组的 下一个排列 就是在这个有序容器中排在它后面的那个排列。如果不存在下一个更大的排列，那么这个数组必须重排为字典序最小的排列（即，其元素按升序排列）。
+     *
+     * 例如，arr = [1,2,3] 的下一个排列是 [1,3,2] 。
+     * 类似地，arr = [2,3,1] 的下一个排列是 [3,1,2] 。
+     * 而 arr = [3,2,1] 的下一个排列是 [1,2,3] ，因为 [3,2,1] 不存在一个字典序更大的排列。
+     *
+     *
+     * 解题思路：
      * 1、从后向前查找第一个相邻的元素对 (i, i + 1), 满足 A[i] < A[i + 1]。此时[i+1, end) 必然是降序
      * 2、在 [i + 1, end)中从后往前查找第一个满足 A[i] < A[k] 的k。 A[i], A[k] 分别就是【小数】和【大数】。
      * 3、将 A[i] 与 A[k] 交换
      * 4、可以断定这时 [i + 1, end) 必然是降序，重新排序 [i + 1, end) 使其升序。
      * 5、如果在步骤1中找不到符合的相邻元素时，说明当前 [begin, end) 为一个降序顺序，直接跳到 步骤4
+     *
+     * 对应 leetcode 中第 31 题。
      *
      * @param nums list of nums
      */
