@@ -2644,24 +2644,19 @@ public class HotProblems {
         if (temperatures.length == 0) {
             return res;
         }
-        Deque<Integer> stackValue = new LinkedList<>();
-        Deque<Integer> stackIndex = new LinkedList<>();
-        stackValue.offerLast(temperatures[temperatures.length - 1]);
-        stackIndex.offerLast(temperatures.length - 1);
+        Deque<Integer> stack = new LinkedList<>();
+        stack.offerLast(temperatures.length - 1);
 
-        for (int i = temperatures.length - 2; i >= 0; i--) {
-            int value = temperatures[i];
-            while (!stackValue.isEmpty() && stackValue.getLast() <= value) {
-                stackValue.removeLast();
-                stackIndex.removeLast();
+        for (int i = temperatures.length - 1; i >= 0; i--) {
+            while (!stack.isEmpty() && temperatures[stack.getLast()] <= temperatures[i]) {
+                stack.removeLast();
             }
-            if (stackValue.isEmpty()) {
+            if (stack.isEmpty()) {
                 res[i] = 0;
             } else {
-                res[i] = stackIndex.getLast() - i;
+                res[i] = stack.getLast() - i;
             }
-            stackValue.offerLast(value);
-            stackIndex.offerLast(i);
+            stack.offerLast(i);
         }
         return res;
     }

@@ -47,4 +47,18 @@ public class ArrayProblemTests {
         assertEquals(problems.subarraySum_v2(param, 0), 1);
         assertEquals(problems.subarraySum(param, 0), 1);
     }
+
+    @Test
+    public void testNextGreaterElements() {
+        int[] param = new int[] {1,2,1};
+        int[] res = new int[] {2,-1,2};
+        assertArrayEquals(problems.nextGreaterElements(param), res);
+    }
+
+    @Test
+    public void testMaxSlidingWindow() {
+        int[] param = new int[] {1,3,-1,-3,5,3,6,7};
+        int[] res = new int[] {3,3,5,5,6,7};
+        assertArrayEquals(problems.maxSlidingWindow(param, 3), res);
+    }
 }

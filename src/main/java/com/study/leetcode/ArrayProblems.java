@@ -1,7 +1,6 @@
 package com.study.leetcode;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>description: 数组相关的问题  </p>
@@ -70,4 +69,67 @@ public class ArrayProblems {
     }
 
     // -------和为K的子数组 << end --------
+
+    // -------下一个更大的元素II start >>--------
+
+    /**
+     * 给定一个循环数组 nums （ nums[nums.length - 1] 的下一个元素是 nums[0] ），返回 nums 中每个元素的 下一个更大元素 。
+     * 数字 x 的 下一个更大的元素 是按数组遍历顺序，这个数字之后的第一个比它更大的数，这意味着你应该循环地搜索它的下一个更大的数。如果不存在，则输出 -1 。
+     *
+     * 使用单调栈的方法进行解答
+     *
+     * 对应 leetcode 中第 503 题。
+     */
+    public int[] nextGreaterElements(int[] nums) {
+        Stack<Integer> stack = new Stack<>();
+        int[] res = new int[nums.length];
+        int len = nums.length;
+        for (int i = 2 * len - 1; i >= 0; i--) {
+            while (!stack.isEmpty() && stack.peek() <= nums[i % len]) {
+                stack.pop();
+            }
+            if (stack.isEmpty()) {
+                res[i % len] = -1;
+            } else {
+                res[i % len] = stack.peek();
+            }
+            stack.push(nums[i % len]);
+        }
+        return res;
+    }
+
+    // -------下一个更大的元素II << end --------
+
+    // -------滑动窗口最大值 start >>--------
+
+    /**
+     * 给你一个整数数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。
+     * 返回 滑动窗口中的最大值 。
+     *
+     * 对应 leetcode 中第 239 题
+     */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        // 双向队列，保存当前窗口最大值的数组位置，保证队列中数组位置的数值按照从大到小的顺序排列
+        Deque<Integer> queue = new LinkedList<>();
+        // 结果数组
+        int[] res = new int[nums.length - k + 1];
+        for (int i = 0; i < nums.length; i++) {
+            while (!queue.isEmpty() && nums[queue.peekLast()] <= nums[i]) {
+                queue.pollLast();
+            }
+            queue.offerLast(i);
+            // 判断当前队列中队首的值是否有效，也就是是否在窗口中，不满足的话，需要移除
+            if (queue.peek() <= i - k) {
+                queue.pollFirst();
+            }
+            // 当窗口长度为 k 时，保存当前窗口最大值
+            if (i + 1 >= k) {
+                res[i - k + 1] = nums[queue.peekFirst()];
+            }
+        }
+        return res;
+    }
+
+    // -------滑动窗口最大值 << end --------
+
 }
