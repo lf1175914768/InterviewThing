@@ -188,4 +188,53 @@ public class ListProblem {
     }
 
     // -------分隔链表 << end --------
+
+    // -------删除有序数组中的重复项 start >>--------
+
+    /**
+     * 给你一个 升序排列 的数组 nums ，请你 原地 删除重复出现的元素，使每个元素 只出现一次 ，返回删除后数组的新长度。元素的 相对顺序 应该保持 一致 。
+     * 由于在某些语言中不能改变数组的长度，所以必须将结果放在数组nums的第一部分。更规范地说，如果在删除重复项之后有 k 个元素，那么 nums 的前 k 个元素应该保存最终结果。
+     * 将最终结果插入 nums 的前 k 个位置后返回 k 。
+     * 不要使用额外的空间，你必须在 原地 修改输入数组 并在使用 O(1) 额外空间的条件下完成。
+     *
+     * 对应 leetcode 中第 26 题。
+     */
+    public int removeDuplicates(int[] nums) {
+        int start = 0, end = 1;
+        while (end < nums.length) {
+            if (nums[end] != nums[start]) {
+                start++;
+                nums[start] = nums[end];
+            }
+            end++;
+        }
+        return start + 1;
+    }
+
+    // -------删除有序数组中的重复项 << end --------
+
+    // -------删除排序链表中的重复元素 start >>--------
+
+    /**
+     * 给定一个已排序的链表的头 head ， 删除所有重复的元素，使每个元素只出现一次 。返回 已排序的链表 。
+     *
+     * 对应  leetcode 中第 83 题。
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null) return null;
+        ListNode slow = head, fast = head;
+        while (fast != null) {
+            if (fast.val != slow.val) {
+                slow.next = fast;
+                slow = slow.next;
+            }
+            fast = fast.next;
+        }
+        // 断开与后面的连接
+        slow.next = null;
+        return head;
+    }
+
+    // -------删除排序链表中的重复元素 << end --------
+
 }

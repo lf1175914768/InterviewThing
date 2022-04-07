@@ -1218,6 +1218,10 @@ public class HotProblems {
 
     /**
      * 给定一个字符串 s ，请你找出其中不含有重复字符的 最长子串 的长度。
+     *
+     * 对于滑动窗口问题，窗口的定义 是 左闭右开的，也就是 [left, right)
+     *
+     * 对应 leetcode 中第 3 题。
      */
     public int lengthOfLongestSubstring(String s) {
         Map<Character, Integer> window = new HashMap<>();

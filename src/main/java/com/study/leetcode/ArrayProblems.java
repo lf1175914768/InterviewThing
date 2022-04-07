@@ -132,4 +132,11 @@ public class ArrayProblems {
 
     // -------滑动窗口最大值 << end --------
 
+    // -------组合总和 start >>--------
+
+    public List<List<Integer>> permute1(int[] nums) {
+        return null;
+    }
+
+    // -------组合总和 << end --------
 }

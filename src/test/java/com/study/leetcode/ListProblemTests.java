@@ -76,7 +76,21 @@ public class ListProblemTests {
         ListNode head = buildCommonNode(Arrays.asList(1, 4, 3, 2, 5, 2));
         int[] rs = new int[] {1,2,2,4,3,5};
         assertArrayEquals(toArray(problem.partition(head, 3)), rs);
+    }
 
+    @Test
+    public void testRemoveDuplicates() {
+        int[] param = new int[] {1,1,2};
+        assertEquals(problem.removeDuplicates(param), 2);
+        param = new int[] {0,0,1,1,1,2,2,3,3,4};
+        assertEquals(problem.removeDuplicates(param), 5);
+    }
+
+    @Test
+    public void testDeleteDuplicates() {
+        ListNode head = buildCommonNode(Arrays.asList(1, 1, 2));
+        int[] rs = new int[] {1,2};
+        assertArrayEquals(toArray(problem.deleteDuplicates(head)), rs);
     }
 
     private int[] toArray(ListNode head) {
