@@ -2401,6 +2401,57 @@ public class HotProblems {
         queue[k] = cur;
     }
 
+    /**
+     * 使用 快排 + 迭代的方式进行解答
+     */
+    public int findKthLargest_v2(int[] nums, int k) {
+        int len = nums.length, target = len - k;
+        int start = 0, end = len - 1;
+        while (true) {
+            int p = findKthLargestFind(nums, start, end);
+            if (p == target) {
+                return nums[p];
+            } else if (p < target) {
+                start = p + 1;
+            } else {
+                end = p - 1;
+            }
+        }
+    }
+
+    /**
+     * 使用快排 + 递归的方式进行解答
+     */
+    public int findKthLargest_v3(int[] nums, int k) {
+        int len = nums.length, targetPosition = len - k;
+        findKthLargestPartSort(nums, 0, len - 1, targetPosition);
+        return nums[targetPosition];
+    }
+
+    private boolean findKthLargestPartSort(int[] nums, int start, int end, int targetPosition) {
+        if (start == targetPosition || end == targetPosition) {
+            return true;
+        }
+        if (start >= end)
+            return false;
+        int p = findKthLargestFind(nums, start, end);
+        return findKthLargestPartSort(nums, start, p - 1, targetPosition) ||
+        findKthLargestPartSort(nums, p + 1, end, targetPosition);
+    }
+
+    private int findKthLargestFind(int[] nums, int start, int end) {
+        int cur = nums[start];
+        int i = start, j = end;
+        while (i < j) {
+            while (i < j && nums[j] >= cur) j--;
+            nums[i] = nums[j];
+            while (i < j && nums[i] <= cur) i++;
+            nums[j] = nums[i];
+        }
+        nums[i] = cur;
+        return i;
+    }
+
     // -------数组中的第K个最大元素 << end --------
 
     // -------回文链表 start >>--------

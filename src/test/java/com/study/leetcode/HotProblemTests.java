@@ -508,9 +508,13 @@ public class HotProblemTests {
         int[] pa = new int[] {3,2,1,5,6,4};
         assertEquals(problem.findKthLargest(pa, 2), 5);
         assertEquals(problem.findKthLargestManual(pa, 2), 5);
+        assertEquals(problem.findKthLargest_v2(pa, 2), 5);
+        assertEquals(problem.findKthLargest_v3(pa, 2), 5);
         pa = new int[] {3,2,3,1,2,4,5,5,6};
         assertEquals(problem.findKthLargest(pa, 4), 4);
         assertEquals(problem.findKthLargestManual(pa, 4), 4);
+        assertEquals(problem.findKthLargest_v2(pa, 4), 4);
+        assertEquals(problem.findKthLargest_v3(pa, 4), 4);
     }
 
     @Test
