@@ -1,5 +1,6 @@
 package com.study.leetcode;
 
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -1355,6 +1356,162 @@ public class TreeProblems {
     }
 
     // -------不同的二叉搜索树 << end --------
+
+    // -------打开转盘锁 start >>--------
+
+    /**
+     * 你有一个带有四个圆形拨轮的转盘锁。每个拨轮都有10个数字： '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' 。
+     * 每个拨轮可以自由旋转：例如把 '9' 变为 '0'，'0' 变为 '9' 。每次旋转都只能旋转一个拨轮的一位数字。
+     * 锁的初始数字为 '0000' ，一个代表四个拨轮的数字的字符串。
+     * 列表 deadends 包含了一组死亡数字，一旦拨轮的数字和列表里的任何一个元素相同，这个锁将会被永久锁定，无法再被旋转。
+     * 字符串 target 代表可以解锁的数字，你需要给出解锁需要的最小旋转次数，如果无论如何不能解锁，返回 -1 。
+     *
+     * 使用 双向队列的 方法进行解答。
+     *
+     * 对应 leetcode 中第 752 题。
+     */
+    public int openLock(String[] deadends, String target) {
+        Set<String> deads = new HashSet<>(Arrays.asList(deadends));
+        Set<String> q1 = new HashSet<>();
+        Set<String> q2 = new HashSet<>();
+        Set<String> visited = new HashSet<>();
+        int step = 0;
+        q1.add("0000");
+        q2.add(target);
+        while (!q1.isEmpty() && !q2.isEmpty()) {
+            if (q1.size() > q2.size()) {
+                // 交换 q1 和 q2
+                Set<String> tmp = q1;
+                q1 = q2;
+                q2 = tmp;
+            }
+            Set<String> temp = new HashSet<>();
+            for (String cur : q1) {
+                if (deads.contains(cur))
+                    continue;
+                if (q2.contains(cur))
+                    return step;
+                visited.add(cur);
+                // 将一个节点的未遍历相邻节点加入集合
+                for (int j = 0; j < 4; j++) {
+                    String up = openLockPlusOne(cur, j);
+                    if (!visited.contains(up)) {
+                        temp.add(up);
+                    }
+                    String down = openLockMinusOne(cur, j);
+                    if (!visited.contains(down)) {
+                        temp.add(down);
+                    }
+                }
+            }
+            // 增加步数
+            step++;
+            q1 = q2;
+            q2 = temp;
+        }
+        return -1;
+    }
+
+    private String openLockPlusOne(String s, int j) {
+        char[] ch = s.toCharArray();
+        if (ch[j] == '9')
+            ch[j] = '0';
+        else
+            ch[j] += 1;
+        return new String(ch);
+    }
+
+    private String openLockMinusOne(String s, int j) {
+        char[] ch = s.toCharArray();
+        if (ch[j] == '0') {
+            ch[j] = '9';
+        } else {
+            ch[j] -= 1;
+        }
+        return new String(ch);
+    }
+
+    // -------打开转盘锁 << end --------
+
+    // -------滑动谜题 start >>--------
+
+    /**
+     * 在一个 2 x 3 的板上（board）有 5 块砖瓦，用数字 1~5 来表示, 以及一块空缺用 0 来表示。一次 移动 定义为选择 0 与一个相邻的数字（上下左右）进行交换.
+     * 最终当板 board 的结果是 [[1,2,3],[4,5,0]] 谜板被解开。
+     * 给出一个谜板的初始状态 board ，返回最少可以通过多少次移动解开谜板，如果不能解开谜板，则返回 -1 。
+     *
+     * 对于这种计算最小步数的问题，可以考虑使用 BFS 算法。
+     * 这个题目转化成 BFS 问题是有一些技巧的，我们面临如下问题：
+     * 1、一般的 BFS 算法，是从一个起点 start 开始，向终点 target 进行寻路，但是拼图问题不是在寻路，而是在不断的交换数字，这应该怎么转化成 BFS 算法问题呢？
+     * 2、即便这个问题能够转换成 BFS 问题，如何处理起点 start 和终点 target？它们都是数组，把数组放进队列，套BFS 框架，想想就比较麻烦且低效。
+     * 首先回答第一个问题，BFS 算法并不只是一个寻路算法，而是一种暴力搜索算法，只要涉及暴力穷举的问题，BFS 就可以用，而且可以最快的找到答案。
+     * 对于第二个问题，我们这里的 board 仅仅是 2x3 的二维数组，所以可以压缩成一个一维字符串。其中比较有技巧性的点在于，二维数组中有【上下左右】的概念，
+     * 压缩成一维后，如何得到某一个索引上下左右的索引？
+     * 很简单，我们可以用一个映射来表示 :
+     * <pre> int[][] neighbor = new int[][] {
+     *     {1, 3},
+     *     {0, 4, 2},
+     *     {1, 5},
+     *     {0, 4},
+     *     {3, 1, 5},
+     *     {4, 2}
+     * } </pre>
+     * 这个含义就是，在一维数组中， 索引 i 在二维数组中的相邻索引为 neighbor[i].
+     *
+     * 对应 leetcode 中第 773 题。
+     */
+    public int slidingPuzzle(int[][] board) {
+        StringBuilder sb = new StringBuilder();
+        String target = "123450";
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 3; j++) {
+                sb.append(board[i][j]);
+            }
+        }
+        String start = sb.toString();
+        int[][] neighbor = new int[][] {
+                {1, 3},
+                {0, 4, 2},
+                {1, 5},
+                {0, 4},
+                {3, 1, 5},
+                {4, 2}
+        };
+        // BFS
+        Queue<String> queue = new LinkedList<>();
+        Set<String> visited = new HashSet<>();
+        queue.offer(start);
+        visited.add(start);
+        int step = 0;
+        while (!queue.isEmpty()) {
+            int sz = queue.size();
+            for (int i = 0; i < sz; i++) {
+                String cur = queue.poll();
+                assert cur != null;
+                if (target.equals(cur))
+                    return step;
+                int idx = 0;
+                while (cur.charAt(idx) != '0')
+                    idx++;
+                for (int adj : neighbor[idx]) {
+                    char[] ch = cur.toCharArray();
+                    char tmp = ch[idx];
+                    ch[idx] = ch[adj];
+                    ch[adj] = tmp;
+                    String newBoard = new String(ch);
+                    // 防止走回头路
+                    if (!visited.contains(newBoard)) {
+                        visited.add(newBoard);
+                        queue.offer(newBoard);
+                    }
+                }
+            }
+            step++;
+        }
+        return -1;
+    }
+
+    // -------滑动谜题 << end --------
 
     // -------组合总和 start >>--------
 

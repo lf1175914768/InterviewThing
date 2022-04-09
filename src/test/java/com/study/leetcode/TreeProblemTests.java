@@ -475,6 +475,26 @@ public class TreeProblemTests {
         assertArrayEquals(arr, temp);
     }
 
+    @Test
+    public void testOpenLock() {
+        String[] deads = new String[] {"0201","0101","0102","1212","2002"};
+        assertEquals(problem.openLock(deads, "0202"), 6);
+        deads = new String[] {"8888"};
+        assertEquals(problem.openLock(deads, "0009"), 1);
+        deads = new String[] {"8887","8889","8878","8898","8788","8988","7888","9888"};
+        assertEquals(problem.openLock(deads, "8888"), -1);
+    }
+
+    @Test
+    public void testSlidingPuzzle() {
+        int[][] board = new int[][] {{1,2,3}, {4,0,5}};
+        assertEquals(problem.slidingPuzzle(board), 1);
+        board = new int[][] {{1,2,3}, {5,4,0}};
+        assertEquals(problem.slidingPuzzle(board), -1);
+        board = new int[][] {{4,1,2}, {5,0,3}};
+        assertEquals(problem.slidingPuzzle(board), 5);
+    }
+
     /**
      * build tree
      *             4
