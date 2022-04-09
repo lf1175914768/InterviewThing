@@ -735,6 +735,122 @@ public class TopInterviewProblems {
 
     // -------通配符匹配 << end --------
 
+    // -------组合 start >>--------
+
+    /**
+     * 给定两个整数 n 和 k，返回范围 [1, n] 中所有可能的 k 个数的组合。
+     * 你可以按 任何顺序 返回答案。
+     *
+     * 这道题目属于 子集的 变体。相当于求 全部子集 中满足大小是 k 的子集的集合。
+     * 只需要将base case 修改一下即可。
+     *
+     * @see HotProblems#subsets(int[])
+     *
+     * 对应 leetcode 中第 77 题。
+     */
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> res = new ArrayList<>();
+        combineBackTrack(n, 1, k, new LinkedList<>(), res);
+        return res;
+    }
+
+    private void combineBackTrack(int n, int start, int count, Deque<Integer> list, List<List<Integer>> res) {
+        if (list.size() == count) {
+            res.add(new ArrayList<>(list));
+            return;
+        }
+        for (int i = start; i <= n; i++) {
+            list.offerLast(i);
+            combineBackTrack(n, i + 1, count, list, res);
+            list.removeLast();
+        }
+    }
+
+    // -------组合 << end --------
+
+    // -------组合总和II start >>--------
+
+    /**
+     * 给定一个候选人编号的集合 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合。
+     * candidates 中的每个数字在每个组合中只能使用 一次 。
+     *
+     * @see HotProblems#combinationSum_v2(int[], int)
+     *
+     * 对应 leetcode 中第 40 题。
+     */
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        List<List<Integer>> res = new ArrayList<>();
+        combinationSum2BackTrack(candidates, 0, target, new LinkedList<>(), res);
+        return res;
+    }
+
+    private void combinationSum2BackTrack(int[] candidates, int start, int target, LinkedList<Integer> list, List<List<Integer>> res) {
+        if (target == 0) {
+            res.add(new ArrayList<>(list));
+            return;
+        }
+        if (target < 0) {
+            return;
+        }
+        for (int i = start; i < candidates.length; i++) {
+            if (i > start && candidates[i] == candidates[i - 1])
+                continue;
+            list.offerLast(candidates[i]);
+            combinationSum2BackTrack(candidates, i + 1, target - candidates[i], list, res);
+            list.removeLast();
+        }
+    }
+
+    // -------组合总和II << end --------
+
+    // -------全排列II start >>--------
+
+    /**
+     * 给定一个可包含重复数字的序列 nums ，按任意顺序 返回所有不重复的全排列。
+     *
+     * 对应 leetcode 中第 47 题。
+     */
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(nums);
+        boolean[] used = new boolean[nums.length];
+        permuteUniqueBackTrack(nums, new LinkedList<>(), used, res);
+        return res;
+    }
+
+    private void permuteUniqueBackTrack(int[] nums, Deque<Integer> list, boolean[] used, List<List<Integer>> res) {
+        if (list.size() == nums.length) {
+            res.add(new ArrayList<>(list));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (used[i])
+                continue;
+            /*
+             * 这里进行剪枝
+             *
+             * 在标准的全排列算法中，比如 [1,2,2*] 和 [1,2*,2] 是不同的，但是在这里却是相同的排列，关键在于如何设计剪枝，将这种重复去除掉
+             * 答案就是，保证相同元素在排列中的相对位置不变。
+             * 就比如说 [1,2,2*] 这个例子，我只要保持 2 在 2* 前面不变。这样的话，就能满足条件
+             * 标准全排列算法之所以出现重复，是因为把相同元素组成的排列序列视为不同的序列，但实际上他们应该是相同的；而如果固定相同元素形成的序列顺序，
+             * 当然就避免了重复。
+             * 当出现重复元素时，比如输入 [1,2,2*,2**], 2*只有在 2 已经被使用的情况下才会被选择， 2** 只有在 2* 已经被使用的情况下才会被选择。
+             * 这样就保证了相同元素在排列中的相对位置保证固定。
+             */
+            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1])
+                // 如果前面的相邻相等元素没有用过，则跳过
+                continue;
+            used[i] = true;
+            list.offerLast(nums[i]);
+            permuteUniqueBackTrack(nums, list, used, res);
+            list.removeLast();
+            used[i] = false;
+        }
+    }
+
+    // -------全排列II << end --------
+
     ////// --------------helper class----------------
 
     static class RandomNode {

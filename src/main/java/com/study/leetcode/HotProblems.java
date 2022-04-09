@@ -1855,6 +1855,7 @@ public class HotProblems {
     private void subsetsWithDupBacktrack(int[] nums, int start, Deque<Integer> list, List<List<Integer>> result) {
         result.add(new ArrayList<>(list));
         for (int i = start; i < nums.length; i++) {
+            // 剪枝逻辑，值相同的相邻树枝，只遍历第一条
             if (i > start && nums[i] == nums[i - 1])
                 continue;
             list.offerLast(nums[i]);
@@ -2819,5 +2820,4 @@ public class HotProblems {
             this.distFromStart = distFromStart;
         }
     }
-
 }
