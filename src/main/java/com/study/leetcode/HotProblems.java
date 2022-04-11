@@ -2408,7 +2408,7 @@ public class HotProblems {
     public int findKthLargest_v2(int[] nums, int k) {
         int len = nums.length, target = len - k;
         int start = 0, end = len - 1;
-        while (true) {
+        while (start <= end) {
             int p = findKthLargestFind(nums, start, end);
             if (p == target) {
                 return nums[p];
@@ -2418,6 +2418,7 @@ public class HotProblems {
                 end = p - 1;
             }
         }
+        return -1;
     }
 
     /**
@@ -2805,6 +2806,103 @@ public class HotProblems {
 
     // -------两个大数进行相加 << end --------
 
+    // -------接雨水 start >>--------
+
+    /**
+     * 给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
+     *
+     * 这里使用 动态规划 得方法进行解题。
+     * 对于每一列，我们可以求它左边最高得墙和右边最高得墙，装水得多少，根据木桶效应，选择其中较矮得一个就够了。
+     * 首先使用两个数组，maxLeft[i] 代表第 i 列左边最高得墙得高度， maxRight[i] 代表第 i 列右边最高得墙
+     * 得高度（这里第 i 列左（右）最高得墙，是不包括自身得。）
+     * 对于 maxLeft，我们可以这样求：
+     * maxLeft[i] = max(maxLeft[i - 1], height[i - 1])。它前边得墙得左边得最高高度和它前边得墙得高度
+     * 选一个较大得，就是当前列左边最高得墙了。
+     * 对于 maxRight，我们可以这样求：
+     * maxRight[i] = max(maxRight[i + 1], height[i + 1])。它后边得墙得右边得最高高度和它后边得墙得高度
+     * 选择一个较大得，就是当前列右边最高得墙了。
+     *
+     * 对应 leetcode 中第 42 题。
+     */
+    public int trap(int[] height) {
+        int sum = 0;
+        int[] maxLeft = new int[height.length];
+        int[] maxRight = new int[height.length];
+
+        for (int i = 1; i < height.length - 1; i++) {
+            maxLeft[i] = Math.max(maxLeft[i - 1], height[i - 1]);
+        }
+        for (int j = height.length - 2; j >= 0; j--) {
+            maxRight[j] = Math.max(maxRight[j + 1], height[j + 1]);
+        }
+
+        for (int i = 1; i < height.length - 1; i++) {
+            int min = Math.min(maxLeft[i], maxRight[i]);
+            if (min > height[i]) {
+                sum += (min - height[i]);
+            }
+        }
+        return sum;
+    }
+
+    /**
+     * 上面解法得 dp 数组压缩版
+     */
+    public int trap_v2(int[] height) {
+        int sum = 0;
+        int maxLeft = 0, maxRight = 0;
+        int left = 1, right = height.length - 2;
+        for (int i = 1; i < height.length - 1; i++) {
+            // 从左到右更新
+            if (height[left - 1] < height[right + 1]) {
+                // 这种情况下能够保证 较矮得墙来自左边
+                maxLeft = Math.max(maxLeft, height[left - 1]);
+                int min = maxLeft;
+                if (min > height[left]) {
+                    sum += (min - height[left]);
+                }
+                left++;
+            } else {
+                // 从右到左更新
+                maxRight = Math.max(maxRight, height[right + 1]);
+                int min = maxRight;
+                if (min > height[right]) {
+                    sum += (min - height[right]);
+                }
+                right--;
+            }
+        }
+        return sum;
+    }
+
+    /**
+     * 使用 栈 得方法进行解答。
+     *
+     * 我们用栈保存每堵墙。当遍历墙得高度得时候，如果当前高度小于栈顶得墙得高度，说明这里会有积水，我们将墙得高度得下标入栈。
+     * 如果当前高度大于栈顶得墙得高度，说明之前得积水到这里停下，我们可以计算下有多少积水了。计算完成后，就把当前得墙继续入栈，作为新得积水得墙。
+     * 总体得原则就是：
+     * 1.当前高度小于等于栈顶高度，入栈，指针后移。
+     * 2.当前高度大于栈顶高度，出栈，计算出当前墙和栈顶得墙之间水得多少，然后计算当前得高度和新栈得高度得关系。重复第二步。直到当前墙得高度不大于
+     * 栈顶高度或者栈空，然后将当前墙入栈，指针后移。
+     */
+    public int trap_v3(int[] height) {
+        int sum = 0;
+        Stack<Integer> stack = new Stack<>();
+        for (int current = 0; current < height.length; current++) {
+            // 如果栈不空并且当前指向得高度大于栈顶高度就一直循环
+            while (!stack.isEmpty() && height[current] > height[stack.peek()]) {
+                int h = height[stack.pop()];   // 取出要出栈得元素
+                if (stack.isEmpty()) break;
+                int distance = current - stack.peek() - 1;  // 两堵墙之间得距离
+                int min = Math.min(height[stack.peek()], height[current]);
+                sum += (min - h) * distance;
+            }
+            stack.push(current);
+        }
+        return sum;
+    }
+
+    // -------接雨水 << end --------
 
     ///////-------------helper class-------------------
 

@@ -609,4 +609,16 @@ public class HotProblemTests {
         assertEquals(problem.sumOfTwoString("9999999", "9"), "10000008");
         assertEquals(problem.sumOfTwoString("999999955555", "594"), "999999956149");
     }
+
+    @Test
+    public void testTrap() {
+        int[] param = new int[] {0,1,0,2,1,0,1,3,2,1,2,1};
+        assertEquals(problem.trap(param), 6);
+        assertEquals(problem.trap_v2(param), 6);
+        assertEquals(problem.trap_v3(param), 6);
+        param = new int[] {4,2,0,3,2,5};
+        assertEquals(problem.trap(param), 9);
+        assertEquals(problem.trap_v2(param), 9);
+        assertEquals(problem.trap_v3(param), 9);
+    }
 }
