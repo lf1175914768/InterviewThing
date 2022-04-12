@@ -246,4 +246,11 @@ public class TopInterviewProblemTests {
         param = new int[] {3,3,0,3};
         assertEquals(problems.permuteUnique(param).size(), 4);
     }
+
+    @Test
+    public void testCountPrimes() {
+        assertEquals(problems.countPrimes(10), 4);
+        assertEquals(problems.countPrimes(0), 0);
+        assertEquals(problems.countPrimes(1), 0);
+    }
 }

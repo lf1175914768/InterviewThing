@@ -851,6 +851,41 @@ public class TopInterviewProblems {
 
     // -------全排列II << end --------
 
+    // -------计数质数 start >>--------
+
+    /**
+     * 给定整数 n ，返回 所有小于非负整数 n 的质数的数量 。
+     *
+     * 对应 leetcode 中第 204 题。
+     */
+    public int countPrimes(int n) {
+        boolean[] isPrime = new boolean[n];
+        Arrays.fill(isPrime, true);
+        for (int i = 2; i * i < n; i++) {
+            if (isPrime[i]) {
+                for (int j = i * i; j < n; j += i) {
+                    isPrime[j] = false;
+                }
+            }
+        }
+        int count = 0;
+        for (int i = 2; i < n; i++) {
+            if (isPrime[i])
+                count++;
+        }
+        return count;
+    }
+
+    // -------计数质数 << end --------
+
+    // -------组合总和 start >>--------
+
+    public List<List<Integer>> permute1(int[] nums) {
+        return null;
+    }
+
+    // -------组合总和 << end --------
+
     ////// --------------helper class----------------
 
     static class RandomNode {
