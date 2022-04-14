@@ -621,4 +621,19 @@ public class HotProblemTests {
         assertEquals(problem.trap_v2(param), 9);
         assertEquals(problem.trap_v3(param), 9);
     }
+
+    @Test
+    public void testSearch() {
+        int[] param = new int[] {4,5,6,7,0,1,2};
+        assertEquals(problem.search(param, 0), 4);
+        assertEquals(problem.search(param, 3), -1);
+        param = new int[] {1};
+        assertEquals(problem.search(param, 0), -1);
+    }
+
+    @Test
+    public void testMySqrt() {
+        assertEquals(problem.mySqrt(9), 3);
+        assertEquals(problem.mySqrt(8), 2);
+    }
 }

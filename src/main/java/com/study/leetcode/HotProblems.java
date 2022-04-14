@@ -2904,6 +2904,80 @@ public class HotProblems {
 
     // -------接雨水 << end --------
 
+    // -------搜索旋转排序数组 start >>--------
+
+    /**
+     * 整数数组 nums 按升序排列，数组中的值 互不相同 。
+     * 在传递给函数之前，nums 在预先未知的某个下标 k（0 <= k < nums.length）上进行了 旋转，使数组变为
+     * [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]（下标 从 0 开始 计数）。
+     * 例如， [0,1,2,4,5,6,7] 在下标 3 处经旋转后可能变为 [4,5,6,7,0,1,2] 。
+     * 给你 旋转后 的数组 nums 和一个整数 target ，如果 nums 中存在这个目标值 target ，则返回它的下标，否则返回 -1 。
+     *
+     * 对应 leetcode 中第 33 题。
+     */
+    public int search(int[] nums, int target) {
+        int left = 0, len = nums.length, right = len - 1;
+        while (left <= right) {
+            int middle = left + ((right - left) >>> 1);
+            if (nums[middle] == target) {
+                return middle;
+            }
+            if (nums[0] <= nums[middle]) {
+                // 左侧一定是单调的，并且 nums[middle] != target
+                if (nums[0] <= target && target < nums[middle]) {
+                    right = middle - 1;
+                } else {
+                    left = middle + 1;
+                }
+            } else {
+                if (nums[middle] < target && target <= nums[len - 1]) {
+                    left = middle + 1;
+                } else {
+                    right = middle - 1;
+                }
+            }
+        }
+        return -1;
+    }
+
+    // -------搜索旋转排序数组 << end --------
+
+    // -------X的平方根 start >>--------
+
+    /**
+     * 给你一个非负整数 x ，计算并返回 x 的 算术平方根 。
+     * 由于返回类型是整数，结果只保留 整数部分 ，小数部分将被 舍去 。
+     * 注意：不允许使用任何内置指数函数和算符，例如 pow(x, 0.5) 或者 x ** 0.5 。
+     *
+     * 思路分析：
+     * 如果这个整数的平方 恰好等于 输入整数，那么我们就找到了这个整数
+     * 如果这个整数的平方 严格大于 输入整数，那么这个整数肯定不是我们要找的那个数。
+     * 如果这个整数的平方 严格小于 输入整数，那么这个整数 可能 是我们要找的那个数。
+     *
+     * 因此，我们可以使用【二分查找】 来查找这个整数，不断缩小范围去猜。
+     * 猜的数平方以后大了就往小了猜。
+     * 猜的数平方以后恰恰好等于输入的数就找到了。
+     * 猜的数平方以后小了，可能猜的数就是，也可能不是。
+     *
+     * 对应 leetcode 中第 69 题。
+     */
+    public int mySqrt(int x) {
+        if (x == 0 || x == 1) return x;
+        int left = 1, right = x >>> 1;
+        while (left < right) {
+            // 这里将取中间数的 逻辑设置成 向上取整，避免出现死循环
+            int mid = left + ((right - left + 1) >>> 1);
+            // 这里为了避免乘法溢出，改用除法
+            if (mid > x / mid)
+                right = mid - 1;
+            else
+                left = mid;
+        }
+        return left;
+    }
+
+    // -------X的平方根 << end --------
+
     ///////-------------helper class-------------------
 
     public static class State {
