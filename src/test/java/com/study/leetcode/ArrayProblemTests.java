@@ -61,4 +61,13 @@ public class ArrayProblemTests {
         int[] res = new int[] {3,3,5,5,6,7};
         assertArrayEquals(problems.maxSlidingWindow(param, 3), res);
     }
+
+    @Test
+    public void testMinEatingSpeed() {
+        int[] params = new int[] {3,6,7,11};
+        assertEquals(problems.minEatingSpeed(params, 8), 4);
+        params = new int[] {30,11,23,4,20};
+        assertEquals(problems.minEatingSpeed(params, 5), 30);
+        assertEquals(problems.minEatingSpeed(params, 6), 23);
+    }
 }
