@@ -186,6 +186,43 @@ public class ArrayProblems {
 
     // -------爱吃香蕉的珂珂 << end --------
 
+    // -------折木棍 start >>--------
+
+    /**
+     * 折木棍
+     *
+     * 在你的面前从左到右摆放着 nn 根长短不一的木棍，你每次可以折断一根木棍，并将折断后得到的两根木棍一左一右放在原来的位置
+     * （即若原木棍有左邻居，则两根新木棍必须放在左邻居的右边，若原木棍有右邻居，新木棍必须放在右邻居的左边，所有木棍保持左右排列）。
+     * 折断后的两根木棍的长度必须为整数，且它们之和等于折断前的木棍长度。你希望最终从左到右的木棍长度单调不减，那么你需要折断多少次呢？
+     *
+     * 使用贪心的方法进行解答。
+     * 从后往前遍历，当当前位置木棍长度比后面的长时，就需要将其折成n份，策略是折成的 n 份中最小值尽量大，而最大值不超过后面的数。
+     */
+    public int foldStick(int[] nums) {
+        int len = nums.length;
+        if (len == 0) return 0;
+        int res = 0, maxHeight = nums[len - 1];
+        for (int i = len - 2; i >= 0; i--) {
+            if (nums[i] > maxHeight) {
+                if (nums[i] % maxHeight == 0) {
+                    int stick = nums[i] / maxHeight;
+                    res += (stick - 1);
+                } else {
+                    // 查看当前长度应该分成几份
+                    int stick = nums[i] / maxHeight + 1;
+                    res += (stick - 1);
+                    // 因为要分成 stick 份，所以一份的长度至少为 nums[i] / stick
+                    maxHeight = nums[i] / stick;
+                }
+            } else {
+                maxHeight = nums[i];
+            }
+        }
+        return res;
+    }
+
+    // -------折木棍 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

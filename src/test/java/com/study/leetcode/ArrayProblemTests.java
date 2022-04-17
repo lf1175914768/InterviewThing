@@ -70,4 +70,20 @@ public class ArrayProblemTests {
         assertEquals(problems.minEatingSpeed(params, 5), 30);
         assertEquals(problems.minEatingSpeed(params, 6), 23);
     }
+
+    @Test
+    public void testFoldStick() {
+        int[] param = new int[] {3, 5, 13, 9, 12};
+        assertEquals(problems.foldStick(param), 1);
+        param = new int[] {3,12,13,9,12};
+        assertEquals(problems.foldStick(param), 2);
+        param = new int[] {3,13,12,9,12};
+        assertEquals(problems.foldStick(param), 3);
+        param = new int[] {3,13,60,7};
+        assertEquals(problems.foldStick(param), 10);
+        param = new int[] {3,63,7};
+        assertEquals(problems.foldStick(param), 8);
+        param = new int[] {9, 1};
+        assertEquals(problems.foldStick(param), 8);
+    }
 }

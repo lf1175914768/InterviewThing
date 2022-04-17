@@ -21,4 +21,11 @@ public class StringProblemTests {
         assertFalse(problems.isSubsequence("axc", "ahbgdc"));
         assertFalse(problems.isSubsequence_v2("axc", "ahbgdc"));
     }
+
+    @Test
+    public void testCompareVersion() {
+        assertEquals(problems.compareVersion("0.1", "1.1"), -1);
+        assertEquals(problems.compareVersion("1.01", "1.001"), 0);
+        assertEquals(problems.compareVersion("1.0", "1.000"), 0);
+    }
 }

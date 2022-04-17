@@ -2978,6 +2978,43 @@ public class HotProblems {
 
     // -------X的平方根 << end --------
 
+    // -------螺旋矩阵 start >>--------
+
+    /**
+     * 给你一个 m 行 n 列的矩阵 matrix ，请按照 顺时针螺旋顺序 ，返回矩阵中的所有元素。
+     *
+     * 对应 leetcode 中第 54 题。
+     */
+    public List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> res = new ArrayList<>();
+        int rows = matrix.length, cols = matrix[0].length;
+        int left = 0, right = cols - 1, top = 0, bottom = rows - 1;
+        while (left <= right && top <= bottom) {
+            for (int col = left; col <= right; col++) {
+                res.add(matrix[top][col]);
+            }
+            for (int row = top + 1; row <= bottom; row++) {
+                res.add(matrix[row][right]);
+            }
+            if (left < right && top < bottom) {
+                for (int col = right - 1; col >= left; col--) {
+                    res.add(matrix[bottom][col]);
+                }
+                for (int row = bottom - 1; row > top; row--) {
+                    res.add(matrix[row][left]);
+                }
+            }
+            left++;
+            right--;
+            top++;
+            bottom--;
+        }
+        return res;
+    }
+
+    // -------螺旋矩阵 << end --------
+
+
     ///////-------------helper class-------------------
 
     public static class State {

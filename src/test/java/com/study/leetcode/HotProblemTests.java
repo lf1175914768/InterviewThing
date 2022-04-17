@@ -636,4 +636,17 @@ public class HotProblemTests {
         assertEquals(problem.mySqrt(9), 3);
         assertEquals(problem.mySqrt(8), 2);
     }
+
+    @Test
+    public void testSpiralOrder() {
+        int[][] param = new int[][] {{1,2,3}, {4,5,6}, {7,8,9}};
+        Integer[] res = new Integer[] {1,2,3,6,9,8,7,4,5};
+        assertArrayEquals(problem.spiralOrder(param).toArray(new Integer[0]), res);
+        param = new int[][] {{3},{2}};
+        res = new Integer[] {3,2};
+        assertArrayEquals(problem.spiralOrder(param).toArray(new Integer[0]), res);
+        param = new int[][] {{1,2,3,4}, {5,6,7,8}, {9,10,11,12}};
+        res = new Integer[] {1,2,3,4,8,12,11,10,9,5,6,7};
+        assertArrayEquals(problem.spiralOrder(param).toArray(new Integer[0]), res);
+    }
 }
