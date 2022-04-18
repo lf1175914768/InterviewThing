@@ -495,6 +495,19 @@ public class TreeProblemTests {
         assertEquals(problem.slidingPuzzle(board), 5);
     }
 
+    @Test
+    public void testSolveNQueens() {
+        List<List<String>> res = problem.solveNQueens(1);
+        assertEquals(res.size(), 1);
+        assertEquals(res.get(0).get(0), "Q");
+        res = problem.solveNQueens(4);
+        assertEquals(res.size(), 2);
+        String[] tmp = new String[] {".Q..","...Q","Q...","..Q."};
+        assertArrayEquals(res.get(0).toArray(new String[0]), tmp);
+        tmp = new String[] {"..Q.","Q...","...Q",".Q.."};
+        assertArrayEquals(res.get(1).toArray(new String[0]), tmp);
+    }
+
     /**
      * build tree
      *             4

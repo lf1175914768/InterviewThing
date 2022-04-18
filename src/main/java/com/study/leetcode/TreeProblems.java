@@ -1513,6 +1513,66 @@ public class TreeProblems {
 
     // -------滑动谜题 << end --------
 
+    // -------N皇后 start >>--------
+
+    /**
+     * n 皇后问题 研究的是如何将 n 个皇后放置在 n×n 的棋盘上，并且使皇后彼此之间不能相互攻击。
+     * 给你一个整数 n ，返回所有不同的 n 皇后问题 的解决方案。
+     * 每一种解法包含一个不同的 n 皇后问题 的棋子放置方案，该方案中 'Q' 和 '.' 分别代表了皇后和空位。
+     *
+     * 对应 leetcode 中第 51 题。
+     */
+    public List<List<String>> solveNQueens(int n) {
+        List<List<String>> res = new ArrayList<>();
+        // “.” 表示空，“Q”表示皇后，初始化棋盘
+        char[][] board = new char[n][n];
+        for (char[] c : board) {
+            Arrays.fill(c, '.');
+        }
+        solveNQueueBackTrack(board, 0, res);
+        return res;
+    }
+
+    private void solveNQueueBackTrack(char[][] board, int row, List<List<String>> res) {
+        // 每一行都成功放置了皇后，记录结果
+        if (row == board.length) {
+            List<String> list = new ArrayList<>();
+            for (char[] c : board) {
+                list.add(String.copyValueOf(c));
+            }
+            res.add(list);
+            return;
+        }
+        int n = board[row].length;
+        // 在当前行得每一列都可能放置皇后
+        for (int col = 0; col < n; col++) {
+            // 排除可以相互攻击得格子。
+            if (!solveNQueueIsValid(board, row, col)) continue;
+            board[row][col] = 'Q';
+            solveNQueueBackTrack(board, row + 1, res);
+            board[row][col] = '.';
+        }
+    }
+
+    private boolean solveNQueueIsValid(char[][] board, int row, int col) {
+        int n = board.length;
+        // 检查列是否有冲突
+        for (int i = 0; i < n; i++) {
+            if (board[i][col] == 'Q') return false;
+        }
+        // 检查右上方是否有皇后冲突
+        for (int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++) {
+            if (board[i][j] == 'Q') return false;
+        }
+        // 检查左上方是否有皇后冲突
+        for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
+            if (board[i][j] == 'Q') return false;
+        }
+        return true;
+    }
+
+    // -------N皇后 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {
