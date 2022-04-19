@@ -136,4 +136,15 @@ public class DynamicProblemTests {
         param = new int[] {1,2,3};
         assertEquals(problems.rob2(param), 3);
     }
+
+    @Test
+    public void testMaximalSquare() {
+        char[][] param = new char[][] {{'1','0','1','0','0'}, {'1','0','1','1','1'},
+                {'1','1','1','1','1'}, {'1','0','0','1','0'}};
+        assertEquals(problems.maximalSquare(param), 4);
+        param = new char[][] {{'0','1'}, {'1','0'}};
+        assertEquals(problems.maximalSquare(param), 1);
+        param = new char[][] {{'0'}};
+        assertEquals(problems.maximalSquare(param), 0);
+    }
 }
