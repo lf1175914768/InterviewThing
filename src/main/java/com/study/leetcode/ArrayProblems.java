@@ -223,6 +223,72 @@ public class ArrayProblems {
 
     // -------折木棍 << end --------
 
+    // -------搜索二维矩阵II start >>--------
+
+    /**
+     * 编写一个高效的算法来搜索 m x n 矩阵 matrix 中的一个目标值 target 。该矩阵具有以下特性：
+     *
+     * 每行的元素从左到右升序排列。
+     * 每列的元素从上到下升序排列。
+     *
+     * 解题思路：
+     * 看到有序，第一反应就是二分查找，最直接的做法，就是一行一行的进行二分查找。
+     * 此外，结合有序的性质，一些情况下可以提前结束。
+     *
+     * 对应 leetcode 中第 240 题。
+     */
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix.length == 0 || matrix[0].length == 0) return false;
+        for (int i = 0; i < matrix.length; i++) {
+            if (matrix[i][0] > target) break;
+            if (matrix[i][matrix[i].length - 1] < target) continue;
+            int col = searchMatrixBinarySearch(matrix[i], target);
+            if (col != -1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int searchMatrixBinarySearch(int[] matrix, int target) {
+        int left = 0, right = matrix.length - 1;
+        while (left <= right) {
+            int mid = left + ((right - left) >>> 1);
+            if (matrix[mid] == target) {
+                return mid;
+            } else if (matrix[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 数组从左到右 和 从上到下都是升序的，如果从右上角出发开始遍历呢？
+     * 会发现每次都是向左数字会变小，向下数字会变大， 有点和二分查找树相似。二分查找树的话，是向左数字变小，向右数字变大。
+     * 所以我们可以把 target 和当前值比较。
+     *  如果 target 的值大于当前值，那么就向下走，
+     *  如果 target 的值小于当前值，那么就向左走。
+     *  如果相等的话，直接返回 true。
+     */
+    public boolean searchMatrix_v2(int[][] matrix, int target) {
+        if (matrix.length == 0 || matrix[0].length == 0) return false;
+        for (int i = 0, j = matrix[0].length - 1; i < matrix.length && j >= 0;) {
+            if (matrix[i][j] > target) {
+                j--;
+            } else if (matrix[i][j] < target) {
+                i++;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // -------搜索二维矩阵II << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

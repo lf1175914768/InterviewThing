@@ -508,6 +508,15 @@ public class TreeProblemTests {
         assertArrayEquals(res.get(1).toArray(new String[0]), tmp);
     }
 
+    @Test
+    public void testSumNumbers() {
+        TreeNode node1 = new TreeNode(2);
+        TreeNode node2 = new TreeNode(3);
+        TreeNode root = new TreeNode(1, node1, node2);
+        assertEquals(problem.sumNumbers(root), 25);
+        assertEquals(problem.sumNumbers_v2(root), 25);
+    }
+
     /**
      * build tree
      *             4

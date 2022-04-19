@@ -1421,6 +1421,7 @@ public class HotProblems {
      * dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] + prices[i])
      * dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] - prices[i])
      *
+     * 对应 leetcode 中第 122 题。
      */
     public int maxProfit_infinity(int[] prices) {
         int n = prices.length;

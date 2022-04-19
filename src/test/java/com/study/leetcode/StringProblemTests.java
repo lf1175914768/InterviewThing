@@ -28,4 +28,10 @@ public class StringProblemTests {
         assertEquals(problems.compareVersion("1.01", "1.001"), 0);
         assertEquals(problems.compareVersion("1.0", "1.000"), 0);
     }
+
+    @Test
+    public void testNumDistinct() {
+        assertEquals(problems.numDistinct("rabbbit", "rabbit"), 3);
+        assertEquals(problems.numDistinct("babgbag", "bag"), 5);
+    }
 }
