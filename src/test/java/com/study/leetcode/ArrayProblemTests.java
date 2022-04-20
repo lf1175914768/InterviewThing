@@ -95,4 +95,26 @@ public class ArrayProblemTests {
         assertFalse(problems.searchMatrix(matrix, 20));
         assertFalse(problems.searchMatrix_v2(matrix, 20));
     }
+
+    @Test
+    public void testFindLength() {
+        int[] nums1 = new int[] {1,2,3,2,1};
+        int[] nums2 = new int[] {3,2,1,4,7};
+        assertEquals(problems.findLength(nums1, nums2), 3);
+        assertEquals(problems.findLength_v2(nums1, nums2), 3);
+        nums1 = new int[] {0,0,0,0,0};
+        nums2 = new int[] {0,0,0,0,0};
+        assertEquals(problems.findLength(nums1, nums2), 5);
+        assertEquals(problems.findLength_v2(nums1, nums2), 5);
+    }
+
+    @Test
+    public void testMinSubArrayLen() {
+        int[] param = new int[] {2,3,1,2,4,3};
+        assertEquals(problems.minSubArrayLen(7, param), 2);
+        param = new int[] {1,4,4};
+        assertEquals(problems.minSubArrayLen(4, param), 1);
+        param = new int[] {1,1,1,1,1,1,1,1};
+        assertEquals(problems.minSubArrayLen(11, param), 0);
+    }
 }

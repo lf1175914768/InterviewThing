@@ -289,6 +289,98 @@ public class ArrayProblems {
 
     // -------搜索二维矩阵II << end --------
 
+    // -------最长重复子数组 start >>--------
+
+    /**
+     * 给两个整数数组 nums1 和 nums2 ，返回 两个数组中 公共的 、长度最长的子数组的长度 。
+     *
+     * 动态规划思想是希望连续的，也就是说上一个状态和下一个状态（自变量）之间有关系而且连续。
+     * 公共子数组相当于子串是 连续的。
+     * 定义 dp[i][j]：表示第一个数组 A 前 i 个元素和数组B前 j 个元素组成的最长公共子数组（相当于子串）的长度。
+     * 我们在计算 dp[i][j] 的时候：
+     * 1、若当前两个元素相同，即 A[i] == B[j],则说明当前元素可以构成公共子数组，所以还要加上 他们的前一个元素构成的最长公共子数组的长度
+     * （在原来的基础上 + 1），此时，状态转移方程： dp[i][j] = dp[i - 1][j - 1] + 1;
+     * 2、若当前两个元素不同，即 A[i] != B[j], 则说明当前元素无法构成公共子数组。因为公共子数组必须是连续的，儿此时的元素值不同，
+     * 相当于直接断开了，此时窗台转移方程： dp[i][j] = 0;
+     *
+     * 对应 leetcode 中第 718 题。
+     */
+    public int findLength(int[] nums1, int[] nums2) {
+        int[][] dp = new int[nums1.length + 1][nums2.length + 1];
+        int res = 0;
+        for (int i = 1; i <= nums1.length; i++) {
+            for (int j = 1; j <= nums2.length; j++) {
+                if (nums1[i - 1] == nums2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = 0;
+                }
+                res = Math.max(res, dp[i][j]);
+            }
+        }
+        return res;
+    }
+
+    public int findLength_v2(int[] nums1, int[] nums2) {
+        int n = nums1.length, m = nums2.length;
+        int ret = 0;
+        for (int i = 0; i < n; i++) {
+            int len = Math.min(m, n - i);
+            int maxLen = findLengthMax(nums1, nums2, i, 0, len);
+            ret = Math.max(ret, maxLen);
+        }
+        for (int i = 0; i < m; i++) {
+            int len = Math.min(n, m - i);
+            int maxLen = findLengthMax(nums1, nums2, 0, i, len);
+            ret = Math.max(ret, maxLen);
+        }
+        return ret;
+    }
+
+    private int findLengthMax(int[] nums1, int[] nums2, int aStart, int bStart, int len) {
+        int ret = 0, k = 0;
+        for (int i = 0; i < len; i++) {
+            if (nums1[aStart + i] == nums2[bStart + i]) {
+                k++;
+            } else {
+                k = 0;
+            }
+            ret = Math.max(ret, k);
+        }
+        return ret;
+    }
+
+    // -------最长重复子数组 << end --------
+
+    // -------长度最小的子数组 start >>--------
+
+    /**
+     * 给定一个含有 n 个正整数的数组和一个正整数 target 。
+     * 找出该数组中满足其和 ≥ target 的长度最小的 连续子数组 [numsl, numsl+1, ..., numsr-1, numsr] ，并返回其长度。如果不存在符合条件的子数组，返回 0 。
+     *
+     * 使用 滑动窗口的方法进行解答。
+     *
+     * 对应 leetcode 中第 209 题。
+     */
+    public int minSubArrayLen(int target, int[] nums) {
+        int left = 0, right = 0;
+        int len = nums.length, sum = 0, res = Integer.MAX_VALUE;
+        while (right < len) {
+            int num = nums[right];
+            right++;
+            sum += num;
+            while (sum >= target) {
+                res = Math.min(res, right - left);
+                num = nums[left];
+                sum -= num;
+                left++;
+            }
+        }
+        return res == Integer.MAX_VALUE ? 0 : res;
+    }
+
+    // -------长度最小的子数组 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

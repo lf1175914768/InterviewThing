@@ -204,4 +204,35 @@ public class StringProblems {
     }
 
     // -------不同的子序列 << end --------
+
+    // -------颠倒字符串中的单词 start >>--------
+
+    /**
+     * 给你一个字符串 s ，颠倒字符串中 单词 的顺序。
+     * 单词 是由非空格字符组成的字符串。s 中使用至少一个空格将字符串中的 单词 分隔开。
+     * 返回 单词 顺序颠倒且 单词 之间用单个空格连接的结果字符串。
+     * 注意：输入字符串 s中可能会存在前导空格、尾随空格或者单词间的多个空格。返回的结果字符串中，单词间应当仅用单个空格分隔，且不包含任何额外的空格。
+     *
+     * 对应 leetcode 中第 151 题。
+     */
+    public String reverseWords(String s) {
+        char[] arr = s.toCharArray();
+        int left = 0, right = arr.length - 1;
+        while (left < right && arr[left] == ' ') left++;
+        while (left < right && arr[right] == ' ') right--;
+        StringBuilder sb = new StringBuilder();
+        while (left <= right) {
+            int index = right;
+            while (index >= left && arr[index] != ' ') index--;
+            for (int i = index + 1; i <= right; i++) {
+                sb.append(arr[i]);
+            }
+            if (index > left) sb.append(' ');
+            while (index >= left && arr[index] == ' ') index--;
+            right = index;
+        }
+        return sb.toString();
+    }
+
+    // -------颠倒字符串中的单词 << end --------
 }

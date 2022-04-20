@@ -34,4 +34,11 @@ public class StringProblemTests {
         assertEquals(problems.numDistinct("rabbbit", "rabbit"), 3);
         assertEquals(problems.numDistinct("babgbag", "bag"), 5);
     }
+
+    @Test
+    public void testReverseWords() {
+        assertEquals(problems.reverseWords("the sky is blue"), "blue is sky the");
+        assertEquals(problems.reverseWords("  hello world  "), "world hello");
+        assertEquals(problems.reverseWords("a good   example"), "example good a");
+    }
 }
