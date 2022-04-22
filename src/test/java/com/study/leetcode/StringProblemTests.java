@@ -41,4 +41,14 @@ public class StringProblemTests {
         assertEquals(problems.reverseWords("  hello world  "), "world hello");
         assertEquals(problems.reverseWords("a good   example"), "example good a");
     }
+
+    @Test
+    public void testRestoreIpAddresses() {
+        String[] res = new String[] {"255.255.11.135", "255.255.111.35"};
+        assertArrayEquals(problems.restoreIpAddresses("25525511135").toArray(new String[0]), res);
+        res = new String[]  {"0.0.0.0"};
+        assertArrayEquals(problems.restoreIpAddresses("0000").toArray(new String[0]), res);
+        res = new String[] {"1.0.10.23","1.0.102.3","10.1.0.23","10.10.2.3","101.0.2.3"};
+        assertArrayEquals(problems.restoreIpAddresses("101023").toArray(new String[0]), res);
+    }
 }

@@ -1,9 +1,6 @@
 package com.study.leetcode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * String problems
@@ -235,4 +232,64 @@ public class StringProblems {
     }
 
     // -------颠倒字符串中的单词 << end --------
+
+    // -------复原IP地址 start >>--------
+
+    /**
+     * 有效 IP 地址 正好由四个整数（每个整数位于 0 到 255 之间组成，且不能含有前导 0），整数之间用 '.' 分隔。
+     * 例如："0.1.2.201" 和 "192.168.1.1" 是 有效 IP 地址，但是 "0.011.255.245"、"192.168.1.312" 和 "192.168@1.1" 是 无效 IP 地址。
+     * 给定一个只包含数字的字符串 s ，用以表示一个 IP 地址，返回所有可能的有效 IP 地址，这些地址可以通过在 s 中插入 '.' 来形成。
+     * 你 不能 重新排序或删除 s 中的任何数字。你可以按 任何 顺序返回答案。
+     *
+     * 使用 回溯的 算法思想进行解答。
+     *
+     * 对应 leetcode 中第 93 题。
+     */
+    public List<String> restoreIpAddresses(String s) {
+        int len = s.length();
+        List<String> res = new ArrayList<>();
+        if (len > 12 || len < 4) return res;
+        Deque<String> path = new ArrayDeque<>();
+        restoreIpAddressesDfs(s, 0, 4, path, res);
+        return res;
+    }
+
+    private void restoreIpAddressesDfs(String s, int begin, int residue, Deque<String> path, List<String> res) {
+        if (begin == s.length()) {
+            if (residue == 0) {
+                res.add(String.join(".", path));
+            }
+            return;
+        }
+        for (int i = begin; i < begin + 3; i++) {
+            if (i >= s.length()) break;
+            // 每段最多只能截取3个数，如果字符串剩余长度大于分段所需最大长度，直接continue
+            if (residue * 3 < s.length() - i) {
+                continue;
+            }
+            if (restoreIpAddressesJudgeIpSegment(s, begin, i)) {
+                String currentIpSegment = s.substring(begin, i + 1);
+                path.addLast(currentIpSegment);
+
+                restoreIpAddressesDfs(s, i + 1, residue - 1, path, res);
+                path.removeLast();
+            }
+        }
+    }
+
+    private boolean restoreIpAddressesJudgeIpSegment(String s, int left, int right) {
+        int len = right - left + 1;
+        // 开头为 0 的，并且长度大于 1 的数字需要进行剪枝
+        if (len > 1 && s.charAt(left) == '0') {
+            return false;
+        }
+        int res = 0;
+        while (left <= right) {
+            res = res * 10 + s.charAt(left) - '0';
+            left++;
+        }
+        return res >= 0 && res <= 255;
+    }
+
+    // -------复原IP地址 << end --------
 }

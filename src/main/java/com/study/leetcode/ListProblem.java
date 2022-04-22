@@ -237,4 +237,28 @@ public class ListProblem {
 
     // -------删除排序链表中的重复元素 << end --------
 
+    // -------删除链表的倒数第N个节点 start >>--------
+
+    /**
+     * 给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
+     *
+     * 对应 leetcode 中第 19 题。
+     */
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dummy = new ListNode(-1), fast = dummy, slow = dummy;
+        dummy.next = head;
+        for (int i = 0; fast != null && i < n; i++) {
+            fast = fast.next;
+        }
+        if (fast != null) {
+            while (fast.next != null) {
+                fast = fast.next;
+                slow = slow.next;
+            }
+            slow.next = slow.next.next;
+        }
+        return dummy.next;
+    }
+
+    // -------删除链表的倒数第N个节点 << end --------
 }

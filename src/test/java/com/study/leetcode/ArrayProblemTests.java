@@ -117,4 +117,10 @@ public class ArrayProblemTests {
         param = new int[] {1,1,1,1,1,1,1,1};
         assertEquals(problems.minSubArrayLen(11, param), 0);
     }
+
+    @Test
+    public void testFindMedianSortedArrays() {
+        int[] param1 = new int[] {1,3}, param2 = new int[] {2};
+        assertEquals(problems.findMedianSortedArrays(param1, param2), 2.0, 0.001);
+    }
 }

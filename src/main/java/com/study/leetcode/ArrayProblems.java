@@ -381,6 +381,85 @@ public class ArrayProblems {
 
     // -------长度最小的子数组 << end --------
 
+    // -------寻找两个正序数组的中位数 start >>--------
+
+    /**
+     * 给定两个大小分别为 m 和 n 的正序（从小到大）数组 nums1 和 nums2。请你找出并返回这两个正序数组的 中位数 。
+     * 算法的时间复杂度应该为 O(log (m+n)) 。
+     *
+     * 解题思路：
+     * 我们可以将数组进行切分。一个长度为 m 的数组，有 0 到 m 总共 m + 1 个位置可以且切。
+     * 我们把数组 nums1 和 nums2 分别在 i 和 j 进行切割。
+     * 将 i 的左边和 j 的左边组合成【左半部分】，将 i 的右边和 j 的右边组合成 【右半部分】。
+     * 1、当 nums1 数组和 nums2 数组的总长度是 偶数时，如果我们能够保证左半部分的长度等于右半部分的长度
+     *   i + j = m - i + n - j，也就是  j = (m + n) / 2 - i;
+     *   左半部分最大的值小于等于右半部分最小的值 max(nums1[i - 1], nums2[j - 1]) <= min(nums1[i], nums2[j])。
+     *  那么这种情况下，中位数就可以表示如下： （左半部分最大值 + 右半部分最小值） / 2.
+     *  也就是 (max(nums1[i - 1], nums2[j - 1]) + min(nums1[i], nums2[j])) / 2.
+     * 2、当 nums1 数组和 nums2 数组的总长度是奇数时，如果我们能够保证 左半部分的长度比右半部分的长度大 1.
+     *    i + j = m - i + n - j + 1, 也就是 j = (m + n + 1) / 2 - i;
+     *    那么这种情况下，中位数就是左半部分的最大值，也就是左半部分比右半部分多出的哪一个数  max(nums1[i - 1], nums2[j - 1])
+     *
+     * 上面的第一个条件我们其实可以合并为 j = (m + n + 1) / 2 - i,因为如果 m + n是偶数，由于我们取得是 int 值，所以加1不会影响结果。
+     * 当然，由于 0 <= i <= m, 为了保证 0 <= j <= n, 我们必须保证 m <= n;
+     * m <= n, i < m, j = (m + n + 1) / 2 - i >= (m + m + 1) / 2 - i > (m + m + 1) / 2 - m = 0.
+     * m <= n, i > 0, j = (m + n + 1) / 2 - i <= (n + n + 1) / 2 - i < (n + n + 1) / 2 = n.
+     *
+     * 剩下的是如何保证 max(nums1[i - 1], nums2[j - 1]) <= min(nums1[i], nums2[j])， 因为 nums1 数组和 nums2 数组是有序的，所以
+     * nums1[i - 1] <= nums1[i], nums2[j - 1] <= nums2[j] 这是天然的，所以，我们只需要保证 nums2[j - 1] <= nums1[i] 和 nums1[i - 1] <= nums2[j],
+     * 所以我们分两种情况讨论：
+     * 1、nums2[j - 1] > nums1[i],为了不越界，要保证 j > 0, i < m, 此时很明显，我们需要增加 i，为了保证数量的平衡还要减少 j，幸运的是
+     * j = (m + n + 1) / 2 - i, i 增大， j自然会减少。
+     * 2、nums1[i - 1] > nums2[j],为了不越界，要保证 i > 0, j < n,此时和上面相反，我们要减少 i，增加 j。
+     * 上边两种情况，我们把边界都排除了，需要单独讨论。
+     * 当 i = 0，或者 j = 0， 也就是切在了最前边。
+     * 此时 左半部分当 j = 0时，最大的值就是 nums1[i - 1]; 当 i = 0时，最大的值就是 nums2[j - 1], 右半部分最小值和之前一样。
+     * 当 i = m，或者 j = n，也就是切在了最后边。
+     * 此时 左半部分最大值和之前一样，右半部分当 j = n时，最小值就是 nums1[i]; 当 i = m 时，最小值就是 nums2[j]
+     *
+     * 对应 leetcode 中第 4 题。
+     */
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int m = nums1.length, n = nums2.length;
+        if (m > n) {
+            return findMedianSortedArrays(nums2, nums1);
+        }
+        int iMin = 0, iMax = m;
+        while (iMin <= iMax) {
+            int i = (iMin + iMax) / 2;
+            int j = (m + n + 1) / 2 - i;
+            if (j != 0 && i != m && nums2[j - 1] > nums1[i]) {
+                // i 需要增大
+                iMin = i + 1;
+            } else if (i != 0 && j != n && nums1[i - 1] > nums2[j]) {
+                // i 需要减小
+                iMax = i - 1;
+            } else {
+                // 达到要求，并且将边界条件列出来单独考虑。
+                int maxLeft = 0;
+                if (i == 0) {
+                    maxLeft = nums2[j - 1];
+                } else if (j == 0) {
+                    maxLeft = nums1[i - 1];
+                } else {
+                    maxLeft = Math.max(nums1[i - 1], nums2[j - 1]);
+                }
+                if (((m + n) & 1) == 1) {
+                    // 奇数的话不需要考虑右半部分
+                    return maxLeft;
+                }
+                int minRight = 0;
+                if (i == m) minRight = nums2[j];
+                else if (j == n) minRight = nums1[i];
+                else minRight = Math.min(nums1[i], nums2[j]);
+                return (maxLeft + minRight) / 2.0;
+            }
+        }
+        return 0.0;
+    }
+
+    // -------寻找两个正序数组的中位数 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {
