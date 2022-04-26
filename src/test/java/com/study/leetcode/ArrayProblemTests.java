@@ -123,4 +123,29 @@ public class ArrayProblemTests {
         int[] param1 = new int[] {1,3}, param2 = new int[] {2};
         assertEquals(problems.findMedianSortedArrays(param1, param2), 2.0, 0.001);
     }
+
+    @Test
+    public void testIntervalIntersection() {
+        int[][] params1 = new int[][] {{0,2}, {5,10},{13,23},{24,25}};
+        int[][] params2 = new int[][] {{1,5}, {8,12},{15,24}, {25,26}};
+        int[][] res2 = new int[][] {{1,2},{5,5},{8,10},{15,23},{24,24},{25,25}};
+        int[][] temp = problems.intervalIntersection(params1, params2);
+        for (int i = 0; i < temp.length; i++) {
+            assertArrayEquals(temp[i], res2[i]);
+        }
+        params1 = new int[][] {{1,3}, {5,9}};
+        params2 = new int[][] {};
+        assertEquals(problems.intervalIntersection(params1, params2).length, 0);
+    }
+
+    @Test
+    public void testAdvantageCount() {
+        int[] pa1 = new int[] {2,7,11,15}, pa2 = new int[] {1,10,4,11};
+        int[] res = new int[] {2,11,7,15};
+        assertArrayEquals(problems.advantageCount(pa1, pa2), res);
+        pa1 = new int[] {12,24,8,32};
+        pa2 = new int[] {13,25,32,11};
+        res = new int[] {24,32,8,12};
+        assertArrayEquals(problems.advantageCount(pa1, pa2), res);
+    }
 }

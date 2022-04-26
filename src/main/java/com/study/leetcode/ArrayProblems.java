@@ -460,6 +460,72 @@ public class ArrayProblems {
 
     // -------寻找两个正序数组的中位数 << end --------
 
+    // -------区间列表的交集 start >>--------
+
+    /**
+     * 区间列表的交集
+     *
+     * 我们用 [a1, a2], [b1, b2]表示在A和B中的两个区间，如果这两个区间有交集，需要满足 b2 >= a1 && a2 >= b1,
+     * 假设交集区间是 [c1,c2]，那么 c1 = max(a1, b1), c2 = min(a2, b2)
+     *
+     * 对应 leetcode 中第 986 题。
+     */
+    public int[][] intervalIntersection(int[][] firstList, int[][] secondList) {
+        List<int[]> res = new LinkedList<>();
+        for (int i = 0, j = 0; i < firstList.length && j < secondList.length; ) {
+            int a1 = firstList[i][0], a2 = firstList[i][1];
+            int b1 = secondList[j][0], b2 = secondList[j][1];
+            if (b2 >= a1 && a2 >= b1) {
+                res.add(new int[] {Math.max(a1, b1), Math.min(a2, b2)});
+            }
+            if (a2 < b2) {
+                i++;
+            } else {
+                j++;
+            }
+        }
+        return res.toArray(new int[0][0]);
+    }
+
+    // -------区间列表的交集 << end --------
+
+    // -------优势洗牌 start >>--------
+
+    /**
+     * 给定两个大小相等的数组 nums1 和 nums2，nums1 相对于 nums 的优势可以用满足 nums1[i] > nums2[i] 的索引 i 的数目来描述。
+     * 返回 nums1 的任意排列，使其相对于 nums2 的优势最大化。
+     *
+     * 这道题就像田忌赛马的场景。nums1就是田忌的马，nums2就是齐王的马，数组中的元素就是马的战斗力。
+     * 最优策略就是将齐王和田忌的马按照战斗力排序，然后按照战斗力排名一一对比：
+     * 如果田忌的马能赢，那就比赛。如果赢不了，那就换一个垫底的人来送人头，保存实力。
+     *
+     * 对应 leetcode 中第 870 题。
+     */
+    public int[] advantageCount(int[] nums1, int[] nums2) {
+        // 给 nums2 进行倒序排序
+        PriorityQueue<int[]> queue = new PriorityQueue<>((int[] o1, int[] o2) -> o2[1] - o1[1]);
+        for (int i = 0; i < nums2.length; i++) {
+            queue.offer(new int[] {i, nums2[i]});
+        }
+        Arrays.sort(nums1);
+        int left = 0, right = nums1.length - 1;
+        int[] res = new int[nums1.length];
+        while (!queue.isEmpty()) {
+            int[] pair = queue.poll();
+            int index = pair[0], val = pair[1];
+            if (val < nums1[right]) {
+                res[index] = nums1[right];
+                right--;
+            } else {
+                res[index] = nums1[left];
+                left++;
+            }
+        }
+        return res;
+    }
+
+    // -------优势洗牌 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

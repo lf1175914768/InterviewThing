@@ -443,6 +443,8 @@ public class HotProblemTests {
         params = new int[] {0,3,7,2,5,8,4,6,0,1};
         assertEquals(problem.longestConsecutive(params), 9);
         assertEquals(problem.longestConsecutive_v2(params), 9);
+        params = new int[] {0,3,7,2,5,8,6,0,1,4};
+        assertEquals(problem.longestConsecutive_v2(params), 9);
     }
 
     @Test
