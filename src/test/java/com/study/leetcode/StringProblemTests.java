@@ -51,4 +51,11 @@ public class StringProblemTests {
         res = new String[] {"1.0.10.23","1.0.102.3","10.1.0.23","10.10.2.3","101.0.2.3"};
         assertArrayEquals(problems.restoreIpAddresses("101023").toArray(new String[0]), res);
     }
+
+    @Test
+    public void testConvert() {
+        assertEquals(problems.convert("PAYPALISHIRING", 3), "PAHNAPLSIIGYIR");
+        assertEquals(problems.convert("PAYPALISHIRING", 4), "PINALSIGYAHRPI");
+        assertEquals(problems.convert("A", 1), "A");
+    }
 }
