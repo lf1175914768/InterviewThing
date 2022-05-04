@@ -526,6 +526,34 @@ public class ArrayProblems {
 
     // -------优势洗牌 << end --------
 
+    // -------删掉一个元素以后全为1的最长数组 start >>--------
+
+    /**
+     * 给你一个二进制数组 nums ，你需要从中删掉一个元素。
+     * 请你在删掉元素的结果数组中，返回最长的且只包含 1 的非空子数组的长度。
+     * 如果不存在这样的子数组，请返回 0 。
+     *
+     * 使用滑动窗口库的方法进行解答。
+     *
+     * 对应 leetcode 中第 1493 题。
+     */
+    public int longestSubarray(int[] nums) {
+        int left = 0, right = 0, len = nums.length;
+        int zeroCount = 0, res = 0;
+        while (right < len) {
+            if (nums[right] == 0) zeroCount++;
+            right++;
+            while (zeroCount > 1) {
+                if (nums[left] == 0) zeroCount--;
+                left++;
+            }
+            res = Math.max(res, right - left);
+        }
+        return res - 1;
+    }
+
+    // -------删掉一个元素以后全为1的最长数组 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

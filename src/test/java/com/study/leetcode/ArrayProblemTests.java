@@ -148,4 +148,14 @@ public class ArrayProblemTests {
         res = new int[] {24,32,8,12};
         assertArrayEquals(problems.advantageCount(pa1, pa2), res);
     }
+
+    @Test
+    public void testLongestSubarray() {
+        int[] param = new int[] {1,1,0,1};
+        assertEquals(problems.longestSubarray(param), 3);
+        param = new int[] {0,1,1,1,0,1,1,0,1};
+        assertEquals(problems.longestSubarray(param), 5);
+        param = new int[] {1,1,1};
+        assertEquals(problems.longestSubarray(param), 2);
+    }
 }

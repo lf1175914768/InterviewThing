@@ -58,4 +58,24 @@ public class StringProblemTests {
         assertEquals(problems.convert("PAYPALISHIRING", 4), "PINALSIGYAHRPI");
         assertEquals(problems.convert("A", 1), "A");
     }
+
+    @Test
+    public void testCharacterReplacement() {
+        assertEquals(problems.characterReplacement("ABAB", 2), 4);
+        assertEquals(problems.characterReplacement("AABABBA", 1), 4);
+        assertEquals(problems.characterReplacement("AABCABBB", 2), 6);
+    }
+
+    @Test
+    public void testFindSubstring() {
+        String[] words = new String[] {"foo","bar"};
+        Integer[] res = new Integer[] {0, 9};
+        assertArrayEquals(problems.findSubstring("barfoothefoobarman", words).toArray(new Integer[0]), res);
+        words = new String[] {"word","good","best","word"};
+        res = new Integer[] {};
+        assertArrayEquals(problems.findSubstring("wordgoodgoodgoodbestword", words).toArray(new Integer[0]), res);
+        words = new String[] {"bar","foo","the"};
+        res = new Integer[] {6,9,12};
+        assertArrayEquals(problems.findSubstring("barfoofoobarthefoobarman", words).toArray(new Integer[0]), res);
+    }
 }

@@ -253,4 +253,10 @@ public class TopInterviewProblemTests {
         assertEquals(problems.countPrimes(0), 0);
         assertEquals(problems.countPrimes(1), 0);
     }
+
+    @Test
+    public void testIsHappy() {
+        assertTrue(problems.isHappy(19));
+        assertFalse(problems.isHappy(2));
+    }
 }

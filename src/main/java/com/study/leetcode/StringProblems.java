@@ -325,4 +325,84 @@ public class StringProblems {
     }
 
     // -------Z字形变换 << end --------
+
+    // -------替换后的最长重复字符 start >>--------
+
+    /**
+     * 给你一个字符串 s 和一个整数 k 。你可以选择字符串中的任一字符，并将其更改为任何其他大写英文字符。该操作最多可执行 k 次。
+     * 在执行上述操作后，返回包含相同字母的最长子字符串的长度。
+     *
+     * 使用 滑动窗口的方法进行解答。
+     *
+     * 对应 leetcode 中第 424 题。
+     */
+    public int characterReplacement(String s, int k) {
+        int left = 0, right = 0, len = s.length(), maxCount = 0;
+        int res = 0;
+        Map<Character, Integer> window = new HashMap<>();
+        while (right < len) {
+            char c = s.charAt(right);
+            window.put(c, window.getOrDefault(c, 0) + 1);
+            maxCount = Math.max(maxCount, window.get(c));
+            right++;
+            while (right - left > maxCount + k) {
+                char ch = s.charAt(left);
+                window.put(ch, window.get(ch) - 1);
+                left++;
+            }
+            res = Math.max(res, right - left);
+        }
+        return res;
+    }
+
+    // -------替换后的最长重复字符 << end --------
+
+    // -------串联所有单词的子串 start >>--------
+
+    /**
+     * 给定一个字符串 s 和一些 长度相同 的单词 words 。找出 s 中恰好可以由 words 中所有单词串联形成的子串的起始位置。
+     * 注意子串要与 words 中的单词完全匹配，中间不能有其他字符 ，但不需要考虑 words 中单词串联的顺序。
+     *
+     * 使用滑动窗口的方法进行解答。
+     *
+     * 对应 leetcode 中第 30 题。
+     */
+    public List<Integer> findSubstring(String s, String[] words) {
+        List<Integer> res = new ArrayList<>();
+        int oneLength = words[0].length();
+        Map<String, Integer> map = new HashMap<>();
+        for (String word : words) {
+            map.put(word, map.getOrDefault(word, 0) + 1);
+        }
+        Map<String, Integer> work = new HashMap<>();
+        for (int i = 0; i < oneLength; i++) {
+            int left = i, right = i + oneLength;
+            int count = 0;
+            // 这里使用小于等于，是因为substring，区间右侧是开区间
+            while (right <= s.length()) {
+                String cur = s.substring(right - oneLength, right);
+                if (!map.containsKey(cur)) {
+                    // map 中不包含当前截取的字符串，直接向下滑动
+                    left = right;
+                    count = 0;
+                    work.clear();
+                } else {
+                    work.put(cur, work.getOrDefault(cur, 0) + 1);
+                    count++;
+                    while (work.get(cur) > map.get(cur)) {
+                        String leftStr = s.substring(left, left + oneLength);
+                        work.put(leftStr, work.get(leftStr) - 1);
+                        count--;
+                        left += oneLength;
+                    }
+                    if (count == words.length) res.add(left);
+                }
+                right += oneLength;
+            }
+            work.clear();
+        }
+        return res;
+    }
+
+    // -------串联所有单词的子串 << end --------
 }
