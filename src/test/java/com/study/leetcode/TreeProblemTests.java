@@ -265,6 +265,14 @@ public class TreeProblemTests {
     }
 
     @Test
+    public void testPostOrderTraversal() {
+        TreeNode root = buildCommonTree();
+        List<Integer> res = problem.postorderTraversal(root);
+        Integer[] expected = new Integer[] {1,3,2,6,9,7,4};
+        assertArrayEquals(res.toArray(new Integer[0]), expected);
+    }
+
+    @Test
     public void testRecoverTree() {
         TreeNode node2 = new TreeNode(2);
         TreeNode node3 = new TreeNode(3, null, node2);

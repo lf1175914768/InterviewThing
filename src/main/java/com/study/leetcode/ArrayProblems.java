@@ -119,7 +119,7 @@ public class ArrayProblems {
             }
             queue.offerLast(i);
             // 判断当前队列中队首的值是否有效，也就是是否在窗口中，不满足的话，需要移除
-            if (queue.peek() <= i - k) {
+            if (queue.peekFirst() <= i - k) {
                 queue.pollFirst();
             }
             // 当窗口长度为 k 时，保存当前窗口最大值
@@ -553,6 +553,44 @@ public class ArrayProblems {
     }
 
     // -------删掉一个元素以后全为1的最长数组 << end --------
+
+    // -------存在重复元素III start >>--------
+
+    /**
+     * 给你一个整数数组 nums 和两个整数 k 和 t 。请你判断是否存在 两个不同下标 i 和 j，使得 abs(nums[i] - nums[j]) <= t ，
+     * 同时又满足 abs(i - j) <= k 。
+     * 如果存在则返回 true，不存在返回 false。
+     *
+     * 解题思路：
+     * 根据题意，对于任意一个位置 i （假设其值为 u），我们其实是希望在下表范围为 [max(0,i-k), i)内找到值范围在 [u-t,u+t]的数。
+     * 我们希望使用一个【有序集合】去维护长度为 k 的滑动窗口内的数，该数据结构最好支持高效【查询】与【插入/删除】操作：
+     * 【查询】：能够在【有序集合】中应用【二分查找】，快速找到【小于等于u的最大值】和【大于等于u的最小值】
+     * 【插入/删除】：在往【有序集合】中添加或删除元素时，能够在低于线性的复杂度内完成。
+     *
+     * 而红黑树能很好的解决上面的问题，每次红黑树的平衡调整引发的旋转的次数 能够限制到【最多三次】。
+     * 当【查询】动作和【插入/删除】动作频率相当时，比较好的选择是使用【红黑树】。
+     *
+     * 对应 leetcode 中第 220 题。
+     */
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+        int len = nums.length;
+        TreeSet<Integer> ts = new TreeSet<>();
+        for (int i = 0; i < len; i++) {
+            int u = nums[i];
+            Integer floor = ts.floor(u);
+            Integer ceiling = ts.ceiling(u);
+            if (floor != null && u - floor <= t) return true;
+            if (ceiling != null && ceiling - u <= t) return true;
+            // 将当前数加到 ts 中，并移除下标范围不在窗口中的值
+            ts.add(u);
+            if (i > k) {
+                ts.remove(nums[i - k]);
+            }
+        }
+        return false;
+    }
+
+    // -------存在重复元素III << end --------
 
     // -------组合总和 start >>--------
 

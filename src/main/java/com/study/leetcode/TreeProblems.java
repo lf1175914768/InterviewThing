@@ -643,6 +643,32 @@ public class TreeProblems {
 
     // -------二叉树的中序遍历 << end --------
 
+    // -------二叉树的后序遍历 start >>--------
+
+    /**
+     * 给你一棵二叉树的根节点 root ，返回其节点值的 后序遍历 。
+     *
+     * 对应 leetcode 中第 145 题。
+     */
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        while (!stack.isEmpty() || root != null) {
+            if (root != null) {
+                result.add(root.val);
+                stack.push(root);
+                root = root.right;
+            } else {
+                root = stack.pop();
+                root = root.left;
+            }
+        }
+        Collections.reverse(result);
+        return result;
+    }
+
+    // -------二叉树的中序遍历 << end --------
+
     // -------恢复二叉搜索树 start >>--------
 
     /**

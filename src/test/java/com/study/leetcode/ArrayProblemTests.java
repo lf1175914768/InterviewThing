@@ -158,4 +158,14 @@ public class ArrayProblemTests {
         param = new int[] {1,1,1};
         assertEquals(problems.longestSubarray(param), 2);
     }
+
+    @Test
+    public void testContainsNearbyAlmostDuplicate() {
+        int[] param = new int[] {1,2,3,1};
+        assertTrue(problems.containsNearbyAlmostDuplicate(param, 3, 0));
+        param = new int[] {1,0,1,1};
+        assertTrue(problems.containsNearbyAlmostDuplicate(param, 1, 2));
+        param = new int[] {1,5,9,1,5,9};
+        assertFalse(problems.containsNearbyAlmostDuplicate(param, 2,3));
+    }
 }
