@@ -178,4 +178,12 @@ public class ArrayProblemTests {
         assertEquals(problems.numSubarrayProductLessThanK(param, 100), 8);
         assertEquals(problems.numSubarrayProductLessThanK(param, 0), 0);
     }
+
+    @Test
+    public void testJump() {
+        int[] param = new int[] {2,3,1,1,4};
+        assertEquals(problems.jump(param), 2);
+        param = new int[] {2,3,0,1,4};
+        assertEquals(problems.jump(param), 2);
+    }
 }
