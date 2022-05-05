@@ -122,6 +122,9 @@ public class ArrayProblemTests {
     public void testFindMedianSortedArrays() {
         int[] param1 = new int[] {1,3}, param2 = new int[] {2};
         assertEquals(problems.findMedianSortedArrays(param1, param2), 2.0, 0.001);
+        param1 = new int[] {1,2};
+        param2 = new int[] {3,4};
+        assertEquals(problems.findMedianSortedArrays(param1, param2), 2.5, 0.00001);
     }
 
     @Test
