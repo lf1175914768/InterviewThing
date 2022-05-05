@@ -171,4 +171,11 @@ public class ArrayProblemTests {
         param = new int[] {1,5,9,1,5,9};
         assertFalse(problems.containsNearbyAlmostDuplicate(param, 2,3));
     }
+
+    @Test
+    public void testNumSubarrayProductLessThanK() {
+        int[] param = new int[] {10,5,2,6};
+        assertEquals(problems.numSubarrayProductLessThanK(param, 100), 8);
+        assertEquals(problems.numSubarrayProductLessThanK(param, 0), 0);
+    }
 }

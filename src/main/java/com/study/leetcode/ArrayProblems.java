@@ -592,6 +592,37 @@ public class ArrayProblems {
 
     // -------存在重复元素III << end --------
 
+    // -------乘积小于K的子数组 start >>--------
+
+    /**
+     * 给你一个整数数组 nums 和一个整数 k ，请你返回子数组内所有元素的乘积严格小于 k 的连续子数组的数目。
+     *
+     * 使用 滑动窗口的方法进行解答
+     *
+     * 对应 leetcode 中第 713 题。
+     */
+    public int numSubarrayProductLessThanK(int[] nums, int k) {
+        // 因为乘积要严格小于 k， nums[i] >= 1, 所以当k = 1时，同样返回 0
+        if (k <= 1) return 0;
+        int left = 0, right = 0, multi = 1, res = 0;
+        while (right < nums.length) {
+            multi *= nums[right];
+            right++;
+            while (multi >= k) {
+                multi /= nums[left];
+                left++;
+            }
+            // 每次右指针位移到一个新位置，应该加上 right - left 种数组组合
+            // nums[right - 1]
+            // nums[right - 2], nums[right - 1]
+            // nums[left], ... nums[right - 3], nums[right - 2], nums[right - 1]
+            res += right - left;
+        }
+        return res;
+    }
+
+    // -------乘积小于K的子数组 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {
