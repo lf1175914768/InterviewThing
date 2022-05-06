@@ -183,7 +183,26 @@ public class ArrayProblemTests {
     public void testJump() {
         int[] param = new int[] {2,3,1,1,4};
         assertEquals(problems.jump(param), 2);
+        assertEquals(problems.jump_v2(param), 2);
         param = new int[] {2,3,0,1,4};
         assertEquals(problems.jump(param), 2);
+        assertEquals(problems.jump_v2(param), 2);
+    }
+
+    @Test
+    public void testInsert() {
+        int[][] param = new int[][] {{1,3}, {6,9}}, res = new int[][] {{1,5}, {6,9}};
+        int[] newInterval = new int[] {2, 5};
+        assertArrayEquals(problems.insert(param, newInterval), res);
+        param = new int[][] {{1,2}, {3,5},{6,7},{8,10},{12,16}};
+        newInterval = new int[] {4,8};
+        res = new int[][] {{1,2},{3,10},{12,16}};
+        assertArrayEquals(problems.insert(param, newInterval), res);
+        param = new int[][] {}; newInterval = new int[] {5,7}; res = new int[][] {{5,7}};
+        assertArrayEquals(problems.insert(param, newInterval), res);
+        param = new int[][] {{1,5}}; newInterval = new int[] {2,3}; res = new int[][] {{1,5}};
+        assertArrayEquals(problems.insert(param, newInterval), res);
+        param = new int[][] {{1,5}}; newInterval = new int[] {2,7}; res = new int[][] {{1,7}};
+        assertArrayEquals(problems.insert(param, newInterval), res);
     }
 }

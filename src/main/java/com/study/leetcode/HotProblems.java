@@ -1637,10 +1637,10 @@ public class HotProblems {
      * 如果可以一直跳到最后，就成功了。
      */
     public boolean canJump_v2(int[] nums) {
-        int k = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (i > k) return false;
-            k = Math.max(k, i + nums[i]);
+        int farthest = 0;
+        for (int i = 0; i < nums.length - 1; i++) {
+            farthest = Math.max(farthest, i + nums[i]);
+            if (farthest <= i) return false;
         }
         return true;
     }

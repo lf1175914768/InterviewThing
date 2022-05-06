@@ -631,6 +631,8 @@ public class ArrayProblems {
      * 你的目标是使用最少的跳跃次数到达数组的最后一个位置。
      * 假设你总是可以到达数组的最后一个位置。
      *
+     * 使用 贪心 的思想进行解答。
+     *
      * 对应 leetcode 中第 45 题。
      */
     public int jump(int[] nums) {
@@ -647,7 +649,56 @@ public class ArrayProblems {
         return res;
     }
 
+    /**
+     * 从上面的代码观察发现，其实被 while 包含的 for 循环中， i 是从头跑到尾的。
+     * 只需要在一次跳跃完成时，更新下一次 能跳到最远的距离。
+     * 并以此刻作为时机来更新跳跃次数。 就可以在一次for 循环中处理。
+     */
+    public int jump_v2(int[] nums) {
+        int end = 0, maxPos = 0, res = 0;
+        for (int i = 0; i < nums.length - 1; i++) {
+            maxPos = Math.max(maxPos, i + nums[i]);
+            if (i == end) {
+                end = maxPos;
+                res++;
+            }
+        }
+        return res;
+    }
+
     // -------跳跃游戏II << end --------
+
+    // -------插入区间 start >>--------
+
+    /**
+     * 给你一个 无重叠的 ，按照区间起始端点排序的区间列表。
+     * 在列表中插入一个新的区间，你需要确保列表中的区间仍然有序且不重叠（如果有必要的话，可以合并区间）。
+     *
+     * 对应 leetcode 中第 57 题。
+     */
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        int[][] res = new int[intervals.length + 1][2];
+        int i = 0, idx = 0;
+        // 首先将新区间左边且相离的区间加入结果集
+        while (i < intervals.length && intervals[i][1] < newInterval[0]) {
+            res[idx++] = intervals[i++];
+        }
+        // 接着判断当前区间是否与新区间重叠，重叠的话就进行合并，知道遍历到当前区间在新区间的右边且相离，
+        // 将最终合并后的新区间假如结果集
+        while (i < intervals.length && intervals[i][0] <= newInterval[1]) {
+            newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
+            newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
+            i++;
+        }
+        res[idx++] = newInterval;
+        // 最后将新区间右边且相离的区间加入结果集
+        while (i < intervals.length) {
+            res[idx++] = intervals[i++];
+        }
+        return Arrays.copyOf(res, idx);
+    }
+
+    // -------插入区间 << end --------
 
     // -------组合总和 start >>--------
 
