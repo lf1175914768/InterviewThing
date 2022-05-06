@@ -205,4 +205,24 @@ public class ArrayProblemTests {
         param = new int[][] {{1,5}}; newInterval = new int[] {2,7}; res = new int[][] {{1,7}};
         assertArrayEquals(problems.insert(param, newInterval), res);
     }
+
+    @Test
+    public void testSetZeroes() {
+        int[][] matrix = new int[][] {{1,1,1},{1,0,1},{1,1,1}},
+        res = new int[][] {{1,0,1},{0,0,0},{1,0,1}};
+        problems.setZeroes(matrix);
+        assertArrayEquals(matrix, res);
+        matrix = new int[][] {{0,1,2,0}, {3,4,5,2}, {1,3,1,5}};
+        res = new int[][] {{0,0,0,0}, {0,4,5,0}, {0,3,1,0}};
+        problems.setZeroes(matrix);
+        assertArrayEquals(matrix, res);
+        matrix = new int[][] {{1,1,1},{1,0,1},{1,1,1}};
+        res = new int[][] {{1,0,1},{0,0,0},{1,0,1}};
+        problems.setZeroes_v2(matrix);
+        assertArrayEquals(matrix, res);
+        matrix = new int[][] {{0,1,2,0}, {3,4,5,2}, {1,3,1,5}};
+        res = new int[][] {{0,0,0,0}, {0,4,5,0}, {0,3,1,0}};
+        problems.setZeroes_v2(matrix);
+        assertArrayEquals(matrix, res);
+    }
 }

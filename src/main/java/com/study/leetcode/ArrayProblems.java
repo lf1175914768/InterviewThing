@@ -22,7 +22,7 @@ public class ArrayProblems {
      * 对应 leetcode 中第 560 题。
      */
     public int subarraySum(int[] nums, int k) {
-        int n = nums.length; 
+        int n = nums.length;
         int[] preSum = new int[n + 1];
         for (int i = 1; i < preSum.length; i++) {
             preSum[i] = preSum[i - 1] + nums[i - 1];
@@ -699,6 +699,84 @@ public class ArrayProblems {
     }
 
     // -------插入区间 << end --------
+
+    // -------矩阵置零 start >>--------
+
+    /**
+     * 给定一个 m x n 的矩阵，如果一个元素为 0 ，则将其所在行和列的所有元素都设为 0 。请使用 原地 算法。
+     *
+     * 两遍扫 matrix，第一遍用集合记录哪些行， 哪些列有 0， 第二遍置 0.
+     *
+     * 对应 leetcode 中第 73 题。
+     */
+    public void setZeroes(int[][] matrix) {
+        Set<Integer> rowZero = new HashSet<>();
+        Set<Integer> colZero = new HashSet<>();
+        int row = matrix.length, col = matrix[0].length;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (matrix[i][j] == 0) {
+                    rowZero.add(i);
+                    colZero.add(j);
+                }
+            }
+        }
+
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (rowZero.contains(i) || colZero.contains(j)) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+    }
+
+    public void setZeroes_v2(int[][] matrix) {
+        int row = matrix.length, col = matrix[0].length;
+        boolean firstRowHasZero = false, firstColHasZero = false;
+        // 第一行是否有 0
+        for (int i = 0; i < col; i++) {
+            if (matrix[0][i] == 0) {
+                firstRowHasZero = true;
+                break;
+            }
+        }
+        // 第一列是否有 0
+        for (int i = 0; i < row; i++) {
+            if (matrix[i][0] == 0) {
+                firstColHasZero = true;
+                break;
+            }
+        }
+        // 将第一行第一列作为标志位
+        for (int i = 1; i < row; i++) {
+            for (int j = 1; j < col; j++) {
+                if (matrix[i][j] == 0) {
+                    matrix[i][0] = matrix[0][j] = 0;
+                }
+            }
+        }
+        // 置 0
+        for (int i = 1; i < row; i++) {
+            for (int j = 1; j < col; j++) {
+                if (matrix[i][0] == 0 || matrix[0][j] == 0) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        if (firstRowHasZero) {
+            for (int j = 0; j < col; j++) {
+                matrix[0][j] = 0;
+            }
+        }
+        if (firstColHasZero) {
+            for (int i = 0; i < row; i++) {
+                matrix[i][0] = 0;
+            }
+        }
+    }
+
+    // -------矩阵置零 << end --------
 
     // -------组合总和 start >>--------
 
