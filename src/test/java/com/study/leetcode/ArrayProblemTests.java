@@ -2,6 +2,12 @@ package com.study.leetcode;
 
 import com.study.interview.array.NumArray;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 /**
@@ -14,7 +20,7 @@ import static org.junit.Assert.*;
  **/
 public class ArrayProblemTests {
 
-    private ArrayProblems problems = new ArrayProblems();
+    private final ArrayProblems problems = new ArrayProblems();
 
     @Test
     public void testNumArray() {
@@ -225,4 +231,46 @@ public class ArrayProblemTests {
         problems.setZeroes_v2(matrix);
         assertArrayEquals(matrix, res);
     }
+
+    @Test
+    public void testMinimumTotal() {
+        List<List<Integer>> param = new ArrayList<>();
+        param.add(Collections.singletonList(2));
+        param.add(Arrays.asList(3,4));
+        param.add(Arrays.asList(6,5,7));
+        param.add(Arrays.asList(4,1,8,3));
+        assertEquals(problems.minimumTotal(param), 11);
+        param.clear();
+        param.add(Collections.singletonList(-10));
+        assertEquals(problems.minimumTotal(param), -10);
+    }
+
+    @Test
+    public void testSolveSudoku() {
+        char[][] param = new char[][] {
+                {'5','3','.','.','7','.','.','.','.'},
+                {'6','.','.','1','9','5','.','.','.'},
+                {'.','9','8','.','.','.','.','6','.'},
+                {'8','.','.','.','6','.','.','.','3'},
+                {'4','.','.','8','.','3','.','.','1'},
+                {'7','.','.','.','2','.','.','.','6'},
+                {'.','6','.','.','.','.','2','8','.'},
+                {'.','.','.','4','1','9','.','.','5'},
+                {'.','.','.','.','8','.','.','7','9'}};
+        char[][] res = new char[][] {
+                {'5','3','4','6','7','8','9','1','2'},
+                {'6','7','2','1','9','5','3','4','8'},
+                {'1','9','8','3','4','2','5','6','7'},
+                {'8','5','9','7','6','1','4','2','3'},
+                {'4','2','6','8','5','3','7','9','1'},
+                {'7','1','3','9','2','4','8','5','6'},
+                {'9','6','1','5','3','7','2','8','4'},
+                {'2','8','7','4','1','9','6','3','5'},
+                {'3','4','5','2','8','6','1','7','9'}};
+
+        ArrayProblems.Sudoku problem = new ArrayProblems.Sudoku();
+        problem.solveSudoku(param);
+        assertArrayEquals(param, res);
+    }
+
 }

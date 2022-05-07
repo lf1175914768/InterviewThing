@@ -562,7 +562,7 @@ public class ArrayProblems {
      * 如果存在则返回 true，不存在返回 false。
      *
      * 解题思路：
-     * 根据题意，对于任意一个位置 i （假设其值为 u），我们其实是希望在下表范围为 [max(0,i-k), i)内找到值范围在 [u-t,u+t]的数。
+     * 根据题意，对于任意一个位置 i （假设其值为 u），我们其实是希望在下标范围为 [max(0,i-k), i)内找到值范围在 [u-t,u+t]的数。
      * 我们希望使用一个【有序集合】去维护长度为 k 的滑动窗口内的数，该数据结构最好支持高效【查询】与【插入/删除】操作：
      * 【查询】：能够在【有序集合】中应用【二分查找】，快速找到【小于等于u的最大值】和【大于等于u的最小值】
      * 【插入/删除】：在往【有序集合】中添加或删除元素时，能够在低于线性的复杂度内完成。
@@ -583,7 +583,7 @@ public class ArrayProblems {
             if (ceiling != null && ceiling - u <= t) return true;
             // 将当前数加到 ts 中，并移除下标范围不在窗口中的值
             ts.add(u);
-            if (i > k) {
+            if (i >= k) {
                 ts.remove(nums[i - k]);
             }
         }
@@ -777,6 +777,145 @@ public class ArrayProblems {
     }
 
     // -------矩阵置零 << end --------
+
+    // -------三角形最小路径和 start >>--------
+
+    /**
+     * 给定一个三角形 triangle ，找出自顶向下的最小路径和。
+     * 每一步只能移动到下一行中相邻的结点上。相邻的结点 在这里指的是 下标 与 上一层结点下标 相同或者等于 上一层结点下标 + 1 的两个结点。
+     * 也就是说，如果正位于当前行的下标 i ，那么下一步可以移动到下一行的下标 i 或 i + 1 。
+     *
+     * 使用 动态规划的方法进行解答。
+     * 定义 dp[i][j] 表示从点 (i,j) 到底边的最小路径和。
+     * 那么有 状态转移方程： dp[i][j] = min(dp[i+1][j], dp[i+1][j+1])
+     *
+     * 对应 leetcode 中第 120 题。
+     */
+    public int minimumTotal(List<List<Integer>> triangle) {
+        int len = triangle.size();
+        int[][] dp = new int[len + 1][len + 1];
+        for (int i = len - 1; i >= 0; i--) {
+            for (int j = 0; j <= i; j++) {
+                dp[i][j] = Math.min(dp[i + 1][j], dp[i + 1][j + 1]) + triangle.get(i).get(j);
+            }
+        }
+        return dp[0][0];
+    }
+
+    // -------三角形最小路径和 << end --------
+
+    // -------解数独 start >>--------
+
+    final static class Sudoku {
+        // 二进制中 1 表示对应位置已经有值了
+        private final int[] rows = new int[9];
+        private final int[] cols = new int[9];
+        private final int[][] cells = new int[3][3];
+
+        /**
+         * 编写一个程序，通过填充空格来解决数独问题。
+         * 数独的解法需 遵循如下规则：
+         *
+         * 数字 1-9 在每一行只能出现一次。
+         * 数字 1-9 在每一列只能出现一次。
+         * 数字 1-9 在每一个以粗实线分隔的 3x3 宫内只能出现一次。（请参考示例图）
+         * 数独部分空格内已填入了数字，空白格用 '.' 表示。
+         *
+         * 对应 leetcode 中第 37 题。
+         */
+        public void solveSudoku(char[][] board) {
+            int cnt = 0;
+            for (int i = 0; i < board.length; i++) {
+                for (int j = 0; j < board[i].length; j++) {
+                    char c = board[i][j];
+                    if (c == '.') {
+                        cnt++;
+                    } else {
+                        int n = c - '1';
+                        solveSudokuFillNumber(i, j, n, true);
+                    }
+                }
+            }
+            solveSudokuBackTrace(board, cnt);
+        }
+
+        private boolean solveSudokuBackTrace(char[][] board, int cnt) {
+            if (cnt == 0) return true;
+            // 获取当前 候选项最少（即限制最多）的格子下标
+            int[] pos = solveSudokuGetMinOkMaskCountPos(board);
+            int x = pos[0], y = pos[1];
+            // okMask 值为1的位表示对应的数字当前可以填入
+            int okMask = solveSudokuGetOkMask(x, y);
+
+            for (char c = '1'; c <= '9'; c++) {
+                int index = c - '1';
+                if (solveSudokuTestMask(okMask, index)) {
+                    solveSudokuFillNumber(x, y, index, true);
+                    board[x][y] = c;
+                    if (solveSudokuBackTrace(board, cnt - 1)) return true;  // 题目假定唯一解
+                    board[x][y] = '.';
+                    solveSudokuFillNumber(x, y, index, false);
+                }
+            }
+            return false;
+        }
+
+        /**
+         * mask 二进制， 低 index位 是否为 1
+         */
+        private boolean solveSudokuTestMask(int mask, int index) {
+            return (mask & (1 << index)) != 0;
+        }
+
+        private int solveSudokuGetOkMask(int x, int y) {
+            return ~(rows[x] | cols[y] | cells[x/3][y/3]);
+        }
+
+        /**
+         * 获取候选项最少的位置
+         */
+        private int[] solveSudokuGetMinOkMaskCountPos(char[][] board) {
+            int[] res = new int[2];
+            int min = 10;
+            for (int i = 0; i < board.length; i++) {
+                for (int j = 0; j < board[i].length; j++) {
+                    if (board[i][j] == '.') {
+                        int okMask = solveSudokuGetOkMask(i, j);
+                        int count = solveSudokuGetOneCountInMask(okMask);
+                        if (count < min) {
+                            min = count;
+                            res[0] = i;
+                            res[1] = j;
+                        }
+                    }
+                }
+            }
+            return res;
+        }
+
+        /**
+         * mask 二进制低 9 位中 1 的个数
+         */
+        private int solveSudokuGetOneCountInMask(int mask) {
+            int res = 0;
+            for (int i = 0; i < 9; i++) {
+                int test = 1 << i;
+                if ((mask & test) != 0) {
+                    res++;
+                }
+            }
+            return res;
+        }
+
+        private void solveSudokuFillNumber(int x, int y, int n, boolean fill) {
+            // true set 1, false set 0
+            rows[x] = fill ? rows[x] | (1 << n) : rows[x] & ~(1 << n);
+            cols[y] = fill ? cols[y] | (1 << n) : cols[y] & ~(1 << n);
+            cells[x / 3][y / 3] = fill ? cells[x / 3][y / 3] | (1 << n) : cells[x / 3][y / 3] & ~(1 << n);
+        }
+    }
+
+    // -------解数独 << end --------
 
     // -------组合总和 start >>--------
 
