@@ -273,4 +273,21 @@ public class ArrayProblemTests {
         assertArrayEquals(param, res);
     }
 
+    @Test
+    public void testRemoveDuplicatesTwo() {
+        int[] param = {0,0,1,1,1,1,2,3,3};
+        int[] res = {0,0,1,1,2,3,3};
+        assertArrayEquals(Arrays.copyOf(param, problems.removeDuplicatesTwo(param)), res);
+        param = new int[] {0,0,1,1,1,1,2,3,3};
+        assertArrayEquals(Arrays.copyOf(param, problems.removeDuplicatesTwo_v2(param)), res);
+    }
+
+    @Test
+    public void testCanCompleteCircuit() {
+        int[] gas = {1,2,3,4,5}, cost = {3,4,5,1,2};
+        assertEquals(problems.canCompleteCircuit(gas, cost), 3);
+        gas = new int[] {2,3,4}; cost = new int[] {3,4,3};
+        assertEquals(problems.canCompleteCircuit(gas, cost), -1);
+    }
+
 }

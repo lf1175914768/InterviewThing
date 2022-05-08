@@ -78,4 +78,21 @@ public class StringProblemTests {
         res = new Integer[] {6,9,12};
         assertArrayEquals(problems.findSubstring("barfoofoobarthefoobarman", words).toArray(new Integer[0]), res);
     }
+
+    @Test
+    public void testIntToRoman() {
+        assertEquals(problems.intToRoman(3), "III");
+        assertEquals(problems.intToRoman(4), "IV");
+        assertEquals(problems.intToRoman(9), "IX");
+        assertEquals(problems.intToRoman(58), "LVIII");
+        assertEquals(problems.intToRoman(1994), "MCMXCIV");
+    }
+
+    @Test
+    public void testMultiply() {
+        assertEquals(problems.multiply("2", "3"), "6");
+        assertEquals(problems.multiply_v2("2", "3"), "6");
+        assertEquals(problems.multiply("123", "456"), "56088");
+        assertEquals(problems.multiply_v2("123", "456"), "56088");
+    }
 }

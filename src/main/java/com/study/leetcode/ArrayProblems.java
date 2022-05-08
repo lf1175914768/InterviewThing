@@ -917,6 +917,81 @@ public class ArrayProblems {
 
     // -------解数独 << end --------
 
+    // -------删除有序数组中的重复项II start >>--------
+
+    /**
+     * 给你一个有序数组 nums ，请你 原地 删除重复出现的元素，使每个元素 最多出现两次 ，返回删除后数组的新长度。
+     * 不要使用额外的数组空间，你必须在 原地 修改输入数组 并在使用 O(1) 额外空间的条件下完成。
+     *
+     * 使用 快慢指针的方式进行解答。
+     *
+     * 对应 leetcode 中第 80 题。
+     */
+    public int removeDuplicatesTwo(int[] nums) {
+        int fast = 1, slow = 0, count = 1;
+        while (fast < nums.length) {
+            if (nums[slow] != nums[fast]) {
+                slow++;
+                nums[slow] = nums[fast];
+                count = 1;
+            } else {
+                count++;
+                if (count == 2) {
+                    slow++;
+                    nums[slow] = nums[fast];
+                }
+            }
+            fast++;
+        }
+        return slow + 1;
+    }
+
+    public int removeDuplicatesTwo_v2(int[] nums) {
+        return removeDuplicatesTwoProcess(nums, 2); 
+    }
+
+    private int removeDuplicatesTwoProcess(int[] nums, int k) {
+        int index = 0;
+        for (int num : nums) {
+            if (index < k || nums[index - k] != num) {
+                nums[index++] = num;
+            }
+        }
+        return index;
+    }
+
+    // -------删除有序数组中的重复项II << end --------
+
+    // -------加油站 start >>--------
+
+    /**
+     * 在一条环路上有 n 个加油站，其中第 i 个加油站有汽油 gas[i] 升。
+     * 你有一辆油箱容量无限的的汽车，从第 i 个加油站开往第 i+1 个加油站需要消耗汽油 cost[i] 升。你从其中的一个加油站出发，开始时油箱为空。
+     * 给定两个整数数组 gas 和 cost ，如果你可以绕环路行驶一周，则返回出发时加油站的编号，否则返回 -1 。如果存在解，则 保证 它是 唯一 的。
+     *
+     * 该题可以使用 图的思想来分析，
+     * 可以画一个 折线图用来表示总油量剩余值，若要满足题目的要求，跑完全程在回到起点，总油量剩余值的任意部分都需要在 X 轴以上，且跑到终点时，
+     * 总剩余量 >= 0.
+     * 为了让黑色折线图任意部分都在 X 轴以上，我们需要向上移动黑色折线图，直到所有的点都在 X 轴或者 X轴 以上。此时，处在 X轴的点即为出发点。
+     * 也即黑色折线图的最低值的位置。
+     *
+     * 对应 leetcode 中第 134 题。
+     */
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        int len = gas.length, spare = 0, minSpare = Integer.MAX_VALUE;
+        int res = 0;
+        for (int i = 0; i < len; i++) {
+            spare += gas[i] - cost[i];
+            if (spare < minSpare) {
+                res = i;
+                minSpare = spare;
+            }
+        }
+        return spare < 0 ? -1 : (res + 1) % len;
+    }
+
+    // -------加油站 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

@@ -405,4 +405,103 @@ public class StringProblems {
     }
 
     // -------串联所有单词的子串 << end --------
+
+    // -------整数转罗马数字 start >>--------
+
+    /**
+     * 罗马数字包含以下七种字符： I， V， X， L，C，D 和 M。
+     * 例如， 罗马数字 2 写做 II ，即为两个并列的 1。12 写做 XII ，即为 X + II 。 27 写做  XXVII, 即为 XX + V + II 。
+     *
+     * 通常情况下，罗马数字中小的数字在大的数字的右边。但也存在特例，例如 4 不写做 IIII，而是 IV。数字 1 在数字 5 的左边，
+     * 所表示的数等于大数 5 减小数 1 得到的数值 4 。同样地，数字 9 表示为 IX。这个特殊的规则只适用于以下六种情况：
+     *
+     * I 可以放在 V (5) 和 X (10) 的左边，来表示 4 和 9。
+     * X 可以放在 L (50) 和 C (100) 的左边，来表示 40 和 90。 
+     * C 可以放在 D (500) 和 M (1000) 的左边，来表示 400 和 900。
+     * 给你一个整数，将其转为罗马数字。
+     *
+     * 使用贪心的算法思想进行解答。
+     *
+     * 对应 leetcode 中第 12 题。
+     */
+    public String intToRoman(int num) {
+        int[] nums = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        String[] romans = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+
+        StringBuilder sb = new StringBuilder();
+        int index = 0;
+        while (index < 13) {
+            while (num >= nums[index]) {
+                sb.append(romans[index]);
+                num -= nums[index];
+            }
+            index++;
+        }
+        return sb.toString();
+    }
+
+    // -------整数转罗马数字 << end --------
+
+    // -------字符串相乘 start >>--------
+
+    /**
+     * 给定两个以字符串形式表示的非负整数 num1 和 num2，返回 num1 和 num2 的乘积，它们的乘积也表示为字符串形式。
+     * 注意：不能使用任何内置的 BigInteger 库或直接将输入转换为整数。
+     *
+     * 自己写的，有可能有疏漏的地方。
+     *
+     * 对应 leetcode 中第 43 题。
+     */
+    public String multiply(String num1, String num2) {
+        int res = 0, rax = 0;
+        char[] chars = num2.toCharArray();
+        for (int i = chars.length - 1; i >= 0; i--) {
+            char c = chars[i];
+            int curMulti = multiplyToCalc(num1, c);
+            res += curMulti * Math.pow(10, rax++);
+        }
+        return String.valueOf(res);
+    }
+
+    private int multiplyToCalc(String num1, char c) {
+        int prev = 0, res = 0, rax = 0;
+        char[] chars = num1.toCharArray();
+        for (int i = chars.length - 1; i >= 0; i--) {
+            char ch = chars[i];
+            int tmp = (c - '0') * (ch - '0') + prev;
+            prev = tmp / 10;
+            res += (tmp % 10) * Math.pow(10, rax++);
+        }
+        return res;
+    }
+
+    public String multiply_v2(String num1, String num2) {
+        if (num1.equals("0") || num2.equals("0")) return "0";
+        int[] res = new int[num1.length() + num2.length()];
+        for (int i = num1.length() - 1; i >= 0; i--) {
+            int n1 = num1.charAt(i) - '0';
+            for (int j = num2.length() - 1; j >= 0; j--) {
+                int n2 = num2.charAt(j) - '0';
+                int sum = res[i + j + 1] + n1 * n2;
+                res[i + j + 1] = sum % 10;
+                res[i + j] += sum / 10;
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < res.length; i++) {
+            if (i == 0 && res[i] == 0) continue;
+            sb.append(res[i]);
+        }
+        return sb.toString();
+    }
+
+    // -------字符串相乘 << end --------
+
+    // -------组合总和 start >>--------
+
+    public List<List<Integer>> permute1(int[] nums) {
+        return null;
+    }
+
+    // -------组合总和 << end --------
 }
