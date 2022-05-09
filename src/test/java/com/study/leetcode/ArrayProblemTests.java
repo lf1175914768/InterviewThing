@@ -290,4 +290,22 @@ public class ArrayProblemTests {
         assertEquals(problems.canCompleteCircuit(gas, cost), -1);
     }
 
+    @Test
+    public void testCandy() {
+        int[] param = {1,0,2};
+        assertEquals(problems.candy(param), 5);
+        param = new int[] {1,2,2};
+        assertEquals(problems.candy(param), 4);
+    }
+
+    @Test
+    public void testEvalRPN() {
+        String[] param = {"2","1","+","3","*"};
+        assertEquals(problems.evalRPN(param), 9);
+        param = new String[] {"4","13","5","/","+"};
+        assertEquals(problems.evalRPN(param), 6);
+        param = new String[] {"10","6","9","3","+","-11","*","/","*","17","+","5","+"};
+        assertEquals(problems.evalRPN(param), 22);
+    }
+
 }

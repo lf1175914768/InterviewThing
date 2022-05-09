@@ -1,6 +1,8 @@
 package com.study.leetcode;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>description: 数组相关的问题  </p>
@@ -991,6 +993,96 @@ public class ArrayProblems {
     }
 
     // -------加油站 << end --------
+
+    // -------分发糖果 start >>--------
+
+    /**
+     * n 个孩子站成一排。给你一个整数数组 ratings 表示每个孩子的评分。
+     * 你需要按照以下要求，给这些孩子分发糖果：
+     * 每个孩子至少分配到 1 个糖果。
+     * 相邻两个孩子评分更高的孩子会获得更多的糖果。
+     * 请你给每个孩子分发糖果，计算并返回需要准备的 最少糖果数目 。
+     *
+     * 解题思路：
+     * 规则定义： 设学生 A 和学生 B左右相邻，A在B左边；
+     *  左规则：当 ratings(B) > ratings(A) 时，B的糖比A 的糖数量多。
+     *  右规则：当 ratings(A) > ratings(B) 时，A的糖比B的糖数量多。
+     *
+     * 算法流程：
+     * 1.先从左至右遍历学生成绩 ratings， 按照以下规则给糖，并记录在 left 中，
+     *   1.先给所有学生 1 颗糖；
+     *   2.若 ratings(i) > ratings(i - 1)， 则第 i 名学生糖比第 i - 1名学生多1个
+     *   3.若 ratings(i) <= ratings(i - 1),则第 i 名学生糖不变。（交由从右向左遍历时处理）
+     *  经过此规则后，可以保证所有学生的糖数量满足左规则。
+     * 2.同理，在此规则下从右至左遍历学生成绩并记录在 right 中，可以保证所有学生糖数量满足右规则。
+     * 3.最终，取以上2轮遍历 left 和 right 对应学生糖果数的最大值，这样则同时满足左规则和右规则，即得到每个同学的最少糖果数量。
+     *
+     * 对应 leetcode 中第 135 题。
+     */
+    public int candy(int[] ratings) {
+        int[] left = new int[ratings.length], right = new int[ratings.length];
+        Arrays.fill(left, 1);
+        Arrays.fill(right, 1);
+        for (int i = 1; i < ratings.length; i++) {
+            if (ratings[i] > ratings[i - 1]) {
+                left[i] = left[i - 1] + 1;
+            }
+        }
+        for (int j = ratings.length - 2; j >= 0; j--) {
+            if (ratings[j] > ratings[j + 1]) {
+                right[j] = right[j + 1] + 1;
+            }
+        }
+        int res = 0;
+        for (int i = 0; i < ratings.length; i++) {
+            res += Math.max(left[i], right[i]);
+        }
+        return res;
+    }
+
+    // -------分发糖果 << end --------
+
+    // -------逆波兰表达式求值 start >>--------
+
+    /**
+     * 根据 逆波兰表达式， 求表达式的值。
+     * 有效的算符包括 +、-、*、/ 。每个运算对象可以是整数，也可以是另一个逆波兰表达式。
+     * 注意 两个整数之间的除法只保留整数部分。
+     * 可以保证给定的逆波兰表达式总是有效的。换句话说，表达式总会得出有效数值且不存在除数为 0 的情况。
+     *
+     * 对应 leetcode 中第 137 题。
+     */
+    public int evalRPN(String[] tokens) {
+        Stack<Integer> stack = new Stack<>();
+        Set<String> set = Stream.of("+", "-", "*", "/").collect(Collectors.toSet());
+        for (String token : tokens) {
+            if (set.contains(token)) {
+                Integer p1 = stack.pop();
+                Integer p2 = stack.pop();
+                switch (token) {
+                    case "+":
+                        stack.push(p1 + p2);
+                        break;
+                    case "-":
+                        stack.push(p2 - p1);
+                        break;
+                    case "*":
+                        stack.push(p1 * p2);
+                        break;
+                    case "/":
+                        stack.push(p2 / p1);
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                stack.push(Integer.parseInt(token));
+            }
+        }
+        return stack.peek();
+    }
+
+    // -------逆波兰表达式求值 << end --------
 
     // -------组合总和 start >>--------
 
