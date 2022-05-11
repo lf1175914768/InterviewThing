@@ -95,4 +95,27 @@ public class StringProblemTests {
         assertEquals(problems.multiply("123", "456"), "56088");
         assertEquals(problems.multiply_v2("123", "456"), "56088");
     }
+
+    @Test
+    public void testFullJustify() {
+        String[] words = {"This", "is", "an", "example", "of", "text", "justification."};
+        String[] res = {"This    is    an", "example  of text", "justification.  "};
+        assertArrayEquals(problems.fullJustify(words, 16).toArray(new String[0]), res);
+        words = new String[] {"What","must","be","acknowledgment","shall","be"};
+        res = new String[] {"What   must   be",    "acknowledgment  ", "shall be        "};
+        assertArrayEquals(problems.fullJustify(words, 16).toArray(new String[0]), res);
+        words = new String[] {"Science","is","what","we","understand","well","enough","to","explain","to","a","computer.","Art","is","everything","else","we","do"};
+        res = new String[] {"Science  is  what we","understand      well","enough to explain to","a  computer.  Art is", "everything  else  we", "do                  "};
+        assertArrayEquals(problems.fullJustify(words, 20).toArray(new String[0]), res);
+    }
+
+    @Test(timeout = 100)
+    public void testSimplifyPath() {
+        assertEquals(problems.simplifyPath("/home/"), "/home");
+        assertEquals(problems.simplifyPath_v2("/home/"), "/home");
+        assertEquals(problems.simplifyPath("/../"), "/");
+        assertEquals(problems.simplifyPath_v2("/../"), "/");
+        assertEquals(problems.simplifyPath("/a/./b/../../c/"), "/c");
+        assertEquals(problems.simplifyPath_v2("/a/./b/../../c/"), "/c");
+    }
 }

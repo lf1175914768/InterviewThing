@@ -497,6 +497,132 @@ public class StringProblems {
 
     // -------字符串相乘 << end --------
 
+    // -------文本左右对齐 start >>--------
+
+    /**
+     * 给定一个单词数组 words 和一个长度 maxWidth ，重新排版单词，使其成为每行恰好有 maxWidth 个字符，且左右两端对齐的文本。
+     * 你应该使用 “贪心算法” 来放置给定的单词；也就是说，尽可能多地往每行中放置单词。必要时可用空格 ' ' 填充，使得每行恰好有 maxWidth 个字符。
+     * 要求尽可能均匀分配单词间的空格数量。如果某一行单词间的空格不能均匀分配，则左侧放置的空格数要多于右侧的空格数。
+     * 文本的最后一行应为左对齐，且单词之间不插入额外的空格。
+     *
+     * 注意:
+     * 单词是指由非空格字符组成的字符序列。
+     * 每个单词的长度大于 0，小于等于 maxWidth。
+     * 输入单词数组 words 至少包含一个单词。
+     *
+     * 对应 leetcode 中第 68 题。
+     */
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        List<String> res = new ArrayList<>();
+        int cnt = 0, start = 0;
+        for (int i = 0; i < words.length; i++) {
+            cnt += words[i].length() + 1;
+            // 如果是最后一个单词，或者加上下一单词就超过长度了，即可凑成一行
+            if (i + 1 == words.length || cnt + words[i + 1].length() > maxWidth) {
+                res.add(fullJustifyFillWords(words, start, i, maxWidth, i + 1 == words.length));
+                start = i + 1;
+                cnt = 0;
+            }
+        }
+        return res;
+    }
+
+    private String fullJustifyFillWords(String[] words, int start, int end, int maxWidth, boolean lastLine) {
+        int wordCount = end - start + 1;
+        // 除去每个单词尾部空格。
+        int spaceCount = maxWidth - wordCount + 1;
+        for (int i = start; i <= end; i++) {
+            // 除去所有单词的长度
+            spaceCount -= words[i].length();
+        }
+        // 词尾空格
+        final int spaceSuffix = 1;
+        // 额外空格的平均值 = 总空格数/间隙数
+        final int spaceAvg = wordCount == 1 ? 0 : spaceCount / (wordCount - 1);
+        int spaceExtra = wordCount == 1 ? 0 : spaceCount % (wordCount - 1);
+        StringBuilder sb = new StringBuilder();
+        for (int i = start; i < end; i++) {
+            sb.append(words[i]);
+            if (lastLine) {
+                sb.append(" ");
+                continue;
+            }
+            int n = spaceSuffix + spaceAvg + (spaceExtra-- > 0 ? 1 : 0);
+            while (n-- > 0) {
+                sb.append(" ");
+            }
+        }
+        // 插入最后一个单词
+        sb.append(words[end]);
+        int lastSpaceCnt = maxWidth - sb.length();
+        while (lastSpaceCnt-- > 0) {
+            sb.append(" ");
+        }
+        return sb.toString();
+    }
+
+    // -------文本左右对齐 << end --------
+
+    // -------组合总和 start >>--------
+
+    /**
+     * 给你一个字符串 path ，表示指向某一文件或目录的 Unix 风格 绝对路径 （以 '/' 开头），请你将其转化为更加简洁的规范路径。
+     * 在 Unix 风格的文件系统中，一个点（.）表示当前目录本身；此外，两个点 （..） 表示将目录切换到上一级（指向父目录）；
+     * 两者都可以是复杂相对路径的组成部分。任意多个连续的斜杠（即，'//'）都被视为单个斜杠 '/' 。 对于此问题，任何其他格式的点（例如，'...'）均被视为文件/目录名称。
+     *
+     * 请注意，返回的 规范路径 必须遵循下述格式：
+     * 始终以斜杠 '/' 开头。
+     * 两个目录名之间必须只有一个斜杠 '/' 。
+     * 最后一个目录名（如果存在）不能 以 '/' 结尾。
+     * 此外，路径仅包含从根目录到目标文件或目录的路径上的目录（即，不含 '.' 或 '..'）。
+     * 返回简化后得到的 规范路径 。
+     *
+     * 对应 leetcode 中第 71 题。
+     */
+    public String simplifyPath(String path) {
+        Deque<String> queue = new LinkedList<>();
+        String[] names = path.split("/");
+        for (String name : names) {
+            if ("..".equals(name)) {
+                if (!queue.isEmpty())
+                    queue.pollLast();
+            } else if (name.length() > 0 && !".".equals(name)) {
+                queue.offerLast(name);
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        while (!queue.isEmpty()) {
+            sb.append("/").append(queue.pollFirst());
+        }
+        return sb.length() == 0 ? "/" : sb.toString();
+    }
+
+    public String simplifyPath_v2(String path) {
+        Deque<String> queue = new LinkedList<>();
+        for (int i = 1; i < path.length();) {
+            if (path.charAt(i) == '/') {
+                i++;
+                continue;
+            }
+            int j = i + 1;
+            while (j < path.length() && path.charAt(j) != '/') j++;
+            String item = path.substring(i, j);
+            if (item.equals("..")) {
+                if (!queue.isEmpty())
+                    queue.pollLast();
+            } else if (!item.equals("."))
+                queue.offerLast(item);
+            i = j;
+        }
+        StringBuilder sb = new StringBuilder();
+        while (!queue.isEmpty()) {
+            sb.append("/").append(queue.pollFirst());
+        }
+        return sb.length() == 0 ? "/" : sb.toString();
+    }
+
+    // -------组合总和 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

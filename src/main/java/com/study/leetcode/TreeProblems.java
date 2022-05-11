@@ -1654,6 +1654,109 @@ public class TreeProblems {
 
     // -------求根节点到叶节点数字之和 << end --------
 
+    // -------二叉搜索树迭代器 start >>--------
+
+    /**
+     * 实现一个二叉搜索树迭代器类BSTIterator ，表示一个按中序遍历二叉搜索树（BST）的迭代器：
+     * BSTIterator(TreeNode root) 初始化 BSTIterator 类的一个对象。BST 的根节点 root 会作为构造函数的一部分给出。
+     * 指针应初始化为一个不存在于 BST 中的数字，且该数字小于 BST 中的任何元素。
+     * boolean hasNext() 如果向指针右侧遍历存在数字，则返回 true ；否则返回 false 。
+     * int next()将指针向右移动，然后返回指针处的数字。
+     * 注意，指针初始化为一个不存在于 BST 中的数字，所以对 next() 的首次调用将返回 BST 中的最小元素。
+     *
+     * 你可以假设 next() 调用总是有效的，也就是说，当调用 next() 时，BST 的中序遍历中至少存在一个下一个数字。
+     *
+     * 对应 leetcode 中第 173 题。
+     */
+    static final class BSTIterator {
+        private TreeNode cur;
+        private final Stack<TreeNode> stack;
+
+        public BSTIterator(TreeNode root) {
+            stack = new Stack<>();
+            cur = root;
+        }
+
+        public int next() {
+            while (cur != null) {
+                stack.push(cur);
+                cur = cur.left;
+            }
+            cur = stack.pop();
+            int ret = cur.val;
+            cur = cur.right;
+            return ret;
+        }
+
+        public boolean hasNext() {
+            return cur != null || !stack.isEmpty();
+        }
+    }
+
+    // -------二叉搜索树迭代器 << end --------
+
+    // -------实现Trie（前缀树） start >>--------
+
+    /**
+     * 前缀树 是一种树形数据结构，用于高效地存储和检索字符串数据集中的键。这一数据结构有相当多的应用情景，例如自动补完和拼写检查。
+     *
+     * 请你实现 Trie 类：
+     * Trie() 初始化前缀树对象。
+     * void insert(String word) 向前缀树中插入字符串 word 。
+     * boolean search(String word) 如果字符串 word 在前缀树中，返回 true（即，在检索之前已经插入）；否则，返回 false 。
+     * boolean startsWith(String prefix) 如果之前已经插入的字符串 word 的前缀之一为 prefix ，返回 true ；否则，返回 false 。
+     *
+     * 对应 leetcode 中第 208 题。
+     */
+    static final class Trie {
+
+        private final TrieNode root;
+
+        public Trie() {
+            root = new TrieNode();
+        }
+
+        public void insert(String word) {
+            TrieNode node = root;
+            for (char c : word.toCharArray()) {
+                if (node.next[c - 'a'] == null) {
+                    node.next[c - 'a'] = new TrieNode();
+                }
+                node = node.next[c - 'a'];
+            }
+            node.isEnd = true;
+        }
+
+        public boolean search(String word) {
+            TrieNode node = root;
+            for (char c : word.toCharArray()) {
+                node = node.next[c - 'a'];
+                if (node == null) return false;
+            }
+            return node.isEnd;
+        }
+
+        public boolean startsWith(String prefix) {
+            TrieNode node = root;
+            for (char c : prefix.toCharArray()) {
+                node = node.next[c - 'a'];
+                if (node == null) return false;
+            }
+            return true;
+        }
+
+        private static class TrieNode {
+            private boolean isEnd;
+            TrieNode[] next;
+            private TrieNode() {
+                isEnd = false;
+                next = new TrieNode[26];
+            }
+        }
+    }
+
+    // -------实现Trie（前缀树） << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {
