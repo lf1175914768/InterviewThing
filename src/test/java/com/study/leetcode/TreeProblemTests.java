@@ -525,34 +525,6 @@ public class TreeProblemTests {
         assertEquals(problem.sumNumbers_v2(root), 25);
     }
 
-    @Test
-    public void testBSTIterator() {
-        TreeNode root = buildCommonTree();
-        TreeProblems.BSTIterator iterator = new TreeProblems.BSTIterator(root);
-        assertEquals(iterator.next(), 1);
-        assertEquals(iterator.next(), 2);
-        assertEquals(iterator.next(), 3);
-        assertTrue(iterator.hasNext());
-        assertEquals(iterator.next(), 4);
-        assertEquals(iterator.next(), 6);
-        assertEquals(iterator.next(), 7);
-        assertTrue(iterator.hasNext());
-        assertEquals(iterator.next(), 9);
-        assertFalse(iterator.hasNext());
-        assertFalse(iterator.hasNext());
-    }
-
-    @Test
-    public void testTrie() {
-        TreeProblems.Trie trie = new TreeProblems.Trie();
-        trie.insert("apply");
-        assertTrue(trie.search("apply"));
-        assertFalse(trie.search("app"));
-        assertTrue(trie.startsWith("app"));
-        trie.insert("app");
-        assertTrue(trie.search("app"));
-    }
-
     /**
      * build tree
      *             4
@@ -561,7 +533,7 @@ public class TreeProblemTests {
      *
      * @return root node
      */
-    private TreeNode buildCommonTree() {
+    static TreeNode buildCommonTree() {
         TreeNode node1 = new TreeNode(1);
         TreeNode node3 = new TreeNode(3);
         TreeNode node2 = new TreeNode(2, node1, node3);
