@@ -1084,6 +1084,69 @@ public class ArrayProblems {
 
     // -------逆波兰表达式求值 << end --------
 
+    // -------前K个高频元素 start >>--------
+
+    /**
+     * 给你一个整数数组 nums 和一个整数 k，请你返回其中出现频率前 k 高的元素。你可以按 任意顺序 返回答案。
+     *
+     * 使用 最小堆的 方法进行解答。
+     *
+     * 时间复杂度： o(nlogK), 空间复杂度： o(n)
+     *
+     * 对应 leetcode 中第 336 题。
+     */
+    public int[] topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        PriorityQueue<Integer> queue = new PriorityQueue<>(Comparator.comparingInt(map::get));
+        for (Integer key : map.keySet()) {
+            if (queue.size() < k) {
+                queue.offer(key);
+            } else if (map.get(key) > map.get(queue.peek())) {
+                queue.poll();
+                queue.offer(key);
+            }
+        }
+        int[] res = new int[k];
+        int i = 0;
+        while (!queue.isEmpty()) {
+            res[i++] = queue.poll();
+        }
+        return res;
+    }
+
+    /**
+     * 使用 桶排序的方法进行解答。
+     */
+    public int[] topKFrequent_v2(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        List<Integer>[] list = new List[nums.length + 1];
+        for (Integer key : map.keySet()) {
+            int i = map.get(key);
+            if (list[i] == null) {
+                list[i] = new ArrayList<>();
+            }
+            list[i].add(key);
+        }
+        int[] res = new int[k];
+        int index = k;
+        for (int i = list.length - 1; i >= 0 && index > 0; i--) {
+            if (list[i] != null) {
+                for (Integer num : list[i]) {
+                    res[--index] = num;
+                }
+            }
+        }
+        return Arrays.copyOfRange(res, index, k);
+    }
+
+    // -------前K个高频元素 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

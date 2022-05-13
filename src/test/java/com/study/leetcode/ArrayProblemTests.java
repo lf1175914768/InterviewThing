@@ -308,4 +308,14 @@ public class ArrayProblemTests {
         assertEquals(problems.evalRPN(param), 22);
     }
 
+    @Test
+    public void testTopKFrequent() {
+        int[] param = {1,1,1,2,2,3}, res = {2,1};
+        assertArrayEquals(problems.topKFrequent(param, 2), res);
+        assertArrayEquals(problems.topKFrequent_v2(param, 2), res);
+        param = new int[] {1}; res = new int[] {1};
+        assertArrayEquals(problems.topKFrequent(param,1), res);
+        assertArrayEquals(problems.topKFrequent_v2(param,1), res);
+    }
+
 }
