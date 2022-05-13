@@ -443,6 +443,8 @@ public class HotProblemTests {
         params = new int[] {0,3,7,2,5,8,4,6,0,1};
         assertEquals(problem.longestConsecutive(params), 9);
         assertEquals(problem.longestConsecutive_v2(params), 9);
+        params = new int[] {0,3,7,2,5,8,6,0,1,4};
+        assertEquals(problem.longestConsecutive_v2(params), 9);
     }
 
     @Test
@@ -508,9 +510,13 @@ public class HotProblemTests {
         int[] pa = new int[] {3,2,1,5,6,4};
         assertEquals(problem.findKthLargest(pa, 2), 5);
         assertEquals(problem.findKthLargestManual(pa, 2), 5);
+        assertEquals(problem.findKthLargest_v2(pa, 2), 5);
+        assertEquals(problem.findKthLargest_v3(pa, 2), 5);
         pa = new int[] {3,2,3,1,2,4,5,5,6};
         assertEquals(problem.findKthLargest(pa, 4), 4);
         assertEquals(problem.findKthLargestManual(pa, 4), 4);
+        assertEquals(problem.findKthLargest_v2(pa, 4), 4);
+        assertEquals(problem.findKthLargest_v3(pa, 4), 4);
     }
 
     @Test
@@ -604,5 +610,45 @@ public class HotProblemTests {
         assertEquals(problem.sumOfTwoString("9999999", "1"), "10000000");
         assertEquals(problem.sumOfTwoString("9999999", "9"), "10000008");
         assertEquals(problem.sumOfTwoString("999999955555", "594"), "999999956149");
+    }
+
+    @Test
+    public void testTrap() {
+        int[] param = new int[] {0,1,0,2,1,0,1,3,2,1,2,1};
+        assertEquals(problem.trap(param), 6);
+        assertEquals(problem.trap_v2(param), 6);
+        assertEquals(problem.trap_v3(param), 6);
+        param = new int[] {4,2,0,3,2,5};
+        assertEquals(problem.trap(param), 9);
+        assertEquals(problem.trap_v2(param), 9);
+        assertEquals(problem.trap_v3(param), 9);
+    }
+
+    @Test
+    public void testSearch() {
+        int[] param = new int[] {4,5,6,7,0,1,2};
+        assertEquals(problem.search(param, 0), 4);
+        assertEquals(problem.search(param, 3), -1);
+        param = new int[] {1};
+        assertEquals(problem.search(param, 0), -1);
+    }
+
+    @Test
+    public void testMySqrt() {
+        assertEquals(problem.mySqrt(9), 3);
+        assertEquals(problem.mySqrt(8), 2);
+    }
+
+    @Test
+    public void testSpiralOrder() {
+        int[][] param = new int[][] {{1,2,3}, {4,5,6}, {7,8,9}};
+        Integer[] res = new Integer[] {1,2,3,6,9,8,7,4,5};
+        assertArrayEquals(problem.spiralOrder(param).toArray(new Integer[0]), res);
+        param = new int[][] {{3},{2}};
+        res = new Integer[] {3,2};
+        assertArrayEquals(problem.spiralOrder(param).toArray(new Integer[0]), res);
+        param = new int[][] {{1,2,3,4}, {5,6,7,8}, {9,10,11,12}};
+        res = new Integer[] {1,2,3,4,8,12,11,10,9,5,6,7};
+        assertArrayEquals(problem.spiralOrder(param).toArray(new Integer[0]), res);
     }
 }

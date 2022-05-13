@@ -716,6 +716,41 @@ public class DynamicProblems {
 
     // -------打家劫舍II << end --------
 
+    // -------最大正方形 start >>--------
+
+    /**
+     * 在一个由 '0' 和 '1' 组成的二维矩阵内，找到只包含 '1' 的最大正方形，并返回其面积。
+     *
+     * 使用动态规划得方法进行解答：
+     * 定义 dp[i][j] 是以 matrix[i - 1][j - 1] 为右下角得正方形得最大边长。
+     * 则可以根据画图帮助理解，有如下性质：
+     * 若某格子值为 1，则以此为右下角得正方形得，最大边长为：上面得正方形、左面得正方形或左上的正方形中，最小的那个，在加上此格。
+     * 则有：
+     * <pre>
+     *   if (grid[i - 1][j - 1] == '1') {
+     *       dp[i][j] = min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]) + 1;
+     *   }
+     * </pre>
+     *
+     * 对应 leetcode 中第 221 题。
+     */
+    public int maximalSquare(char[][] matrix) {
+        if (null == matrix || matrix.length <= 0) return 0;
+        int[][] dp = new int[matrix.length + 1][matrix[0].length + 1];
+        int maxLength = 0;
+        for (int i = 1; i <= matrix.length; i++) {
+            for (int j = 1; j <= matrix[0].length; j++) {
+                if (matrix[i - 1][j - 1] == '1') {
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j - 1], dp[i - 1][j]), dp[i][j - 1]) + 1;
+                    maxLength = Math.max(maxLength, dp[i][j]);
+                }
+            }
+        }
+        return maxLength * maxLength;
+    }
+
+    // -------最大正方形 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

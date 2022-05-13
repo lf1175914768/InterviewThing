@@ -35,6 +35,20 @@ public class ListProblem {
 
     // -------反转链表II start >>--------
 
+    /**
+     *  给你单链表的头指针 head 和两个整数 left 和 right ，其中 left <= right 。
+     *  请你反转从位置 left 到位置 right 的链表节点，返回 反转后的链表 。
+     *
+     * 解题思路：
+     * 1.我们定义两个指针，分别称之为 g 和 p。
+     * 我们首先根据方法的参数 m 确定 g 和 p的位置。将 g 移动到第一个要反转的节点的前面，将 p 移动到第一个要
+     * 反转的节点的位置上。我们以 m = 2，n = 4 为例。
+     * 2.将 p 后面的元素删除，然后添加到 g 的后面，也即头插法。
+     * 3.根据 m 和 n，重复步骤2
+     * 4.返回dummy.next
+     *
+     * 对应 leetcode 中第 92 题。
+     */
     public ListNode reverseBetween(ListNode head, int left, int right) {
         ListNode dummyHead = new ListNode(0);
         dummyHead.next = head;
@@ -45,6 +59,7 @@ public class ListProblem {
             p = p.next;
         }
 
+        // 采用头插法
         for (int i = 0; i < right - left; i++) {
             ListNode removed = p.next;
             p.next = p.next.next;
@@ -173,4 +188,77 @@ public class ListProblem {
     }
 
     // -------分隔链表 << end --------
+
+    // -------删除有序数组中的重复项 start >>--------
+
+    /**
+     * 给你一个 升序排列 的数组 nums ，请你 原地 删除重复出现的元素，使每个元素 只出现一次 ，返回删除后数组的新长度。元素的 相对顺序 应该保持 一致 。
+     * 由于在某些语言中不能改变数组的长度，所以必须将结果放在数组nums的第一部分。更规范地说，如果在删除重复项之后有 k 个元素，那么 nums 的前 k 个元素应该保存最终结果。
+     * 将最终结果插入 nums 的前 k 个位置后返回 k 。
+     * 不要使用额外的空间，你必须在 原地 修改输入数组 并在使用 O(1) 额外空间的条件下完成。
+     *
+     * 对应 leetcode 中第 26 题。
+     */
+    public int removeDuplicates(int[] nums) {
+        int start = 0, end = 1;
+        while (end < nums.length) {
+            if (nums[end] != nums[start]) {
+                start++;
+                nums[start] = nums[end];
+            }
+            end++;
+        }
+        return start + 1;
+    }
+
+    // -------删除有序数组中的重复项 << end --------
+
+    // -------删除排序链表中的重复元素 start >>--------
+
+    /**
+     * 给定一个已排序的链表的头 head ， 删除所有重复的元素，使每个元素只出现一次 。返回 已排序的链表 。
+     *
+     * 对应  leetcode 中第 83 题。
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null) return null;
+        ListNode slow = head, fast = head;
+        while (fast != null) {
+            if (fast.val != slow.val) {
+                slow.next = fast;
+                slow = slow.next;
+            }
+            fast = fast.next;
+        }
+        // 断开与后面的连接
+        slow.next = null;
+        return head;
+    }
+
+    // -------删除排序链表中的重复元素 << end --------
+
+    // -------删除链表的倒数第N个节点 start >>--------
+
+    /**
+     * 给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
+     *
+     * 对应 leetcode 中第 19 题。
+     */
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dummy = new ListNode(-1), fast = dummy, slow = dummy;
+        dummy.next = head;
+        for (int i = 0; fast != null && i < n; i++) {
+            fast = fast.next;
+        }
+        if (fast != null) {
+            while (fast.next != null) {
+                fast = fast.next;
+                slow = slow.next;
+            }
+            slow.next = slow.next.next;
+        }
+        return dummy.next;
+    }
+
+    // -------删除链表的倒数第N个节点 << end --------
 }

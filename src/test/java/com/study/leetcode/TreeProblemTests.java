@@ -265,6 +265,14 @@ public class TreeProblemTests {
     }
 
     @Test
+    public void testPostOrderTraversal() {
+        TreeNode root = buildCommonTree();
+        List<Integer> res = problem.postorderTraversal(root);
+        Integer[] expected = new Integer[] {1,3,2,6,9,7,4};
+        assertArrayEquals(res.toArray(new Integer[0]), expected);
+    }
+
+    @Test
     public void testRecoverTree() {
         TreeNode node2 = new TreeNode(2);
         TreeNode node3 = new TreeNode(3, null, node2);
@@ -475,6 +483,48 @@ public class TreeProblemTests {
         assertArrayEquals(arr, temp);
     }
 
+    @Test
+    public void testOpenLock() {
+        String[] deads = new String[] {"0201","0101","0102","1212","2002"};
+        assertEquals(problem.openLock(deads, "0202"), 6);
+        deads = new String[] {"8888"};
+        assertEquals(problem.openLock(deads, "0009"), 1);
+        deads = new String[] {"8887","8889","8878","8898","8788","8988","7888","9888"};
+        assertEquals(problem.openLock(deads, "8888"), -1);
+    }
+
+    @Test
+    public void testSlidingPuzzle() {
+        int[][] board = new int[][] {{1,2,3}, {4,0,5}};
+        assertEquals(problem.slidingPuzzle(board), 1);
+        board = new int[][] {{1,2,3}, {5,4,0}};
+        assertEquals(problem.slidingPuzzle(board), -1);
+        board = new int[][] {{4,1,2}, {5,0,3}};
+        assertEquals(problem.slidingPuzzle(board), 5);
+    }
+
+    @Test
+    public void testSolveNQueens() {
+        List<List<String>> res = problem.solveNQueens(1);
+        assertEquals(res.size(), 1);
+        assertEquals(res.get(0).get(0), "Q");
+        res = problem.solveNQueens(4);
+        assertEquals(res.size(), 2);
+        String[] tmp = new String[] {".Q..","...Q","Q...","..Q."};
+        assertArrayEquals(res.get(0).toArray(new String[0]), tmp);
+        tmp = new String[] {"..Q.","Q...","...Q",".Q.."};
+        assertArrayEquals(res.get(1).toArray(new String[0]), tmp);
+    }
+
+    @Test
+    public void testSumNumbers() {
+        TreeNode node1 = new TreeNode(2);
+        TreeNode node2 = new TreeNode(3);
+        TreeNode root = new TreeNode(1, node1, node2);
+        assertEquals(problem.sumNumbers(root), 25);
+        assertEquals(problem.sumNumbers_v2(root), 25);
+    }
+
     /**
      * build tree
      *             4
@@ -483,7 +533,7 @@ public class TreeProblemTests {
      *
      * @return root node
      */
-    private TreeNode buildCommonTree() {
+    static TreeNode buildCommonTree() {
         TreeNode node1 = new TreeNode(1);
         TreeNode node3 = new TreeNode(3);
         TreeNode node2 = new TreeNode(2, node1, node3);

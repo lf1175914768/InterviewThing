@@ -1,5 +1,6 @@
 package com.study.interview;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
@@ -153,8 +154,13 @@ public class InterviewTest {
 	public void testTwoSum() {
 		TwoSum test = new TwoSum();
 		int[] param = {3,2,4};
-		int[] rs = test.twoSum(param, 6);
-		System.out.println(rs[0] + ", " +  rs[1]);
+		int[] rs = {1, 2};
+		assertArrayEquals(test.twoSum(param, 6), rs);
+		assertArrayEquals(test.twoSum_v2(param, 6), rs);
+		param = new int[] {0, 4, 3, 0};
+		rs = new int[] {0, 3};
+		assertArrayEquals(test.twoSum(param, 0), rs);
+		assertArrayEquals(test.twoSum_v2(param, 0), rs);
 	}
 
 	@Test

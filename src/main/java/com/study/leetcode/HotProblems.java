@@ -331,6 +331,24 @@ public class HotProblems {
 
     // -------三数之和 start >>--------
 
+    /**
+     * 给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有和为 0 且不重复的三元组。
+     * 注意：答案中不可以包含重复的三元组。
+     *
+     * 本题的难点在于如何去除重复解。
+     * 1、特判，对于数组长度 n，如果数组为null 或者数组长度小于3，返回 [].
+     * 2、对数组进行排序
+     * 3、遍历排序后数组：
+     *     若 nums[i] > 0: 因为已经排好序，所以后面不可能有三个数加和等于0，直接返回结果。
+     *     对于重复元素：跳过，避免出现重复解
+     *     令左指针 left = i + 1， 右指针 right = n - 1， 当 left < right 时，执行循环：
+     *        当 nums[i] + nums[left] + nums[right] == 0, 执行循环，判断左界和右界是否和下一位置重复，去除重复解。
+     *        并同时将 left，right 移到下一位置，寻找新得解
+     *        若和大于0，说明 nums[right] 太大，right 左移
+     *        若和小于0，说明 nums[left] 太小，left 右移
+     *
+     * 对应 leetcode 中第 15 题
+     */
     public List<List<Integer>> threeSum(int[] nums) {
         List<List<Integer>> result = new ArrayList<>();
         if (null == nums || nums.length < 3) {
@@ -351,23 +369,23 @@ public class HotProblems {
                 continue;
             }
             int curr = nums[i];
-            int L = i + 1, R = len - 1;
-            while (L < R) {
-                int temp = curr + nums[L] + nums[R];
+            int left = i + 1, right = len - 1;
+            while (left < right) {
+                int temp = curr + nums[left] + nums[right];
                 if (temp == 0) {
                     List<Integer> list = new ArrayList<>();
                     list.add(curr);
-                    list.add(nums[L]);
-                    list.add(nums[R]);
+                    list.add(nums[left]);
+                    list.add(nums[right]);
                     result.add(list);
-                    while (L < R && nums[L + 1] == nums[L]) L++;
-                    while (L < R && nums[R - 1] == nums[R]) R--;
-                    L++;
-                    R--;
+                    while (left < right && nums[left + 1] == nums[left]) left++;
+                    while (left < right && nums[right - 1] == nums[right]) right--;
+                    left++;
+                    right--;
                 } else if (temp < 0) {
-                    L++;
+                    left++;
                 } else {
-                    R--;
+                    right--;
                 }
             }
         }
@@ -423,6 +441,11 @@ public class HotProblems {
 
     // -------有效的括号 start >>--------
 
+    /**
+     * 使用栈来实现，
+     *
+     * 对应 leetcode 中第 20 题。
+     */
     public boolean isValid(String s) {
         if (null == s || s.length() == 0) {
             return true;
@@ -519,7 +542,7 @@ public class HotProblems {
 
     // -------括号生成 << end --------
 
-    // -------括号生成 start >>--------
+    // -------合并K个升序链表 start >>--------
 
     /**
      * 使用优先级队列进行实现
@@ -590,16 +613,28 @@ public class HotProblems {
     }
 
 
-    // -------括号生成 << end --------
+    // -------合并K个升序链表 << end --------
 
     // -------下一个排列 start >>--------
 
     /**
+     * 整数数组的一个 排列  就是将其所有成员以序列或线性顺序排列。
+     * 整数数组的 下一个排列 是指其整数的下一个字典序更大的排列。更正式地，如果数组的所有排列根据其字典顺序从小到大排列在一个容器中，
+     * 那么数组的 下一个排列 就是在这个有序容器中排在它后面的那个排列。如果不存在下一个更大的排列，那么这个数组必须重排为字典序最小的排列（即，其元素按升序排列）。
+     *
+     * 例如，arr = [1,2,3] 的下一个排列是 [1,3,2] 。
+     * 类似地，arr = [2,3,1] 的下一个排列是 [3,1,2] 。
+     * 而 arr = [3,2,1] 的下一个排列是 [1,2,3] ，因为 [3,2,1] 不存在一个字典序更大的排列。
+     *
+     *
+     * 解题思路：
      * 1、从后向前查找第一个相邻的元素对 (i, i + 1), 满足 A[i] < A[i + 1]。此时[i+1, end) 必然是降序
      * 2、在 [i + 1, end)中从后往前查找第一个满足 A[i] < A[k] 的k。 A[i], A[k] 分别就是【小数】和【大数】。
      * 3、将 A[i] 与 A[k] 交换
      * 4、可以断定这时 [i + 1, end) 必然是降序，重新排序 [i + 1, end) 使其升序。
      * 5、如果在步骤1中找不到符合的相邻元素时，说明当前 [begin, end) 为一个降序顺序，直接跳到 步骤4
+     *
+     * 对应 leetcode 中第 31 题。
      *
      * @param nums list of nums
      */
@@ -1183,6 +1218,10 @@ public class HotProblems {
 
     /**
      * 给定一个字符串 s ，请你找出其中不含有重复字符的 最长子串 的长度。
+     *
+     * 对于滑动窗口问题，窗口的定义 是 左闭右开的，也就是 [left, right)
+     *
+     * 对应 leetcode 中第 3 题。
      */
     public int lengthOfLongestSubstring(String s) {
         Map<Character, Integer> window = new HashMap<>();
@@ -1382,6 +1421,7 @@ public class HotProblems {
      * dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] + prices[i])
      * dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] - prices[i])
      *
+     * 对应 leetcode 中第 122 题。
      */
     public int maxProfit_infinity(int[] prices) {
         int n = prices.length;
@@ -1597,10 +1637,10 @@ public class HotProblems {
      * 如果可以一直跳到最后，就成功了。
      */
     public boolean canJump_v2(int[] nums) {
-        int k = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (i > k) return false;
-            k = Math.max(k, i + nums[i]);
+        int farthest = 0;
+        for (int i = 0; i < nums.length - 1; i++) {
+            farthest = Math.max(farthest, i + nums[i]);
+            if (farthest <= i) return false;
         }
         return true;
     }
@@ -1816,6 +1856,7 @@ public class HotProblems {
     private void subsetsWithDupBacktrack(int[] nums, int start, Deque<Integer> list, List<List<Integer>> result) {
         result.add(new ArrayList<>(list));
         for (int i = start; i < nums.length; i++) {
+            // 剪枝逻辑，值相同的相邻树枝，只遍历第一条
             if (i > start && nums[i] == nums[i - 1])
                 continue;
             list.offerLast(nums[i]);
@@ -2362,6 +2403,58 @@ public class HotProblems {
         queue[k] = cur;
     }
 
+    /**
+     * 使用 快排 + 迭代的方式进行解答
+     */
+    public int findKthLargest_v2(int[] nums, int k) {
+        int len = nums.length, target = len - k;
+        int start = 0, end = len - 1;
+        while (start <= end) {
+            int p = findKthLargestFind(nums, start, end);
+            if (p == target) {
+                return nums[p];
+            } else if (p < target) {
+                start = p + 1;
+            } else {
+                end = p - 1;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 使用快排 + 递归的方式进行解答
+     */
+    public int findKthLargest_v3(int[] nums, int k) {
+        int len = nums.length, targetPosition = len - k;
+        findKthLargestPartSort(nums, 0, len - 1, targetPosition);
+        return nums[targetPosition];
+    }
+
+    private boolean findKthLargestPartSort(int[] nums, int start, int end, int targetPosition) {
+        if (start == targetPosition || end == targetPosition) {
+            return true;
+        }
+        if (start >= end)
+            return false;
+        int p = findKthLargestFind(nums, start, end);
+        return findKthLargestPartSort(nums, start, p - 1, targetPosition) ||
+        findKthLargestPartSort(nums, p + 1, end, targetPosition);
+    }
+
+    private int findKthLargestFind(int[] nums, int start, int end) {
+        int cur = nums[start];
+        int i = start, j = end;
+        while (i < j) {
+            while (i < j && nums[j] >= cur) j--;
+            nums[i] = nums[j];
+            while (i < j && nums[i] <= cur) i++;
+            nums[j] = nums[i];
+        }
+        nums[i] = cur;
+        return i;
+    }
+
     // -------数组中的第K个最大元素 << end --------
 
     // -------回文链表 start >>--------
@@ -2609,24 +2702,19 @@ public class HotProblems {
         if (temperatures.length == 0) {
             return res;
         }
-        Deque<Integer> stackValue = new LinkedList<>();
-        Deque<Integer> stackIndex = new LinkedList<>();
-        stackValue.offerLast(temperatures[temperatures.length - 1]);
-        stackIndex.offerLast(temperatures.length - 1);
+        Deque<Integer> stack = new LinkedList<>();
+        stack.offerLast(temperatures.length - 1);
 
-        for (int i = temperatures.length - 2; i >= 0; i--) {
-            int value = temperatures[i];
-            while (!stackValue.isEmpty() && stackValue.getLast() <= value) {
-                stackValue.removeLast();
-                stackIndex.removeLast();
+        for (int i = temperatures.length - 1; i >= 0; i--) {
+            while (!stack.isEmpty() && temperatures[stack.getLast()] <= temperatures[i]) {
+                stack.removeLast();
             }
-            if (stackValue.isEmpty()) {
+            if (stack.isEmpty()) {
                 res[i] = 0;
             } else {
-                res[i] = stackIndex.getLast() - i;
+                res[i] = stack.getLast() - i;
             }
-            stackValue.offerLast(value);
-            stackIndex.offerLast(i);
+            stack.offerLast(i);
         }
         return res;
     }
@@ -2719,6 +2807,214 @@ public class HotProblems {
 
     // -------两个大数进行相加 << end --------
 
+    // -------接雨水 start >>--------
+
+    /**
+     * 给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
+     *
+     * 这里使用 动态规划 得方法进行解题。
+     * 对于每一列，我们可以求它左边最高得墙和右边最高得墙，装水得多少，根据木桶效应，选择其中较矮得一个就够了。
+     * 首先使用两个数组，maxLeft[i] 代表第 i 列左边最高得墙得高度， maxRight[i] 代表第 i 列右边最高得墙
+     * 得高度（这里第 i 列左（右）最高得墙，是不包括自身得。）
+     * 对于 maxLeft，我们可以这样求：
+     * maxLeft[i] = max(maxLeft[i - 1], height[i - 1])。它前边得墙得左边得最高高度和它前边得墙得高度
+     * 选一个较大得，就是当前列左边最高得墙了。
+     * 对于 maxRight，我们可以这样求：
+     * maxRight[i] = max(maxRight[i + 1], height[i + 1])。它后边得墙得右边得最高高度和它后边得墙得高度
+     * 选择一个较大得，就是当前列右边最高得墙了。
+     *
+     * 对应 leetcode 中第 42 题。
+     */
+    public int trap(int[] height) {
+        int sum = 0;
+        int[] maxLeft = new int[height.length];
+        int[] maxRight = new int[height.length];
+
+        for (int i = 1; i < height.length - 1; i++) {
+            maxLeft[i] = Math.max(maxLeft[i - 1], height[i - 1]);
+        }
+        for (int j = height.length - 2; j >= 0; j--) {
+            maxRight[j] = Math.max(maxRight[j + 1], height[j + 1]);
+        }
+
+        for (int i = 1; i < height.length - 1; i++) {
+            int min = Math.min(maxLeft[i], maxRight[i]);
+            if (min > height[i]) {
+                sum += (min - height[i]);
+            }
+        }
+        return sum;
+    }
+
+    /**
+     * 上面解法得 dp 数组压缩版
+     */
+    public int trap_v2(int[] height) {
+        int sum = 0;
+        int maxLeft = 0, maxRight = 0;
+        int left = 1, right = height.length - 2;
+        for (int i = 1; i < height.length - 1; i++) {
+            // 从左到右更新
+            if (height[left - 1] < height[right + 1]) {
+                // 这种情况下能够保证 较矮得墙来自左边
+                maxLeft = Math.max(maxLeft, height[left - 1]);
+                int min = maxLeft;
+                if (min > height[left]) {
+                    sum += (min - height[left]);
+                }
+                left++;
+            } else {
+                // 从右到左更新
+                maxRight = Math.max(maxRight, height[right + 1]);
+                int min = maxRight;
+                if (min > height[right]) {
+                    sum += (min - height[right]);
+                }
+                right--;
+            }
+        }
+        return sum;
+    }
+
+    /**
+     * 使用 栈 得方法进行解答。
+     *
+     * 我们用栈保存每堵墙。当遍历墙得高度得时候，如果当前高度小于栈顶得墙得高度，说明这里会有积水，我们将墙得高度得下标入栈。
+     * 如果当前高度大于栈顶得墙得高度，说明之前得积水到这里停下，我们可以计算下有多少积水了。计算完成后，就把当前得墙继续入栈，作为新得积水得墙。
+     * 总体得原则就是：
+     * 1.当前高度小于等于栈顶高度，入栈，指针后移。
+     * 2.当前高度大于栈顶高度，出栈，计算出当前墙和栈顶得墙之间水得多少，然后计算当前得高度和新栈得高度得关系。重复第二步。直到当前墙得高度不大于
+     * 栈顶高度或者栈空，然后将当前墙入栈，指针后移。
+     */
+    public int trap_v3(int[] height) {
+        int sum = 0;
+        Stack<Integer> stack = new Stack<>();
+        for (int current = 0; current < height.length; current++) {
+            // 如果栈不空并且当前指向得高度大于栈顶高度就一直循环
+            while (!stack.isEmpty() && height[current] > height[stack.peek()]) {
+                int h = height[stack.pop()];   // 取出要出栈得元素
+                if (stack.isEmpty()) break;
+                int distance = current - stack.peek() - 1;  // 两堵墙之间得距离
+                int min = Math.min(height[stack.peek()], height[current]);
+                sum += (min - h) * distance;
+            }
+            stack.push(current);
+        }
+        return sum;
+    }
+
+    // -------接雨水 << end --------
+
+    // -------搜索旋转排序数组 start >>--------
+
+    /**
+     * 整数数组 nums 按升序排列，数组中的值 互不相同 。
+     * 在传递给函数之前，nums 在预先未知的某个下标 k（0 <= k < nums.length）上进行了 旋转，使数组变为
+     * [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]（下标 从 0 开始 计数）。
+     * 例如， [0,1,2,4,5,6,7] 在下标 3 处经旋转后可能变为 [4,5,6,7,0,1,2] 。
+     * 给你 旋转后 的数组 nums 和一个整数 target ，如果 nums 中存在这个目标值 target ，则返回它的下标，否则返回 -1 。
+     *
+     * 对应 leetcode 中第 33 题。
+     */
+    public int search(int[] nums, int target) {
+        int left = 0, len = nums.length, right = len - 1;
+        while (left <= right) {
+            int middle = left + ((right - left) >>> 1);
+            if (nums[middle] == target) {
+                return middle;
+            }
+            if (nums[0] <= nums[middle]) {
+                // 左侧一定是单调的，并且 nums[middle] != target
+                if (nums[0] <= target && target < nums[middle]) {
+                    right = middle - 1;
+                } else {
+                    left = middle + 1;
+                }
+            } else {
+                if (nums[middle] < target && target <= nums[len - 1]) {
+                    left = middle + 1;
+                } else {
+                    right = middle - 1;
+                }
+            }
+        }
+        return -1;
+    }
+
+    // -------搜索旋转排序数组 << end --------
+
+    // -------X的平方根 start >>--------
+
+    /**
+     * 给你一个非负整数 x ，计算并返回 x 的 算术平方根 。
+     * 由于返回类型是整数，结果只保留 整数部分 ，小数部分将被 舍去 。
+     * 注意：不允许使用任何内置指数函数和算符，例如 pow(x, 0.5) 或者 x ** 0.5 。
+     *
+     * 思路分析：
+     * 如果这个整数的平方 恰好等于 输入整数，那么我们就找到了这个整数
+     * 如果这个整数的平方 严格大于 输入整数，那么这个整数肯定不是我们要找的那个数。
+     * 如果这个整数的平方 严格小于 输入整数，那么这个整数 可能 是我们要找的那个数。
+     *
+     * 因此，我们可以使用【二分查找】 来查找这个整数，不断缩小范围去猜。
+     * 猜的数平方以后大了就往小了猜。
+     * 猜的数平方以后恰恰好等于输入的数就找到了。
+     * 猜的数平方以后小了，可能猜的数就是，也可能不是。
+     *
+     * 对应 leetcode 中第 69 题。
+     */
+    public int mySqrt(int x) {
+        if (x == 0 || x == 1) return x;
+        int left = 1, right = x >>> 1;
+        while (left < right) {
+            // 这里将取中间数的 逻辑设置成 向上取整，避免出现死循环
+            int mid = left + ((right - left + 1) >>> 1);
+            // 这里为了避免乘法溢出，改用除法
+            if (mid > x / mid)
+                right = mid - 1;
+            else
+                left = mid;
+        }
+        return left;
+    }
+
+    // -------X的平方根 << end --------
+
+    // -------螺旋矩阵 start >>--------
+
+    /**
+     * 给你一个 m 行 n 列的矩阵 matrix ，请按照 顺时针螺旋顺序 ，返回矩阵中的所有元素。
+     *
+     * 对应 leetcode 中第 54 题。
+     */
+    public List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> res = new ArrayList<>();
+        int rows = matrix.length, cols = matrix[0].length;
+        int left = 0, right = cols - 1, top = 0, bottom = rows - 1;
+        while (left <= right && top <= bottom) {
+            for (int col = left; col <= right; col++) {
+                res.add(matrix[top][col]);
+            }
+            for (int row = top + 1; row <= bottom; row++) {
+                res.add(matrix[row][right]);
+            }
+            if (left < right && top < bottom) {
+                for (int col = right - 1; col >= left; col--) {
+                    res.add(matrix[bottom][col]);
+                }
+                for (int row = bottom - 1; row > top; row--) {
+                    res.add(matrix[row][left]);
+                }
+            }
+            left++;
+            right--;
+            top++;
+            bottom--;
+        }
+        return res;
+    }
+
+    // -------螺旋矩阵 << end --------
+
 
     ///////-------------helper class-------------------
 
@@ -2734,5 +3030,4 @@ public class HotProblems {
             this.distFromStart = distFromStart;
         }
     }
-
 }

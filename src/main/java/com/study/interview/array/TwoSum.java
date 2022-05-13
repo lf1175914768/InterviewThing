@@ -24,4 +24,20 @@ public class TwoSum {
         }
         return result;
     }
+
+    public int[] twoSum_v2(int[] nums, int target) {
+        int[] result = new int[2];
+        Map<Integer, Integer> cache = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            int another = target - nums[i];
+            Integer index = cache.get(another);
+            if (index != null && index != i) {
+                result[0] = index;
+                result[1] = i;
+                return result;
+            }
+            cache.put(nums[i], i);
+        }
+        return result;
+    }
 }

@@ -221,4 +221,42 @@ public class TopInterviewProblemTests {
         assertTrue(problems.isMatch("aa", "*"));
         assertTrue(problems.isMatch("adceb", "*a*b"));
     }
+
+    @Test
+    public void testCombine() {
+        List<List<Integer>> res = problems.combine(4, 2);
+        assertEquals(res.size(), 6);
+    }
+
+    @Test
+    public void testCombinationSum2() {
+        int[] param = new int[] {10,1,2,7,6,1,5};
+        List<List<Integer>> res = problems.combinationSum2(param, 8);
+        assertEquals(res.size(), 4);
+        param = new int[] {2,5,2,1,2};
+        res = problems.combinationSum2(param, 5);
+        assertEquals(res.size(), 2);
+    }
+
+    @Test
+    public void testPermuteUnique() {
+        int[] param = new int[] {1,1,2};
+        List<List<Integer>> res = problems.permuteUnique(param);
+        assertEquals(res.size(), 3);
+        param = new int[] {3,3,0,3};
+        assertEquals(problems.permuteUnique(param).size(), 4);
+    }
+
+    @Test
+    public void testCountPrimes() {
+        assertEquals(problems.countPrimes(10), 4);
+        assertEquals(problems.countPrimes(0), 0);
+        assertEquals(problems.countPrimes(1), 0);
+    }
+
+    @Test
+    public void testIsHappy() {
+        assertTrue(problems.isHappy(19));
+        assertFalse(problems.isHappy(2));
+    }
 }
