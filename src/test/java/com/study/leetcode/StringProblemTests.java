@@ -118,4 +118,10 @@ public class StringProblemTests {
         assertEquals(problems.simplifyPath("/a/./b/../../c/"), "/c");
         assertEquals(problems.simplifyPath_v2("/a/./b/../../c/"), "/c");
     }
+
+    @Test
+    public void testRemoveDuplicateLetters() {
+        assertEquals(problems.removeDuplicateLetters("bcabc"), "abc");
+        assertEquals(problems.removeDuplicateLetters("cbacdcbc"), "acdb");
+    }
 }

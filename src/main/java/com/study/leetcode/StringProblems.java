@@ -623,6 +623,55 @@ public class StringProblems {
 
     // -------组合总和 << end --------
 
+    // -------去除重复字母 start >>--------
+
+    /**
+     * 给你一个字符串 s ，请你去除字符串中重复的字母，使得每个字母只出现一次。需保证 返回结果的字典序最小（要求不能打乱其他字符的相对位置）。
+     *
+     * 首先考虑一个简单的问题：给定一个字符串s，如何去掉其中的一个字符 ch，使得得到的字符串字典序最小？
+     * 答案是：找出最小的满足 s[i] > s[i + 1] 的下标 i，并去除字符 s[i].为了叙述方便，下文中称这样的字符为 【关键字符】.
+     * 我们从前往后扫描原字符串，每扫描到一个位置，我们就尽可能的处理所有的 【关键字符】。假定在扫描位置 s[i - 1]之前的所有的【关键字福】都已经被去除完毕。
+     * 在扫描字符 s[i]时，新出现的【关键字符】只可能出现在 s[i]或者其后面的位置。
+     * 于是，我们使用单调栈来维护去除【关键字符】后得到的字符串，单调栈满足栈底到栈顶的字符递增。如果栈顶字符大于当前字符 s[i]，说明栈顶字符为【关键字符】，
+     * 故应当被去除。去除后，新的栈顶字符就与 s[i]相邻了，我们继续比较新的栈顶字符与 s[i] 的大小。重复上述操作，知道栈为空或者栈顶字符不大于 s[i]。
+     *
+     * 我们还遗漏了一个要求：原字符串 s 中的每个字符都需要出现在新字符串中，且只能出现一次。为了让新字符串满足该要求，之前讨论的算法需要进行以下两点的更改。
+     * 1、在考虑字符 s[i]时，如果它已经存在于栈中，则不能加入字符 s[i]。为此，需要记录每个字符是否出现在栈中。
+     * 2、在弹出栈顶字符时，如果字符串在后面的位置上再也没有这一字符，则不能弹出栈顶字符。为此，需要记录每个字符的剩余数量，当这个值为 0时，
+     *    就不能再弹出栈顶字符了。
+     *
+     * 对应 leetcode 中第 316 题。
+     */
+    public String removeDuplicateLetters(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        for (char c : s.toCharArray()) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
+        }
+        boolean[] used = new boolean[26];
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            // 如果当前字符没有出现过
+            if (!used[ch - 'a']) {
+                while (sb.length() > 0 && sb.charAt(sb.length() - 1) > ch) {
+                    char headC = sb.charAt(sb.length() - 1);
+                    if (map.get(headC) > 0) {
+                        used[headC - 'a'] = false;
+                        sb.deleteCharAt(sb.length() - 1);
+                    } else {
+                        break;
+                    }
+                }
+                used[ch - 'a'] = true;
+                sb.append(ch);
+            }
+            map.put(ch, map.get(ch) - 1);
+        }
+        return sb.toString();
+    }
+
+    // -------去除重复字母 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {
