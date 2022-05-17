@@ -21,4 +21,9 @@ public class MathProblemTests {
         assertEquals(problem.nthUglyNumber(10), 12);
         assertEquals(problem.nthUglyNumber(1), 1);
     }
+
+    @Test
+    public void testIntegerReplacement() {
+        assertEquals(problem.integerReplacement(8), 3);
+    }
 }

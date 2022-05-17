@@ -318,4 +318,33 @@ public class ArrayProblemTests {
         assertArrayEquals(problems.topKFrequent_v2(param,1), res);
     }
 
+    @Test
+    public void testMinPatches() {
+        int[] param = {1,3};
+        assertEquals(problems.minPatches(param, 6), 1);
+        assertEquals(problems.minPatches_v2(param, 6), 1);
+        param = new int[] {1,5,10};
+        assertEquals(problems.minPatches(param, 20), 2);
+        assertEquals(problems.minPatches_v2(param, 20), 2);
+        param = new int[] {1,2,2};
+        assertEquals(problems.minPatches(param, 5), 0);
+        assertEquals(problems.minPatches_v2(param, 5), 0);
+    }
+
+    @Test(timeout = 100)
+    public void testWiggleMaxLength() {
+        int[] param = {1,7,4,9,2,5};
+        assertEquals(problems.wiggleMaxLength(param), 6);
+        assertEquals(problems.wiggleMaxLength_v2(param), 6);
+        assertEquals(problems.wiggleMaxLength_v3(param), 6);
+        param = new int[] {1,17,5,10,13,15,10,5,16,8};
+        assertEquals(problems.wiggleMaxLength(param), 7);
+        assertEquals(problems.wiggleMaxLength_v2(param), 7);
+        assertEquals(problems.wiggleMaxLength_v3(param), 7);
+        param = new int[] {1,2,3,4,5,6,7,8,9};
+        assertEquals(problems.wiggleMaxLength(param), 2);
+        assertEquals(problems.wiggleMaxLength_v2(param), 2);
+        assertEquals(problems.wiggleMaxLength_v3(param), 2);
+    }
+
 }

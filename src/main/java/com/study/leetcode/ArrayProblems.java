@@ -1147,6 +1147,165 @@ public class ArrayProblems {
 
     // -------前K个高频元素 << end --------
 
+    // -------按要求补齐数组 start >>--------
+
+    /**
+     * 给定一个已排序的正整数数组 nums ，和一个正整数 n 。从 [1, n] 区间内选取任意个数字补充到 nums 中，使得 [1, n] 区间内的任何数字都可以用 nums 中某几个数字的和来表示。
+     * 请返回 满足上述要求的最少需要补充的数字个数 。
+     *
+     * 使用 贪心的方法进行解答。
+     * 首先，题目中说数组是排序的。假设数组中前 k 个数字能组成的数字范围是 [1, total]，当我们添加数组中第 k + 1 个数字 nums[k] 的时候，范围就变成了
+     * [1, total] U [1 + nums[k], total + nums[k]] U [nums[k], nums[k]], 这是一个并集，可以合并成 [1, total] U [nums[k], total + nums[k]]。
+     * 我们仔细观察一下：
+     * 1、如果左边的 total < nums[k] - 1,那么他们中间肯定会有空缺，不能构成完整的 [1, tatal + nums[k]]。这个时候我们需要添加一个数字
+     * total + 1。先构成一个更大的范围 [1, total * 2 + 1]。这里为什么是添加 total + 1而不是添加 total，举个例子，比如可以构成的数字范围是
+     * [1,5], 如果需要添加一个构成更大范围的，我们应该选择 6 而不是 5.
+     * 2、如果左边的 total >= nums[k] - 1, 那么就可以构成完整的 [1, total + nums[k]],就不需要在添加数字了。
+     *
+     * 对应 leetcode 中第 330 题。
+     */
+    public int minPatches(int[] nums, int n) {
+        int total = 0, index = 0, count = 0;
+        while (total < n) {
+            if (index < nums.length && nums[index] <= total + 1) {
+                // 如果数组能够组成的数字范围是 [1, total], 那么加上 nums[index]
+                // 就变成了 [1, total] U [nums[index], total + nums[index]]
+                // 这种情况下结果就是 [1, total + nums[index]]
+                total += nums[index++];
+            } else {
+                total += (total + 1);
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 上面组成数字的范围是闭区间，我们还可以改成开区间[1,total), 原理都一样，稍作修改即可。
+     */
+    public int minPatches_v2(int[] nums, int n) {
+        int total = 1, index = 0, count = 0;
+        while (total <= n) {
+            if (index < nums.length && nums[index] <= total) {
+                // 如果数组能组成的数字范围是 [1,total),那么加上 nums[index]
+                // 就变成了 [1,total) U [nums[index], total + nums[index])
+                // 结果就是 [1, total + nums[index])
+                total += nums[index++];
+            } else {
+                // 添加一个新数字，并且 count + 1
+                total <<= 1;
+                count++;
+            }
+        }
+        return count;
+    }
+
+    // -------按要求补齐数组 << end --------
+
+    // -------摆动序列 start >>--------
+
+    /**
+     * 如果连续数字之间的差严格地在正数和负数之间交替，则数字序列称为 摆动序列 。第一个差（如果存在的话）可能是正数或负数。仅有一个元素或者含两个不等元素的序列也视作摆动序列。
+     * 例如， [1, 7, 4, 9, 2, 5] 是一个 摆动序列 ，因为差值 (6, -3, 5, -7, 3) 是正负交替出现的。
+     * 相反，[1, 4, 7, 2, 5] 和 [1, 7, 4, 5, 5] 不是摆动序列，第一个序列是因为它的前两个差值都是正数，第二个序列是因为它的最后一个差值为零。
+     * 子序列 可以通过从原始序列中删除一些（也可以不删除）元素来获得，剩下的元素保持其原始顺序。
+     * 给你一个整数数组 nums ，返回 nums 中作为 摆动序列 的 最长子序列的长度 。
+     *
+     * 采用动态规划的方法进行解答：
+     * 我们可以先进行一些约定：
+     * 1、某个序列被称为【上升摆动序列】，当且仅当该序列是摆动序列，且最后一个元素呈上升趋势。如序列 [1,3,2,4] 即为【上升摆动序列】。
+     * 2、某个序列被称为【下降摆动序列】，当且仅当该序列是摆动序列，且最后一个元素呈下降趋势。如序列 [4,2,3,1] 即为【下降摆动序列】。
+     *
+     * 每当我们选择一个元素作为摆动序列的一部分时，这个元素要么是上升的，要么是下降的，这取决于前一个元素的大小。那么列出状态表达式为：
+     * 1、up[i]表示以前 i 个元素中的某一个为结尾的最长的 【上升摆动序列】的长度。
+     * 2、down[i]表示以前 i 个元素中的某一个为结尾的最长的【下降摆动序列】的长度。
+     * 下面以 up[i]为例，说明其状态转移规则：
+     * 1、当 nums[i] <= nums[i - 1]时，我们无法选出更长的【上升摆动序列】的方案。因为对于任何以 nums[i] 结尾的【上升摆动序列】，
+     *   我们都可以将 nums[i] 替换为 nums[i - 1]，使其成为以 nums[i - 1] 结尾的【上升摆动序列】。
+     * 2、当 nums[i] > nums[i - 1]时，我们既可以从 up[i - 1] 进行转移，也可以从 down[i - 1] 进行转移。下面我们证明从 down[i - 1]
+     * 转移时必然合法的，即必然存在一个 down[i - 1] 对应的最长的 【下降摆动序列】的末尾元素小于 nums[i]。
+     *   a、我们记这个末尾元素在原序列中的下标为 j，假设从 j 往前的第一个【谷】为 nums[k],我们总可以让 j 移动到 k，使得这个最长的【下降摆动序列】
+     *   的末尾元素为 【谷】。
+     *   b、然后我们可以证明在这个末尾元素为 【谷】的情况下，这个末尾元素必然是从 nums[i] 往前的第一个 【谷】。证明非常简单，我们使用反证法，
+     *   如果这个末尾元素不是从 nums[i] 往前的第一个【谷】，那么我们总可以在末尾元素和 nums[i]之间取得一对 【峰】与【谷】，接在这个【下降摆动序列】
+     *   后，使其更长。
+     *   c、这样我们知道必然存在一个 down[i - 1]对应的最长的【下降摆动序列】的末尾元素Wie nums[i] 往前的第一个 【谷】，这个【谷】
+     *   必然小于 nums[i]。 证毕。
+     *
+     * 这样我们可以用同样的方法说明 down[i]的状态转移规则，最终的状态转移方程为：
+     *         | up[i - 1],                          nums[i] <= nums[i - 1]
+     * up[i] = |
+     *         | max(up[i - 1], down[i - 1] + 1),    nums[i] > nums[i - 1]
+     *
+     *           | down[i - 1],                        nums[i] >= nums[i - 1]
+     * down[i] = |
+     *           | max(down[i - 1], up[i - 1] + 1),    nums[i] < nums[i - 1]
+     *
+     * 最终的答案就是 up[n - 1] 和 down[n - 1]中的较大值，其中 n 是序列的长度。
+     *
+     * 对应  leetcode 中第 376 题。
+     */
+    public int wiggleMaxLength(int[] nums) {
+        int n = nums.length;
+        if (n < 2) {
+            return n;
+        }
+        int[] up = new int[n], down = new int[n];
+        up[0] = down[0] = 1;
+        for (int i = 1; i < n; i++) {
+            if (nums[i] > nums[i - 1]) {
+                up[i] = Math.max(up[i - 1], down[i - 1] + 1);
+                down[i] = down[i - 1];
+            } else if (nums[i] < nums[i - 1]) {
+                up[i] = up[i - 1];
+                down[i] = Math.max(up[i - 1] + 1, down[i - 1]);
+            } else {
+                up[i] = up[i - 1];
+                down[i] = down[i - 1];
+            }
+        }
+        return Math.max(up[n - 1], down[n - 1]);
+    }
+
+    /**
+     * 上面方法的 压缩版
+     */
+    public int wiggleMaxLength_v2(int[] nums) {
+        int n = nums.length;
+        if (n < 2) return n;
+        int up = 1, down = 1;
+        for (int i = 1; i < n; i++) {
+            if (nums[i] > nums[i - 1]) {
+                up = Math.max(up, down + 1);
+            } else if (nums[i] < nums[i - 1]) {
+                down = Math.max(down, up + 1);
+            }
+        }
+        return Math.max(up, down);
+    }
+
+    /**
+     * 使用 贪心的方法进行解答。
+     *
+     * 观察这个序列可以发现，我们不断的交错选择【峰】与【谷】，可使得该序列尽可能长
+     */
+    public int wiggleMaxLength_v3(int[] nums) {
+        int n = nums.length;
+        if (n < 2) return n;
+        int prevDiff = nums[1] - nums[0];
+        int ret = prevDiff != 0 ? 2 : 1;
+        for (int i = 2; i < n; i++) {
+            int diff = nums[i] - nums[i - 1];
+            if ((diff > 0 && prevDiff <= 0) || (diff < 0 && prevDiff >= 0)) {
+                ret++;
+                prevDiff = diff;
+            }
+        }
+        return ret;
+    }
+
+    // -------摆动序列 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {
