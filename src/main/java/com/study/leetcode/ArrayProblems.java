@@ -1306,6 +1306,159 @@ public class ArrayProblems {
 
     // -------摆动序列 << end --------
 
+    // -------用最少数量的箭引爆气球 start >>--------
+
+    /**
+     * 有一些球形气球贴在一堵用 XY 平面表示的墙面上。墙面上的气球记录在整数数组 points ，其中points[i] = [xstart, xend] 表示水平直径在
+     *  xstart 和 xend之间的气球。你不知道气球的确切 y 坐标。
+     *
+     * 一支弓箭可以沿着 x 轴从不同点 完全垂直 地射出。在坐标 x 处射出一支箭，若有一个气球的直径的开始和结束坐标为 xstart，xend，
+     * 且满足  xstart ≤ x ≤ xend，则该气球会被 引爆 。可以射出的弓箭的数量 没有限制 。 弓箭一旦被射出之后，可以无限地前进。
+     * 给你一个数组 points ，返回引爆所有气球所必须射出的 最小 弓箭数 
+     *
+     * 对应 leetcode 中第 452 题。
+     */
+    public int findMinArrowShots(int[][] points) {
+        if (points.length == 0) return 0;
+        Arrays.sort(points, Comparator.comparingInt(p -> p[1]));
+        int res = 1;
+        int pre = points[0][1];
+        for (int i = 1; i < points.length; i++) {
+            if (points[i][0] > pre) {
+                res++;
+                pre = points[i][1];
+            }
+        }
+        return res;
+    }
+
+    // -------用最少数量的箭引爆气球 << end --------
+
+    // -------有效三角形的个数 start >>--------
+
+    /**
+     * 给定一个包含非负整数的数组 nums ，返回其中可以组成三角形三条边的三元组个数。
+     *
+     * 采用固定前两个位置，后一个位置采用二分查找的方法，
+     * 时间复杂度：O(n2logn)
+     *
+     * 对应 leetcode 中第 611 题。
+     */
+    public int triangleNumber(int[] nums) {
+        if (nums.length < 3) return 0;
+        Arrays.sort(nums);
+        int res = 0;
+        for (int i = 0; i < nums.length - 2; i++) {
+            for (int j = i + 1; j < nums.length - 1; j++) {
+                int sum = nums[i] + nums[j];
+                int left = j + 1, right = nums.length;
+                while (left < right) {
+                    int middle = left + (right - left) / 2;
+                    if (nums[middle] < sum) {
+                        left = middle + 1;
+                    } else {
+                        right = middle;
+                    }
+                }
+                res += left - j - 1;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 采用双指针的方法进行解答。
+     *
+     * 首先对数组排序
+     * 固定最长的一条边，运用双指针扫描
+     *  1、如果 nums[left] + nums[right] > nums[i],同时说明 nums[left + 1] + nums[right] > nums[i], ...
+     *  nums[right - 1] + nums[right] > nums[i],满足条件的有 right - left种，right左移进入下一轮。
+     *  2、如果 nums[left] + nums[right] <= nums[i], left 右移进入下一轮
+     */
+    public int triangleNumber_v2(int[] nums) {
+        Arrays.sort(nums);
+        int res = 0;
+        for (int i = nums.length - 1; i >= 2; i--) {
+            int left = 0, right = i - 1;
+            while (left < right) {
+                if (nums[left] + nums[right] > nums[i]) {
+                    res += right - left;
+                    right--;
+                } else {
+                    left++;
+                }
+            }
+        }
+        return res;
+    }
+
+    // -------有效三角形的个数 << end --------
+
+    // -------任务调度器 start >>--------
+
+    /**
+     * 给你一个用字符数组 tasks 表示的 CPU 需要执行的任务列表。其中每个字母表示一种不同种类的任务。任务可以以任意顺序执行，并且每个任务都可以在 1
+     * 个单位时间内执行完。在任何一个单位时间，CPU 可以完成一个任务，或者处于待命状态。
+     * 然而，两个 相同种类 的任务之间必须有长度为整数 n 的冷却时间，因此至少有连续 n 个单位时间内 CPU 在执行不同的任务，或者在待命状态。
+     * 你需要计算完成所有任务所需要的 最短时间 。
+     *
+     * 对应 leetcode 中第 621 题。
+     */
+    public int leastInterval(char[] tasks, int n) {
+        Map<Character, Integer> map = new HashMap<>();
+        int maxCount = 0, maxTaskCount = 0;
+        for (char task : tasks) {
+            map.put(task, map.getOrDefault(task, 0) + 1);
+            maxCount = Math.max(maxCount, map.get(task));
+        }
+        for (Integer value : map.values()) {
+            if (maxCount == value) {
+                maxTaskCount++;
+            }
+        }
+        return Math.max(tasks.length, (maxCount - 1) * (n + 1) + maxTaskCount);
+    }
+
+    // -------任务调度器 << end --------
+
+    // -------分割数组为连续子序列 start >>--------
+
+    /**
+     * 给你一个按升序排序的整数数组 num（可能包含重复数字），请你将它们分割成一个或多个长度至少为 3 的子序列，其中每个子序列都由连续整数组成。
+     * 如果可以完成上述分割，则返回 true ；否则，返回 false 。
+     *
+     * 对应 leetcode 中第 659 题。
+     */
+    public boolean isPossible(int[] nums) {
+        Map<Integer, Integer> countMap = new HashMap<>();
+        for (int num : nums) {
+            countMap.put(num, countMap.getOrDefault(num, 0) + 1);
+        }
+        // 定义一个哈希表记录最长的子序列
+        Map<Integer, Integer> tail = new HashMap<>();
+        for (int num : nums) {
+            Integer count = countMap.getOrDefault(num, 0);
+            if (count <= 0) {
+                // 当前元素已经用完，直接跳过
+                continue;
+            } else if (tail.getOrDefault(num - 1, 0) > 0) {
+                countMap.put(num, count - 1);
+                tail.put(num - 1, tail.get(num - 1) - 1); // 覆盖当前最长的子序列
+                tail.put(num, tail.getOrDefault(num, 0) + 1);  // 当前以num结尾的子序列 加1.
+            } else if (countMap.getOrDefault(num + 1, 0) > 0 && countMap.getOrDefault(num + 2, 0) > 0) {
+                countMap.put(num, count - 1);
+                countMap.put(num + 1, countMap.get(num + 1) - 1);
+                countMap.put(num + 2, countMap.get(num + 2) - 1);
+                tail.put(num + 2, countMap.getOrDefault(num + 2, 0) + 1);
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // -------分割数组为连续子序列 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

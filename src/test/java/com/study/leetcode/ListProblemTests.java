@@ -108,6 +108,13 @@ public class ListProblemTests {
         assertArrayEquals(toArray(problem.removeNthFromEnd(head, 1)), res);
     }
 
+    @Test
+    public void testSwapPairs() {
+        ListNode head = buildCommonNode(Arrays.asList(1, 2, 3, 4));
+        int[] res = new int[] {2,1,4,3};
+        assertArrayEquals(toArray(problem.swapPairs(head)), res);
+    }
+
     private int[] toArray(ListNode head) {
         List<Integer> rs = new ArrayList<>();
         for (ListNode p = head; p != null; p = p.next) {

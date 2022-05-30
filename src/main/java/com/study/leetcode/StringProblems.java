@@ -672,6 +672,74 @@ public class StringProblems {
 
     // -------去除重复字母 << end --------
 
+    // -------基本计算器 start >>--------
+
+    /**
+     * 给你一个字符串表达式 s ，请你实现一个基本计算器来计算并返回它的值。
+     * 注意:不允许使用任何将字符串作为数学表达式计算的内置函数，比如 eval() 。
+     *
+     * 对应  leetcode 中第 224 题。
+     */
+    public int calculate(String s) {
+        // 存放所有的数字
+        Deque<Integer> nums = new ArrayDeque<>();
+        // 为了防止第一个数为负数，先往nums中加一个 0
+        nums.addLast(0);
+        s = s.replaceAll("\\s", "");
+        // 存放所有的操作，包括 +/-
+        Deque<Character> ops = new ArrayDeque<>();
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '(') {
+                ops.addLast(c);
+            } else if (c == ')') {
+                // 计算直到最近一个左括号为止
+                while (!ops.isEmpty()) {
+                    Character op = ops.peekLast();
+                    if (op != '(') {
+                        calculate(nums, ops);
+                    } else {
+                        ops.pollLast();
+                        break;
+                    }
+                }
+            } else {
+                if (Character.isDigit(c)) {
+                    int u = 0, j = i;
+                    while (j < s.length() && Character.isDigit(s.charAt(j))) {
+                        u = u * 10 + (s.charAt(j++) - '0');
+                    }
+                    nums.add(u);
+                    i = j - 1;
+                } else {
+                    char preC;
+                    if (i > 0 && ((preC = s.charAt(i - 1)) == '('
+                                || preC == '+' || preC == '-')) {
+                        nums.add(0);
+                    }
+                    // 当有一个新操作要入栈时，先把栈内可以算的都算了
+                    while (!ops.isEmpty() && ops.peekLast() != '(') {
+                        calculate(nums, ops);
+                    }
+                    ops.addLast(c);
+                }
+            }
+        }
+        while (!ops.isEmpty()) {
+            calculate(nums, ops);
+        }
+        return nums.peekLast();
+    }
+
+    private void calculate(Deque<Integer> nums, Deque<Character> ops) {
+        if (nums.isEmpty() || nums.size() < 2 || ops.isEmpty()) return;
+        int b = nums.pollLast(), a = nums.pollLast();
+        char op = ops.pollLast();
+        nums.addLast(op == '+' ? a + b : a - b);
+    }
+
+    // -------基本计算器 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

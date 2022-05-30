@@ -124,4 +124,11 @@ public class StringProblemTests {
         assertEquals(problems.removeDuplicateLetters("bcabc"), "abc");
         assertEquals(problems.removeDuplicateLetters("cbacdcbc"), "acdb");
     }
+
+    @Test
+    public void testCalculate() {
+        assertEquals(problems.calculate("1 + 1"), 2);
+        assertEquals(problems.calculate("2-1 + 2 "), 3);
+        assertEquals(problems.calculate("(1+(4+5+2)-3)+(6+8)"), 23);
+    }
 }

@@ -347,4 +347,43 @@ public class ArrayProblemTests {
         assertEquals(problems.wiggleMaxLength_v3(param), 2);
     }
 
+    @Test
+    public void testFindMinArrowShots() {
+        int[][] param = {{10,16},{2,8},{1,6},{7,12}};
+        assertEquals(problems.findMinArrowShots(param), 2);
+        param = new int[][] {{1,2},{3,4},{5,6},{7,8}};
+        assertEquals(problems.findMinArrowShots(param), 4);
+        param = new int[][] {{1,2},{2,3},{3,4},{4,5}};
+        assertEquals(problems.findMinArrowShots(param), 2);
+    }
+
+    @Test
+    public void testTriangleNumber() {
+        int[] param = {2,2,3,4};
+        assertEquals(problems.triangleNumber(param), 3);
+        assertEquals(problems.triangleNumber_v2(param), 3);
+        param = new int[] {4,2,3,4};
+        assertEquals(problems.triangleNumber(param), 4);
+        assertEquals(problems.triangleNumber_v2(param), 4);
+    }
+
+    @Test
+    public void testLeastInterval() {
+        char[] param = new char[] {'A','A','A','B','B','B'};
+        assertEquals(problems.leastInterval(param, 2), 8);
+        param = new char[] {'A','A','A','B','B','B'};
+        assertEquals(problems.leastInterval(param, 0), 6);
+        param = new char[] {'A','A','A','A','A','A','B','C','D','E','F','G'};
+        assertEquals(problems.leastInterval(param, 2), 16);
+    }
+
+    @Test
+    public void testIsPossible() {
+        int[] param = {1,2,3,3,4,5};
+        assertTrue(problems.isPossible(param));
+        param = new int[] {1,2,3,3,4,4,5,5};
+        assertTrue(problems.isPossible(param));
+        param = new int[] {1,2,3,4,4,5};
+        assertFalse(problems.isPossible(param));
+    }
 }
