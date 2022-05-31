@@ -386,4 +386,14 @@ public class ArrayProblemTests {
         param = new int[] {1,2,3,4,4,5};
         assertFalse(problems.isPossible(param));
     }
+
+    @Test
+    public void testLongestIncreasingPath() {
+        int[][] matrix = {{9,9,4}, {6,6,8},{2,1,1}};
+        assertEquals(problems.longestIncreasingPath(matrix), 4);
+        matrix = new int[][] {{3,4,5}, {3,2,6}, {2,2,1}};
+        assertEquals(problems.longestIncreasingPath(matrix), 4);
+        matrix = new int[][] {{1}};
+        assertEquals(problems.longestIncreasingPath(matrix), 1);
+    }
 }

@@ -1459,6 +1459,50 @@ public class ArrayProblems {
 
     // -------分割数组为连续子序列 << end --------
 
+    // -------矩阵中的最长递增路径 start >>--------
+
+    /**
+     * 给定一个 m x n 整数矩阵 matrix ，找出其中 最长递增路径 的长度。
+     * 对于每个单元格，你可以往上，下，左，右四个方向移动。 你 不能 在 对角线 方向上移动或移动到 边界外（即不允许环绕）。
+     *
+     * 使用带记忆化的深度优先搜索的方法进行解答。
+     *
+     * 对应 leetcode 中第 329 题。
+     */
+    public int longestIncreasingPath(int[][] matrix) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return 0;
+        int row = matrix.length, col = matrix[0].length;
+        int[][] memo = new int[row][col];
+        int res = 1;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                res = Math.max(res, longestIncreasingPath_backTrack(matrix, i, j, memo));
+            }
+        }
+        return res;
+    }
+
+    private int longestIncreasingPath_backTrack(int[][] matrix, int i, int j, int[][] memo) {
+        if (memo[i][j] != 0) {
+            return memo[i][j];
+        }
+        ++memo[i][j];
+        int row = matrix.length, col = matrix[0].length;
+        int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        for (int[] dir : dirs) {
+            int newRow = i + dir[0], newCol = j + dir[1];
+            if (newRow >= 0 && newRow < row &&
+                    newCol >= 0 && newCol < col &&
+                    matrix[newRow][newCol] > matrix[i][j]) {
+                memo[i][j] = Math.max(memo[i][j], longestIncreasingPath_backTrack(matrix, newRow, newCol, memo) + 1);
+            }
+        }
+        return memo[i][j];
+    }
+
+
+    // -------矩阵中的最长递增路径 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

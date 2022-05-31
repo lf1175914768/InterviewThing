@@ -525,6 +525,23 @@ public class TreeProblemTests {
         assertEquals(problem.sumNumbers_v2(root), 25);
     }
 
+    @Test
+    public void testCountNodes() {
+        TreeNode root = buildCommonTree();
+        assertEquals(problem.countNodes(root), 7);
+        assertEquals(problem.countNodes_v2(root), 7);
+    }
+
+    @Test
+    public void testFindMinHeightTrees() {
+        int[][] edges = new int[][] {{1,0}, {1,2}, {1,3}};
+        Integer[] res = new Integer[] {1};
+        assertArrayEquals(problem.findMinHeightTrees(4, edges).toArray(new Integer[0]), res);
+        edges = new int[][] {{3,0}, {3,1}, {3,2}, {3,4}, {5,4}};
+        res = new Integer[] {3,4};
+        assertArrayEquals(problem.findMinHeightTrees(6, edges).toArray(new Integer[0]), res);
+    }
+
     /**
      * build tree
      *             4

@@ -1071,6 +1071,11 @@ public class TreeProblems {
         return low;
     }
 
+    /**
+     * 如何判断第 k 个节点是否存在呢？如果第 k 个节点位于第 h 层，则 k 的二进制表示包含 h + 1 位，其中最高位为 1，其余各位从高到低表示
+     * 从根节点到第 k 个节点的路径，0 表示移动到左子节点，1 表示移动到右子节点。通过位运算得到第 k 个节点对应的路径，判断该路径对应的节点是否存在。
+     * 即可判断第 k 个节点是否存在。
+     */
     private boolean countNodesExists(TreeNode root, int level, int k) {
         int bits = 1 << (level - 1);
         TreeNode node = root;
@@ -1083,6 +1088,36 @@ public class TreeProblems {
             bits >>= 1;
         }
         return node != null;
+    }
+
+    /**
+     * 首先需要明确完全二叉树的定义：他是一颗空树或者他的叶子节点只出现在最后两层，若最后一层不满则叶子节点只在最左侧。
+     *
+     * 再来回顾一下满二叉树的节点个数怎么计算，如果满二叉树的层数为 h，则总节点数为：2^h-1.  (层数从1开始，也就是root节点对应的层数为 1)
+     * 那么我们来对 root 节点的左右子树进行高度统计，分别记为 left 和 right，有以下两种结果：
+     * 1、left == right。这说明，左子树一定是满二叉树，因为节点已经填充到右子树了，左子树必定已经填满了。所以左子树的节点总数我们可以直接得到，
+     * 是 2^left-1,加上当前这个 root 节点，则正好是 2 ^ left。在对右子树进行递归统计。
+     * 2、left != right。这说明此时最后一层不满，但倒数第二层已经满了，可以直接得到右子树的节点个数。同理，右子树节点 + root 节点，
+     * 总数为 2 ^ right。在对左子树进行递归查找。
+     */
+    public int countNodes_v2(TreeNode root) {
+        if (root == null) return 0;
+        int left = countNodes_v2_countLevel(root.left);
+        int right = countNodes_v2_countLevel(root.right);
+        if (left == right) {
+            return countNodes_v2(root.right) + (1 << left);
+        } else {
+            return countNodes_v2(root.left) + (1 << right);
+        }
+    }
+
+    private int countNodes_v2_countLevel(TreeNode root) {
+        int level = 0;
+        while (root != null) {
+            level++;
+            root = root.left;
+        }
+        return level;
     }
 
     // -------完全二叉树的节点个数 << end --------
@@ -1653,6 +1688,68 @@ public class TreeProblems {
     }
 
     // -------求根节点到叶节点数字之和 << end --------
+
+    // -------最小高度树 start >>--------
+
+    /**
+     * 树是一个无向图，其中任何两个顶点只通过一条路径连接。 换句话说，一个任何没有简单环路的连通图都是一棵树。
+     * 给你一棵包含 n 个节点的树，标记为 0 到 n - 1 。给定数字 n 和一个有 n - 1 条无向边的 edges 列表（每一个边都是一对标签），
+     * 其中 edges[i] = [ai, bi] 表示树中节点 ai 和 bi 之间存在一条无向边。
+     * 可选择树中任何一个节点作为根。当选择节点 x 作为根节点时，设结果树的高度为 h 。在所有可能的树中，具有最小高度的树（即，min(h)）被称为 最小高度树 。
+     * 请你找到所有的 最小高度树 并按 任意顺序 返回它们的根节点标签列表。
+     * 树的 高度 是指根节点和叶子节点之间最长向下路径上边的数量。
+     *
+     * 解题思路：
+     * 我们从边缘开始，先找到所有出度为 1 的节点，然后把所有出度为 1 的节点进队列，然后不断的bfs，最后找到的就是两边同时向中间靠近的节点，
+     * 那么这个节点就相当于把整个距离 二分了，那么他当然就是到两边距离最小的点了，也就是到其他叶子节点最近的节点了。
+     *
+     * 对应 leetcode 中第 310 题。
+     */
+    public List<Integer> findMinHeightTrees(int n, int[][] edges) {
+        List<Integer> res = new ArrayList<>();
+        if (n == 1) {
+            res.add(0);
+            return res;
+        }
+        // 建立各个节点的出度表
+        int[] degree = new int[n];
+        // 建立图关系，在每个节点的list中存储相连节点
+        List<List<Integer>> map = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            map.add(new ArrayList<>());
+        }
+        for (int[] edge : edges) {
+            degree[edge[0]]++;
+            degree[edge[1]]++;
+            map.get(edge[0]).add(edge[1]);
+            map.get(edge[1]).add(edge[0]);
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        // 将所有出度为 1 的节点，也就是叶子节点入队
+        for (int i = 0; i < n; i++) {
+            if (degree[i] == 1)
+                queue.offer(i);
+        }
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            res.clear();
+            for (int i = 0; i < size; i++) {
+                Integer cur = queue.poll();
+                res.add(cur);
+                List<Integer> neighbors = map.get(cur);
+                for (int neighbor : neighbors) {
+                    degree[neighbor]--;
+                    if (degree[neighbor] == 1) {
+                        // 如果是叶子节点我们就入队
+                        queue.offer(neighbor);
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    // -------最小高度树 << end --------
 
     // -------组合总和 start >>--------
 
