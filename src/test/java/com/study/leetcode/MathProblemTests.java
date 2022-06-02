@@ -26,4 +26,14 @@ public class MathProblemTests {
     public void testIntegerReplacement() {
         assertEquals(problem.integerReplacement(8), 3);
     }
+
+    @Test
+    public void testLexicalOrder() {
+        Integer[] res = new Integer[] {1,10,11,12,13,2,3,4,5,6,7,8,9};
+        assertArrayEquals(problem.lexicalOrder(13).toArray(new Integer[0]), res);
+        assertArrayEquals(problem.lexicalOrder_v2(13).toArray(new Integer[0]), res);
+        res = new Integer[] {1,2};
+        assertArrayEquals(problem.lexicalOrder(2).toArray(new Integer[0]), res);
+        assertArrayEquals(problem.lexicalOrder_v2(2).toArray(new Integer[0]), res);
+    }
 }

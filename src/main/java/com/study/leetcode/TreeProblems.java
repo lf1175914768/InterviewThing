@@ -1751,6 +1751,64 @@ public class TreeProblems {
 
     // -------最小高度树 << end --------
 
+    // -------打家劫舍III start >>--------
+
+    /**
+     * 小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为 root 。
+     * 除了 root 之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。
+     * 如果 两个直接相连的房子在同一天晚上被打劫 ，房屋将自动报警。
+     * 给定二叉树的 root 。返回 在不触动警报的情况下 ，小偷能够盗取的最高金额 。
+     *
+     * 采用暴力递归的方法进行解答。
+     * 首先来定义这个问题的状态：爷爷节点获取到最大的偷取的钱数如何计算呢？
+     * 1、首先要明确相邻的节点不能偷，也就是爷爷选择偷，儿子就不能偷了，但是孙子可以偷
+     * 2、二叉树只有左右两个孩子，一个爷爷最多2个儿子，4个孙子
+     *
+     * 由此，我们可以得出单个节点的钱该怎么算：
+     * 4个孙子偷的钱 + 爷爷的钱 VS 两个儿子偷的钱
+     * 那个组合钱多，就当做当前节点能偷的最大钱数，这就是动态规划里面的最优子结构
+     *
+     * 对应 leetcode 中第 337 题。
+     */
+    public int rob(TreeNode root) {
+        if (root == null) return 0;
+        int money = root.val;
+        if (root.left != null) {
+            money += (rob(root.left.left) + rob((root.left.right)));
+        }
+        if (root.right != null) {
+            money += (rob(root.right.left) + rob(root.right.right));
+        }
+        return Math.max(money, rob(root.left) + rob(root.right));
+    }
+
+    /**
+     * 上面版本的记忆化优化实现
+     */
+    public int rob_v2(TreeNode root) {
+        HashMap<TreeNode, Integer> memo = new HashMap<>();
+        return rob_v2Internal(root, memo);
+    }
+
+    private int rob_v2Internal(TreeNode root, HashMap<TreeNode, Integer> memo) {
+        if (root == null) return 0;
+        if (memo.containsKey(root)) return memo.get(root);
+
+        int money = root.val;
+        if (root.left != null) {
+            money += (rob_v2Internal(root.left.left, memo) + rob_v2Internal(root.left.right, memo));
+        }
+        if (root.right != null) {
+            money += (rob_v2Internal(root.right.left, memo) + rob_v2Internal(root.right.right, memo));
+        }
+        int result = Math.max(money, rob_v2Internal(root.left, memo) + rob_v2Internal(root.right, memo));
+
+        memo.put(root, result);
+        return result;
+    }
+
+    // -------打家劫舍III << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

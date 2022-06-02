@@ -542,6 +542,17 @@ public class TreeProblemTests {
         assertArrayEquals(problem.findMinHeightTrees(6, edges).toArray(new Integer[0]), res);
     }
 
+    @Test
+    public void testRob() {
+        TreeNode node3 = new TreeNode(3);
+        TreeNode node2 = new TreeNode(2, null, node3);
+        TreeNode node1 = new TreeNode(1);
+        TreeNode node31 = new TreeNode(3, null, node1);
+        TreeNode root = new TreeNode(3, node2, node31);
+        assertEquals(problem.rob(root), 7);
+        assertEquals(problem.rob_v2(root), 7);
+    }
+
     /**
      * build tree
      *             4
