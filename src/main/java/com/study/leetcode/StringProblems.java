@@ -563,7 +563,7 @@ public class StringProblems {
 
     // -------文本左右对齐 << end --------
 
-    // -------组合总和 start >>--------
+    // -------简化路径 start >>--------
 
     /**
      * 给你一个字符串 path ，表示指向某一文件或目录的 Unix 风格 绝对路径 （以 '/' 开头），请你将其转化为更加简洁的规范路径。
@@ -621,7 +621,88 @@ public class StringProblems {
         return sb.length() == 0 ? "/" : sb.toString();
     }
 
-    // -------组合总和 << end --------
+    // -------简化路径 << end --------
+
+    // -------单词接龙II start >>--------
+
+    /**
+     * 按字典 wordList 完成从单词 beginWord 到单词 endWord 转化，一个表示此过程的 转换序列 是形式上像
+     * beginWord -> s1 -> s2 -> ... -> sk 这样的单词序列，并满足：
+     * 1.每对相邻的单词之间仅有单个字母不同。
+     * 2.转换过程中的每个单词 si（1 <= i <= k）必须是字典 wordList 中的单词。注意，beginWord 不必是字典 wordList 中的单词。
+     * 3.sk == endWord
+     * 给你两个单词 beginWord 和 endWord ，以及一个字典 wordList 。请你找出并返回所有从 beginWord 到 endWord 的 最短转换序列 ，
+     * 如果不存在这样的转换序列，返回一个空列表。每个序列都应该以单词列表 [beginWord, s1, s2, ..., sk] 的形式返回。
+     *
+     * 采用 BFS 的方法进行解答。
+     *
+     * 对应 leetcode 中第 126 题。
+     */
+    public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+        List<List<String>> res = new ArrayList<>();
+        // 如果不含有结束单词，直接结束，不然后边会造成死循环
+        if (!wordList.contains(endWord)) {
+            return res;
+        }
+        Queue<List<String>> queue = new LinkedList<>();
+        List<String> path = new ArrayList<>();
+        path.add(beginWord);
+        queue.offer(path);
+        Set<String> dict = new HashSet<>(wordList);
+        Set<String> visited = new HashSet<>();
+        visited.add(beginWord);
+        boolean found = false;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            Set<String> subVisited = new HashSet<>();
+            for (int i = 0; i < size; i++) {
+                List<String> p = queue.poll();
+                // 得到当前路径的末尾单词
+                String temp = p.get(p.size() - 1);
+                // 一次性得到所有的下一个的节点
+                List<String> neighbors = findLadderGetNeighbors(temp, dict);
+                for (String neighbor : neighbors) {
+                    // 只考虑之前没有出现过的单词
+                    if (!visited.contains(neighbor)) {
+                        if (neighbor.equals(endWord)) {
+                            found = true;
+                            p.add(neighbor);
+                            res.add(new ArrayList<>(p));
+                            p.remove(p.size() - 1);
+                        }
+                        p.add(neighbor);
+                        queue.offer(new ArrayList<>(p));
+                        p.remove(p.size() - 1);
+                        subVisited.add(neighbor);
+                    }
+                }
+            }
+            visited.addAll(subVisited);
+            if (found) break;
+        }
+        return res;
+    }
+
+    private List<String> findLadderGetNeighbors(String node, Set<String> dict) {
+        List<String> res = new ArrayList<>();
+        char[] chs = node.toCharArray();
+        for (char ch = 'a'; ch <= 'z'; ch++) {
+            for (int i = 0; i < node.length(); i++) {
+                if (node.charAt(i) == ch) {
+                    continue;
+                }
+                char oldCh = chs[i];
+                chs[i] = ch;
+                if (dict.contains(String.valueOf(chs))) {
+                    res.add(String.valueOf(chs));
+                }
+                chs[i] = oldCh;
+            }
+        }
+        return res;
+    }
+
+    // -------单词接龙II << end --------
 
     // -------去除重复字母 start >>--------
 

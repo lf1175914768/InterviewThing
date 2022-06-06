@@ -1503,6 +1503,62 @@ public class ArrayProblems {
 
     // -------矩阵中的最长递增路径 << end --------
 
+    // -------求众数 start >>--------
+
+    /**
+     * 给定一个大小为 n 的整数数组，找出其中所有出现超过 【 n/3 】 次的元素。
+     *
+     * 使用 摩尔投票法 进行解答。
+     * 归纳如下：
+     * 如果至多选一个代表，那他的票数至少要超过一半 【1/2】的数
+     * 如果至多选两个代表，那它的票数至少要超过 【1/3】 的数
+     * 如果至多选 m 个代表，那他的票数至少要超过 【1/(m+1)】 的票数
+     *
+     * 对应 leetcode 中第 229 题。
+     */
+    public List<Integer> majorityElement(int[] nums) {
+        List<Integer> res = new ArrayList<>();
+        if (null == nums || nums.length == 0) return res;
+        int can1 = nums[0], count1 = 0;
+        int can2 = nums[0], count2 = 0;
+        // 摩尔投票法，分为两个阶段，配对阶段和计数阶段
+        for (int num : nums) {
+            if (can1 == num) {
+                count1++;
+                continue;
+            }
+            if (can2 == num) {
+                count2++;
+                continue;
+            }
+            if (count1 == 0) {
+                can1 = num;
+                count1++;
+                continue;
+            }
+            if (count2 == 0) {
+                can2 = num;
+                count2++;
+                continue;
+            }
+            count1--;
+            count2--;
+        }
+
+        // 计数阶段
+        count1 = 0;
+        count2 = 0;
+        for (int num : nums) {
+            if (can1 == num) count1++;
+            else if (can2 == num) count2++;
+        }
+        if (count1 > nums.length / 3) res.add(can1);
+        if (count2 > nums.length / 3) res.add(can2);
+        return res;
+    }
+
+    // -------求众数 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

@@ -1,6 +1,10 @@
 package com.study.leetcode;
 
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class StringProblemTests {
@@ -130,5 +134,26 @@ public class StringProblemTests {
         assertEquals(problems.calculate("1 + 1"), 2);
         assertEquals(problems.calculate("2-1 + 2 "), 3);
         assertEquals(problems.calculate("(1+(4+5+2)-3)+(6+8)"), 23);
+    }
+
+    @Test
+    public void testFindLadders() {
+        String[] words = {"hot","dot","dog","lot","log","cog"};
+        String[][] res = {{"hit","hot","dot","dog","cog"}, {"hit","hot","lot","log","cog"}};
+        assertArrayEquals(toArray(problems.findLadders("hit", "cog", Arrays.asList(words))), res);
+        words = new String[] {"hot","dot","dog","lot","log"};
+        assertNull(toArray(problems.findLadders("hit", "cog", Arrays.asList(words))));
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private <T> T[][] toArray(List<List<T>> list) {
+        if (null == list || list.size() == 0) return null;
+        List[] lists = list.toArray(new List[0]);
+        int row = lists.length, col = lists[0].size(), i = 0;
+        T[][] res = (T[][]) new Object[row][col];
+        for (List item : lists) {
+            res[i++] = (T[]) item.toArray();
+        }
+        return res;
     }
 }
