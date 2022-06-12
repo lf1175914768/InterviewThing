@@ -618,10 +618,12 @@ public class HotProblemTests {
         assertEquals(problem.trap(param), 6);
         assertEquals(problem.trap_v2(param), 6);
         assertEquals(problem.trap_v3(param), 6);
+        assertEquals(problem.trap_v4(param), 6);
         param = new int[] {4,2,0,3,2,5};
         assertEquals(problem.trap(param), 9);
         assertEquals(problem.trap_v2(param), 9);
         assertEquals(problem.trap_v3(param), 9);
+        assertEquals(problem.trap_v4(param), 9);
     }
 
     @Test

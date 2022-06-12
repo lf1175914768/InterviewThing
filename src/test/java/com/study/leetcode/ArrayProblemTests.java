@@ -396,4 +396,12 @@ public class ArrayProblemTests {
         matrix = new int[][] {{1}};
         assertEquals(problems.longestIncreasingPath(matrix), 1);
     }
+
+    @Test
+    public void testThreeNumClosest() {
+        int[] param = {-1,2,1,-4};
+        assertEquals(problems.threeSumClosest(param, 1), 2);
+        param = new int[] {0,0,0};
+        assertEquals(problems.threeSumClosest(param, 1), 0);
+    }
 }

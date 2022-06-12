@@ -2903,6 +2903,23 @@ public class HotProblems {
         return sum;
     }
 
+    public int trap_v4(int[] height) {
+        int res = 0, left = 0, right = height.length - 1;
+        int leftMax = height[left], rightMax = height[right];
+        while (left < right) {
+            if (leftMax < rightMax) {
+                res += leftMax - height[left];
+                left++;
+                leftMax = Math.max(leftMax, height[left]);
+            } else {
+                res += rightMax - height[right];
+                right--;
+                rightMax = Math.max(rightMax, height[right]);
+            }
+        }
+        return res;
+    }
+
     // -------接雨水 << end --------
 
     // -------搜索旋转排序数组 start >>--------
