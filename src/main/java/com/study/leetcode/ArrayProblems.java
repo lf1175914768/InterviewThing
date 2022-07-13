@@ -1590,6 +1590,40 @@ public class ArrayProblems {
 
     // -------最接近的三数之和 << end --------
 
+    // -------数据流中的第K大元素 start >>--------
+
+    /**
+     * 设计一个找到数据流中第 k 大元素的类（class）。注意是排序后的第 k 大元素，不是第 k 个不同的元素。
+     */
+    static final class KthLargest {
+        private final int k;
+        private final PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+        public KthLargest(int k, int[] nums) {
+            this.k = k;
+            for (int i = 0; i < k; i++) {
+                pq.offer(nums[i]);
+            }
+            for (int i = k; i < nums.length; i++) {
+                if (nums[i] > pq.peek()) {
+                    pq.poll();
+                    pq.offer(nums[i]);
+                }
+            }
+        }
+
+        public int add(int val) {
+            // 维护小顶堆只保留前 k 大的元素
+            pq.offer(val);
+            if (pq.size() > k) {
+                pq.poll();
+            }
+            return pq.peek();
+        }
+    }
+
+    // -------数据流中的第K大元素 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

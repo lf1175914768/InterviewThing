@@ -404,4 +404,14 @@ public class ArrayProblemTests {
         param = new int[] {0,0,0};
         assertEquals(problems.threeSumClosest(param, 1), 0);
     }
+
+    @Test
+    public void testKthLargest() {
+        ArrayProblems.KthLargest problem = new ArrayProblems.KthLargest(3, new int[] {4,5,8,2});
+        assertEquals(problem.add(3), 4);
+        assertEquals(problem.add(5), 5);
+        assertEquals(problem.add(10), 5);
+        assertEquals(problem.add(9), 8);
+        assertEquals(problem.add(4), 8);
+    }
 }
