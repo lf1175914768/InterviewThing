@@ -54,6 +54,8 @@ public class StringProblemTests {
         assertArrayEquals(problems.restoreIpAddresses("0000").toArray(new String[0]), res);
         res = new String[] {"1.0.10.23","1.0.102.3","10.1.0.23","10.10.2.3","101.0.2.3"};
         assertArrayEquals(problems.restoreIpAddresses("101023").toArray(new String[0]), res);
+        res = new String[] {"255.255.255.255"};
+        assertArrayEquals(problems.restoreIpAddresses("255255255255").toArray(new String[0]), res);
     }
 
     @Test
@@ -143,6 +145,13 @@ public class StringProblemTests {
         assertArrayEquals(toArray(problems.findLadders("hit", "cog", Arrays.asList(words))), res);
         words = new String[] {"hot","dot","dog","lot","log"};
         assertNull(toArray(problems.findLadders("hit", "cog", Arrays.asList(words))));
+    }
+
+    @Test
+    public void testIsScramble() {
+        assertTrue(problems.isScramble("great", "rgeat"));
+        assertFalse(problems.isScramble("abcde", "caebd"));
+        assertTrue(problems.isScramble("a", "a"));
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
