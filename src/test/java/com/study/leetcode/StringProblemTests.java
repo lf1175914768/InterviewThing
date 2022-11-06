@@ -136,6 +136,10 @@ public class StringProblemTests {
         assertEquals(problems.calculate("1 + 1"), 2);
         assertEquals(problems.calculate("2-1 + 2 "), 3);
         assertEquals(problems.calculate("(1+(4+5+2)-3)+(6+8)"), 23);
+
+        assertEquals(problems.calculate_v2("1 + 1"), 2);
+        assertEquals(problems.calculate_v2("2-1 + 2 "), 3);
+        assertEquals(problems.calculate_v2("(1+(4+5+2)-3)+(6+8)"), 23);
     }
 
     @Test

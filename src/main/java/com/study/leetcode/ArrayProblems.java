@@ -1624,6 +1624,52 @@ public class ArrayProblems {
 
     // -------数据流中的第K大元素 << end --------
 
+    // -------验证栈序列 start >>--------
+
+    /**
+     * 给定 pushed 和 popped 两个序列，每个序列中的 值都不重复，只有当它们可能是在最初空栈上进行的推入 push
+     * 和弹出 pop 操作序列的结果时，返回 true；否则，返回 false 。
+     *
+     * 采用模拟的方法进行解答。
+     *
+     * 对应 leetcode 中第 946 题。
+     */
+    public boolean validateStackSequences(int[] pushed, int[] popped) {
+        Stack<Integer> stack = new Stack<>();
+        int i = 0, j = 0, len = pushed.length;
+        while (j < len) {
+            while (i < len && pushed[i] != popped[j]) {
+                stack.push(pushed[i]);
+                i++;
+            }
+            if (i < len) {
+                stack.push(pushed[i]);
+                i++;
+            }
+            while (!stack.isEmpty() && popped[j] == stack.peek()) {
+                stack.pop();
+                j++;
+            }
+            if (i == len) break;
+        }
+        return j == len;
+    }
+
+    public boolean validateStackSequences_v2(int[] pushed, int[] popped) {
+        Deque<Integer> stack = new ArrayDeque<>();
+        int len = pushed.length;
+        for (int i = 0, j = 0; i < len; i++) {
+            stack.push(pushed[i]);
+            while (!stack.isEmpty() && stack.peek() == popped[j]) {
+                stack.pop();
+                j++;
+            }
+        }
+        return stack.isEmpty();
+    }
+
+    // -------验证栈序列 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

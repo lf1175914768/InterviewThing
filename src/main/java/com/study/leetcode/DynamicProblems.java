@@ -751,6 +751,51 @@ public class DynamicProblems {
 
     // -------最大正方形 << end --------
 
+    // -------不同的子序列II start >>--------
+
+    /**
+     * 给定一个字符串 s，计算 s 的 不同非空子序列 的个数。因为结果可能很大，所以返回答案需要对 10^9 + 7 取余 。
+     * 字符串的 子序列 是经由原字符串删除一些（也可能不删除）字符但不改变剩余字符相对位置的一个新字符串。
+     *
+     * 我们考虑使用动态规划的方法进行解答。
+     * 我们可以设 dp[i] 为前 i 个字符可以组成的不同的子序列，则有 dp[i] = dp[i - 1] + newCount - repeatCount
+     * 其中 newCount 为加上 s[i] 后新增的子序列个数， repeatCount 为重复的子序列个数。
+     *
+     * newCount 的值比较好算，就是 dp[i - 1].
+     * 举例：设有字符串 abcb
+     * 状态：      子序列：
+     * 没有遍历时：  空串 “”
+     * 遍历到 a 时： "", a
+     * 遍历到 b 时： "", a, b, ab   -> 后两个子序列由上一次的结果集 + 当前字符构成
+     * 遍历到 c 时： "", a, b, ab, c, ac, bc, abc
+     * 遍历到 b 时： "", a, b, ab, c, ac, bc, abc, b, ab, bb, abc, cb, acb, bcb, abcb
+     *
+     * 然后我们计算 repeatCount，我们观察遍历到的第二个字符 b，出现重复的序列为 b 和 ab，而这两个序列正好是上一次添加 b 的时候新增的两个序列。
+     * 于是我们可以使用数组 preCount 来记录上一次该字符串新增的个数，该个数就是 repeatCount。
+     *
+     * 最后，我们将空串减去即可。
+     *
+     * 对应 leetcode 中第 940 题。
+     */
+    public int distinctSubSeqII(String s) {
+        int maxMod = (int) (1e9 + 7);
+        int[] preCount = new int[26];
+        int curAns = 1;   // 没有遍历时，空串
+        for (int i = 0; i < s.length(); i++) {
+            // 新增的个数
+            int newCount = curAns;
+            char c = s.charAt(i);
+            curAns = ((curAns + newCount) % maxMod - preCount[c - 'a'] % maxMod + maxMod) % maxMod;
+            // 记录当前字符的新增值
+            preCount[c - 'a'] = newCount;
+        }
+
+        // 减去空串
+        return curAns - 1;
+    }
+
+    // -------不同的子序列II << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

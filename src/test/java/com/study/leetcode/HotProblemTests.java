@@ -41,6 +41,7 @@ public class HotProblemTests {
         assertEquals(problem.binaryLeftSearch_v2(params, 16), -1);
 
         assertEquals(problem.binaryRightSearch(params, 3), 5);
+        assertEquals(problem.binaryRightSearch(params, 1), 0);
         assertEquals(problem.binaryRightSearch_v2(params, 3), 5);
         assertEquals(problem.binaryRightSearch(params, 8), 6);
         assertEquals(problem.binaryRightSearch_v2(params, 8), 6);

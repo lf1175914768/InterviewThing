@@ -95,7 +95,7 @@ public class HotProblems {
                 right = mid;
             }
         }
-        if (left - 1 <= 0)
+        if (left - 1 < 0)
             return -1;
         return nums[left - 1] == target ? left - 1 : -1;
     }
