@@ -1670,6 +1670,51 @@ public class ArrayProblems {
 
     // -------验证栈序列 << end --------
 
+    // -------最小的k个数 start >>--------
+
+    /**
+     * 输入整数数组 arr ，找出其中最小的 k 个数。例如，输入4、5、1、6、2、7、3、8这8个数字，则最小的4个数字是1、2、3、4。
+     *
+     * 使用 快排 的方法解答 topK 问题。
+     *
+     * 对应 剑指offer 第 40 题。
+     */
+    public int[] getLeastNumbers(int[] arr, int k) {
+        if (k == 0 || arr.length == 0) {
+            return new int[0];
+        }
+        // 最后一个参数表示我们要找的是下标为 k - 1 的数
+        return getLeastNumbers_QuickSearch(arr, 0, arr.length - 1, k - 1);
+    }
+
+    private int[] getLeastNumbers_QuickSearch(int[] arr, int lo, int hi, int k) {
+        int j = getLeastNumbersPartition(arr, lo, hi);
+        if (j == k) {
+            return Arrays.copyOf(arr, j + 1);
+        }
+        // 否则根据下标 j 与 k 的关系来决定继续切分左段还是右段
+        return j > k ? getLeastNumbers_QuickSearch(arr, lo, j - 1, k)
+                : getLeastNumbers_QuickSearch(arr, j + 1, hi, k);
+    }
+
+    private int getLeastNumbersPartition(int[] arr, int lo, int hi) {
+        int pivot = arr[lo];
+        while (lo < hi) {
+            while (lo < hi && arr[hi] >= pivot) {
+                hi--;
+            }
+            arr[lo] = arr[hi];
+            while (lo < hi && arr[lo] <= pivot) {
+                lo++;
+            }
+            arr[hi] = arr[lo];
+        }
+        arr[lo] = pivot;
+        return lo;
+    }
+
+    // -------最小的k个数 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

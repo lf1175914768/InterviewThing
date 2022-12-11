@@ -427,4 +427,13 @@ public class ArrayProblemTests {
         assertTrue(problems.validateStackSequences(pushed, popped));
         assertTrue(problems.validateStackSequences_v2(pushed, popped));
     }
+
+    @Test
+    public void testGetLeastNumbers() {
+        int[] arr = {3,2,1}, res = {1,2};
+        assertArrayEquals(problems.getLeastNumbers(arr, 2), res);
+        arr = new int[] {0,1,2,1};
+        res = new int[] {0};
+        assertArrayEquals(problems.getLeastNumbers(arr, 1), res);
+    }
 }

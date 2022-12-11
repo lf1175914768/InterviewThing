@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -162,6 +163,14 @@ public class TopInterviewProblemTests {
         assertEquals(head.val, 3);
         assertEquals(head.next.val, 1);
         assertEquals(head.next.next.val, 2);
+
+        head = ListProblemTests.buildCommonNode(Arrays.asList(1, 2, 3, 4, 5));
+        ListNode node = problems.oddEvenList_v2(head);
+        int[] rs = new int[] {1,3,5,2,4};
+        assertArrayEquals(rs, ListProblemTests.toArray(node));
+        head = ListProblemTests.buildCommonNode(Arrays.asList(2,1,3,5,6,4,7));
+        rs = new int[] {2,3,6,7,1,5,4};
+        assertArrayEquals(ListProblemTests.toArray(problems.oddEvenList_v2(head)), rs);
     }
 
     @Test
