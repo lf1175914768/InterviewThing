@@ -67,10 +67,10 @@ public class HotProblemTests {
 
     @Test
     public void testRegexIsMatch() {
-        boolean result = problem.isMatch("aab", "c*a*b");
-        System.out.println(result);
-        System.out.println(problem.isMatch("mississippi", "mis*is*p*."));
-        System.out.println(problem.isMatch("ab", ".*"));
+        assertTrue(problem.isMatch("aab", "c*a*b"));
+        assertFalse(problem.isMatch("mississippi", "mis*is*p*."));
+        assertTrue(problem.isMatch("ab", ".*"));
+        assertTrue(problem.isMatch("aa", "a*"));
     }
 
     @Test
@@ -92,7 +92,12 @@ public class HotProblemTests {
 
     @Test
     public void testLetterCombinations() {
-        System.out.println(problem.letterCombinations("23"));
+        String[] res = new String[] {"ad","ae","af","bd","be","bf","cd","ce","cf"};
+        assertArrayEquals(problem.letterCombinations("23").toArray(new String[0]), res);
+        assertArrayEquals(problem.letterCombinations_v2("23").toArray(new String[0]), res);
+        res = new String[] {"a", "b", "c"};
+        assertArrayEquals(problem.letterCombinations("2").toArray(new String[0]), res);
+        assertArrayEquals(problem.letterCombinations_v2("2").toArray(new String[0]), res);
     }
 
     @Test
