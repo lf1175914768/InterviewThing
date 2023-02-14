@@ -563,7 +563,7 @@ public class StringProblems {
 
     // -------文本左右对齐 << end --------
 
-    // -------组合总和 start >>--------
+    // -------简化路径 start >>--------
 
     /**
      * 给你一个字符串 path ，表示指向某一文件或目录的 Unix 风格 绝对路径 （以 '/' 开头），请你将其转化为更加简洁的规范路径。
@@ -621,7 +621,325 @@ public class StringProblems {
         return sb.length() == 0 ? "/" : sb.toString();
     }
 
-    // -------组合总和 << end --------
+    // -------简化路径 << end --------
+
+    // -------单词接龙II start >>--------
+
+    /**
+     * 按字典 wordList 完成从单词 beginWord 到单词 endWord 转化，一个表示此过程的 转换序列 是形式上像
+     * beginWord -> s1 -> s2 -> ... -> sk 这样的单词序列，并满足：
+     * 1.每对相邻的单词之间仅有单个字母不同。
+     * 2.转换过程中的每个单词 si（1 <= i <= k）必须是字典 wordList 中的单词。注意，beginWord 不必是字典 wordList 中的单词。
+     * 3.sk == endWord
+     * 给你两个单词 beginWord 和 endWord ，以及一个字典 wordList 。请你找出并返回所有从 beginWord 到 endWord 的 最短转换序列 ，
+     * 如果不存在这样的转换序列，返回一个空列表。每个序列都应该以单词列表 [beginWord, s1, s2, ..., sk] 的形式返回。
+     *
+     * 采用 BFS 的方法进行解答。
+     *
+     * 对应 leetcode 中第 126 题。
+     */
+    public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+        List<List<String>> res = new ArrayList<>();
+        // 如果不含有结束单词，直接结束，不然后边会造成死循环
+        if (!wordList.contains(endWord)) {
+            return res;
+        }
+        Queue<List<String>> queue = new LinkedList<>();
+        List<String> path = new ArrayList<>();
+        path.add(beginWord);
+        queue.offer(path);
+        Set<String> dict = new HashSet<>(wordList);
+        Set<String> visited = new HashSet<>();
+        visited.add(beginWord);
+        boolean found = false;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            Set<String> subVisited = new HashSet<>();
+            for (int i = 0; i < size; i++) {
+                List<String> p = queue.poll();
+                // 得到当前路径的末尾单词
+                String temp = p.get(p.size() - 1);
+                // 一次性得到所有的下一个的节点
+                List<String> neighbors = findLadderGetNeighbors(temp, dict);
+                for (String neighbor : neighbors) {
+                    // 只考虑之前没有出现过的单词
+                    if (!visited.contains(neighbor)) {
+                        if (neighbor.equals(endWord)) {
+                            found = true;
+                            p.add(neighbor);
+                            res.add(new ArrayList<>(p));
+                            p.remove(p.size() - 1);
+                        }
+                        p.add(neighbor);
+                        queue.offer(new ArrayList<>(p));
+                        p.remove(p.size() - 1);
+                        subVisited.add(neighbor);
+                    }
+                }
+            }
+            visited.addAll(subVisited);
+            if (found) break;
+        }
+        return res;
+    }
+
+    private List<String> findLadderGetNeighbors(String node, Set<String> dict) {
+        List<String> res = new ArrayList<>();
+        char[] chs = node.toCharArray();
+        for (char ch = 'a'; ch <= 'z'; ch++) {
+            for (int i = 0; i < node.length(); i++) {
+                if (node.charAt(i) == ch) {
+                    continue;
+                }
+                char oldCh = chs[i];
+                chs[i] = ch;
+                if (dict.contains(String.valueOf(chs))) {
+                    res.add(String.valueOf(chs));
+                }
+                chs[i] = oldCh;
+            }
+        }
+        return res;
+    }
+
+    // -------单词接龙II << end --------
+
+    // -------去除重复字母 start >>--------
+
+    /**
+     * 给你一个字符串 s ，请你去除字符串中重复的字母，使得每个字母只出现一次。需保证 返回结果的字典序最小（要求不能打乱其他字符的相对位置）。
+     *
+     * 首先考虑一个简单的问题：给定一个字符串s，如何去掉其中的一个字符 ch，使得得到的字符串字典序最小？
+     * 答案是：找出最小的满足 s[i] > s[i + 1] 的下标 i，并去除字符 s[i].为了叙述方便，下文中称这样的字符为 【关键字符】.
+     * 我们从前往后扫描原字符串，每扫描到一个位置，我们就尽可能的处理所有的 【关键字符】。假定在扫描位置 s[i - 1]之前的所有的【关键字福】都已经被去除完毕。
+     * 在扫描字符 s[i]时，新出现的【关键字符】只可能出现在 s[i]或者其后面的位置。
+     * 于是，我们使用单调栈来维护去除【关键字符】后得到的字符串，单调栈满足栈底到栈顶的字符递增。如果栈顶字符大于当前字符 s[i]，说明栈顶字符为【关键字符】，
+     * 故应当被去除。去除后，新的栈顶字符就与 s[i]相邻了，我们继续比较新的栈顶字符与 s[i] 的大小。重复上述操作，知道栈为空或者栈顶字符不大于 s[i]。
+     *
+     * 我们还遗漏了一个要求：原字符串 s 中的每个字符都需要出现在新字符串中，且只能出现一次。为了让新字符串满足该要求，之前讨论的算法需要进行以下两点的更改。
+     * 1、在考虑字符 s[i]时，如果它已经存在于栈中，则不能加入字符 s[i]。为此，需要记录每个字符是否出现在栈中。
+     * 2、在弹出栈顶字符时，如果字符串在后面的位置上再也没有这一字符，则不能弹出栈顶字符。为此，需要记录每个字符的剩余数量，当这个值为 0时，
+     *    就不能再弹出栈顶字符了。
+     *
+     * 对应 leetcode 中第 316 题。
+     */
+    public String removeDuplicateLetters(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        for (char c : s.toCharArray()) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
+        }
+        boolean[] used = new boolean[26];
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            // 如果当前字符没有出现过
+            if (!used[ch - 'a']) {
+                while (sb.length() > 0 && sb.charAt(sb.length() - 1) > ch) {
+                    char headC = sb.charAt(sb.length() - 1);
+                    if (map.get(headC) > 0) {
+                        used[headC - 'a'] = false;
+                        sb.deleteCharAt(sb.length() - 1);
+                    } else {
+                        break;
+                    }
+                }
+                used[ch - 'a'] = true;
+                sb.append(ch);
+            }
+            map.put(ch, map.get(ch) - 1);
+        }
+        return sb.toString();
+    }
+
+    // -------去除重复字母 << end --------
+
+    // -------基本计算器 start >>--------
+
+    /**
+     * 给你一个字符串表达式 s ，请你实现一个基本计算器来计算并返回它的值。
+     * 注意:不允许使用任何将字符串作为数学表达式计算的内置函数，比如 eval() 。
+     *
+     * 对应  leetcode 中第 224 题。
+     */
+    public int calculate(String s) {
+        // 存放所有的数字
+        Deque<Integer> nums = new ArrayDeque<>();
+        // 为了防止第一个数为负数，先往nums中加一个 0
+        nums.addLast(0);
+        s = s.replaceAll("\\s", "");
+        // 存放所有的操作，包括 +/-
+        Deque<Character> ops = new ArrayDeque<>();
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '(') {
+                ops.addLast(c);
+            } else if (c == ')') {
+                // 计算直到最近一个左括号为止
+                while (!ops.isEmpty()) {
+                    Character op = ops.peekLast();
+                    if (op != '(') {
+                        calculate(nums, ops);
+                    } else {
+                        ops.pollLast();
+                        break;
+                    }
+                }
+            } else {
+                if (Character.isDigit(c)) {
+                    int u = 0, j = i;
+                    while (j < s.length() && Character.isDigit(s.charAt(j))) {
+                        u = u * 10 + (s.charAt(j++) - '0');
+                    }
+                    nums.add(u);
+                    i = j - 1;
+                } else {
+                    char preC;
+                    if (i > 0 && ((preC = s.charAt(i - 1)) == '('
+                                || preC == '+' || preC == '-')) {
+                        nums.add(0);
+                    }
+                    // 当有一个新操作要入栈时，先把栈内可以算的都算了
+                    while (!ops.isEmpty() && ops.peekLast() != '(') {
+                        calculate(nums, ops);
+                    }
+                    ops.addLast(c);
+                }
+            }
+        }
+        while (!ops.isEmpty()) {
+            calculate(nums, ops);
+        }
+        return nums.peekLast();
+    }
+
+    private void calculate(Deque<Integer> nums, Deque<Character> ops) {
+        if (nums.isEmpty() || nums.size() < 2 || ops.isEmpty()) return;
+        int b = nums.pollLast(), a = nums.pollLast();
+        char op = ops.pollLast();
+        nums.addLast(op == '+' ? a + b : a - b);
+    }
+
+    /**
+     *  由于字符串除了数字和括号外，只有加法和减法两种运算符。因此，如果展开表达式中所有的括号，则得到新的表达式，数字本身不会发生变化，
+     *  只是每个数字前面的符号会发生变化。
+     * 因此我们考虑使用一个取值为 {-1，+1}的整数 sign代表【当前】 的符号。根据括号表达式的性质，她的取值：
+     * 1、与字符串中当前位置的运算符有关。
+     * 2、如果当前位置处于一系列括号之内，则也与这些括号前面的运算符有关：每当遇到一个以 “-” 开头的括号，则意味着此后的符号都要被翻转。
+     *
+     * 考虑到第二点，我们需要维护一个栈 ops，其中栈顶元素记录了当前位置所处的每个括号所【共同形成】的符号。
+     * 例如，对于字符串 1+2+(3-(4+5))
+     * 1、扫描到 1+2时，由于当前位置没有被任何括号所包含，则栈顶元素为初始值 +1；
+     * 2、扫描到 1+2+(3 时，当前位置被一个括号所包含，该括号前面的符号为 + 号，因此栈顶元素依然 +1；
+     * 3、扫描到 1+2+(3-(4 时，当前位置被两个括号所包含，分别对应着 + 号和 - 号，由于 + 号和 - 号合并的结果为 - 号，因此栈顶元素为 -1.
+     *
+     * 在得到栈 ops 之后，sign 的取值就饿能够确定了：如果当前遇到了 + 号，则更新 sign = ops.top();
+     * 如果遇到了 - 号，则更新 sign = -ops.top()。
+     * 然后，每当遇到 ( 时，都要将当前的 sign 的值压入栈中；每当遇到 ) 时，都从栈中弹出一个元素。这样，我们能够在扫面字符串的时候，
+     * 及时的更新 ops 中的元素。
+     */
+    public int calculate_v2(String s) {
+        Deque<Integer> ops = new LinkedList<>();
+        ops.push(1);
+        Integer sign = 1;
+
+        int ret = 0;
+        int n = s.length(), i = 0;
+        while (i < n) {
+            char ch = s.charAt(i);
+            if (ch == ' ') i++;
+            else if (ch == '+') {
+                sign = ops.peek();
+                i++;
+            } else if (ch == '-') {
+                sign = -ops.peek();
+                i++;
+            } else if (ch == '(') {
+                ops.push(sign);
+                i++;
+            } else if (ch == ')') {
+                ops.pop();
+                i++;
+            } else {
+                long num = 0;
+                while (i < n && Character.isDigit(s.charAt(i))) {
+                    num = num * 10 + s.charAt(i) - '0';
+                    i++;
+                }
+                ret += sign * num;
+            }
+        }
+        return ret;
+    }
+
+    // -------基本计算器 << end --------
+
+    // -------扰乱字符串 start >>--------
+
+    /**
+     * 使用下面描述的算法可以扰乱字符串 s 得到字符串 t ：
+     * 如果字符串的长度为 1 ，算法停止
+     * 如果字符串的长度 > 1 ，执行下述步骤：
+     * 在一个随机下标处将字符串分割成两个非空的子字符串。即，如果已知字符串 s ，则可以将其分成两个子字符串 x 和 y ，且满足 s = x + y 。
+     * 随机 决定是要「交换两个子字符串」还是要「保持这两个子字符串的顺序不变」。即，在执行这一步骤之后，s 可能是 s = x + y 或者 s = y + x 。
+     * 在 x 和 y 这两个子字符串上继续从步骤 1 开始递归执行此算法。
+     * 给你两个 长度相等 的字符串 s1 和 s2，判断 s2 是否是 s1 的扰乱字符串。如果是，返回 true ；否则，返回 false 。
+     *
+     * <p>
+     * 使用动态规划的方法进行解答：
+     * 可以定义状态： f[i][j][len], 其中代表 s1 从 i 开始，s2 从 j 开始，后面长度为 len 的字符是否能形成【扰乱字符串】（互为翻转）
+     * 状态转移方程可以采用 【记忆化搜索】：
+     * <pre>
+     *     if (dfs(i, j, k) && dfs(i + k, j + k, len - k)) {
+     *         cache[i][j][len] = Y;
+     *         return true;
+     *     }
+     *     if (dfs(i, j + len - k, k) && dfs(i + k, j, len - k)) {
+     *         cache[i][j][len] = Y;
+     *         return true;
+     *     }
+     * </pre>
+     *
+     * 从状态定义上，我们就不难发现这是一个【区间DP】问题，区间长度大的状态值可以由区间长度小的状态地推而来。
+     * 而且由于本身我们在【记忆化搜索】里面就是从小到大枚举 len， 因此这里也需要先将 len 这层循环提前，
+     * 确保我们转移 f[i][j][len] 时所需要的状态都已经被计算好。
+     *
+     * 时间复杂度： O(n的4次方)
+     * 空间复杂度： O(n的3次方)
+     *
+     * 对应 leetcode 中第 87 题。
+     */
+    public boolean isScramble(String s1, String s2) {
+        if (s1.equals(s2)) return true;
+        if (s1.length() != s2.length()) return false;
+        int n = s1.length();
+        boolean[][][] dp = new boolean[n][n][n + 1];
+
+        // 先处理长度为 1 的情况
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                dp[i][j][1] = s1.charAt(i) == s2.charAt(j);
+            }
+        }
+
+        // 在处理其他长度情况
+        for (int len = 2; len <= n; len++) {
+            for (int i = 0; i <= n - len; i++) {
+                for (int j = 0; j <= n - len; j++) {
+                    for (int k = 1; k < len; k++) {
+                        boolean a = dp[i][j][k] && dp[i + k][j + k][len - k];
+                        boolean b = dp[i][j + len - k][k] && dp[i + k][j][len - k];
+                        if (a || b) {
+                            dp[i][j][len] = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return dp[0][0][n];
+    }
+
+    // -------扰乱字符串 << end --------
 
     // -------组合总和 start >>--------
 

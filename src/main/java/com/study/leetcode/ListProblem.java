@@ -74,6 +74,13 @@ public class ListProblem {
 
     // -------K个一组翻转链表 start >>--------
 
+    /**
+     * 给你链表的头节点 head ，每 k 个节点一组进行翻转，请你返回修改后的链表。
+     * k 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。
+     * 你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。
+     *
+     * 对应 leetcode 中第 25 题。
+     */
     public ListNode reverseKGroup(ListNode head, int k) {
         if (head == null) {
             return null;
@@ -261,4 +268,67 @@ public class ListProblem {
     }
 
     // -------删除链表的倒数第N个节点 << end --------
+
+    // -------两两交换链表中的节点 start >>--------
+
+    /**
+     * 给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题（即，只能进行节点交换）。
+     *
+     * 采用非递归写法
+     *
+     * 对应 leetcode 中第 24 题。
+     */
+    public ListNode swapPairs(ListNode head) {
+        ListNode pre = new ListNode(0), temp = pre;
+        pre.next = head;
+        while (temp.next != null && temp.next.next != null) {
+            ListNode start = temp.next;
+            ListNode end = temp.next.next;
+            temp.next = end;
+            start.next = end.next;
+            end.next = start;
+            temp = start;
+        }
+        return pre.next;
+    }
+
+    // -------两两交换链表中的节点 << end --------
+
+    // -------移除链表元素 start >>--------
+
+    /**
+     * 给你一个链表的头节点 head 和一个整数 val ，请你删除链表中所有满足 Node.val == val 的节点，并返回 新的头节点 。
+     *
+     * 采用普通方法进行解答。
+     *
+     * 对应 leetcode 中第 203 题。
+     */
+    public ListNode removeElements(ListNode head, int val) {
+        ListNode dummy = new ListNode(-1), cur = head, prev = dummy;
+        dummy.next = head;
+        while (cur != null) {
+            if (cur.val == val) {
+                prev.next = cur.next;
+            } else {
+                prev = cur;
+            }
+            cur = cur.next;
+        }
+        return dummy.next;
+    }
+
+    /**
+     * 采用递归的方法进行解答。
+     */
+    public ListNode removeElements_v2(ListNode head, int val) {
+        if (head == null) return null;
+        head.next = removeElements_v2(head.next, val);
+        if (head.val == val) {
+            return head.next;
+        } else {
+            return head;
+        }
+    }
+
+    // -------移除链表元素 << end --------
 }

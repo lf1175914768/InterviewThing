@@ -318,4 +318,122 @@ public class ArrayProblemTests {
         assertArrayEquals(problems.topKFrequent_v2(param,1), res);
     }
 
+    @Test
+    public void testMinPatches() {
+        int[] param = {1,3};
+        assertEquals(problems.minPatches(param, 6), 1);
+        assertEquals(problems.minPatches_v2(param, 6), 1);
+        param = new int[] {1,5,10};
+        assertEquals(problems.minPatches(param, 20), 2);
+        assertEquals(problems.minPatches_v2(param, 20), 2);
+        param = new int[] {1,2,2};
+        assertEquals(problems.minPatches(param, 5), 0);
+        assertEquals(problems.minPatches_v2(param, 5), 0);
+    }
+
+    @Test(timeout = 100)
+    public void testWiggleMaxLength() {
+        int[] param = {1,7,4,9,2,5};
+        assertEquals(problems.wiggleMaxLength(param), 6);
+        assertEquals(problems.wiggleMaxLength_v2(param), 6);
+        assertEquals(problems.wiggleMaxLength_v3(param), 6);
+        param = new int[] {1,17,5,10,13,15,10,5,16,8};
+        assertEquals(problems.wiggleMaxLength(param), 7);
+        assertEquals(problems.wiggleMaxLength_v2(param), 7);
+        assertEquals(problems.wiggleMaxLength_v3(param), 7);
+        param = new int[] {1,2,3,4,5,6,7,8,9};
+        assertEquals(problems.wiggleMaxLength(param), 2);
+        assertEquals(problems.wiggleMaxLength_v2(param), 2);
+        assertEquals(problems.wiggleMaxLength_v3(param), 2);
+    }
+
+    @Test
+    public void testFindMinArrowShots() {
+        int[][] param = {{10,16},{2,8},{1,6},{7,12}};
+        assertEquals(problems.findMinArrowShots(param), 2);
+        param = new int[][] {{1,2},{3,4},{5,6},{7,8}};
+        assertEquals(problems.findMinArrowShots(param), 4);
+        param = new int[][] {{1,2},{2,3},{3,4},{4,5}};
+        assertEquals(problems.findMinArrowShots(param), 2);
+    }
+
+    @Test
+    public void testTriangleNumber() {
+        int[] param = {2,2,3,4};
+        assertEquals(problems.triangleNumber(param), 3);
+        assertEquals(problems.triangleNumber_v2(param), 3);
+        param = new int[] {4,2,3,4};
+        assertEquals(problems.triangleNumber(param), 4);
+        assertEquals(problems.triangleNumber_v2(param), 4);
+    }
+
+    @Test
+    public void testLeastInterval() {
+        char[] param = new char[] {'A','A','A','B','B','B'};
+        assertEquals(problems.leastInterval(param, 2), 8);
+        param = new char[] {'A','A','A','B','B','B'};
+        assertEquals(problems.leastInterval(param, 0), 6);
+        param = new char[] {'A','A','A','A','A','A','B','C','D','E','F','G'};
+        assertEquals(problems.leastInterval(param, 2), 16);
+    }
+
+    @Test
+    public void testIsPossible() {
+        int[] param = {1,2,3,3,4,5};
+        assertTrue(problems.isPossible(param));
+        param = new int[] {1,2,3,3,4,4,5,5};
+        assertTrue(problems.isPossible(param));
+        param = new int[] {1,2,3,4,4,5};
+        assertFalse(problems.isPossible(param));
+    }
+
+    @Test
+    public void testLongestIncreasingPath() {
+        int[][] matrix = {{9,9,4}, {6,6,8},{2,1,1}};
+        assertEquals(problems.longestIncreasingPath(matrix), 4);
+        matrix = new int[][] {{3,4,5}, {3,2,6}, {2,2,1}};
+        assertEquals(problems.longestIncreasingPath(matrix), 4);
+        matrix = new int[][] {{1}};
+        assertEquals(problems.longestIncreasingPath(matrix), 1);
+    }
+
+    @Test
+    public void testThreeNumClosest() {
+        int[] param = {-1,2,1,-4};
+        assertEquals(problems.threeSumClosest(param, 1), 2);
+        param = new int[] {0,0,0};
+        assertEquals(problems.threeSumClosest(param, 1), 0);
+    }
+
+    @Test
+    public void testKthLargest() {
+        ArrayProblems.KthLargest problem = new ArrayProblems.KthLargest(3, new int[] {4,5,8,2});
+        assertEquals(problem.add(3), 4);
+        assertEquals(problem.add(5), 5);
+        assertEquals(problem.add(10), 5);
+        assertEquals(problem.add(9), 8);
+        assertEquals(problem.add(4), 8);
+    }
+
+    @Test
+    public void testValidaStackSequences() {
+        int[] pushed = {1,2,3,4,5}, popped = {4,5,3,2,1};
+        assertTrue(problems.validateStackSequences(pushed, popped));
+        assertTrue(problems.validateStackSequences_v2(pushed, popped));
+        popped = new int[] {4,3,5,1,2};
+        assertFalse(problems.validateStackSequences(pushed, popped));
+        assertFalse(problems.validateStackSequences_v2(pushed, popped));
+        popped = new int[] {5,4,3,2,1};
+        assertTrue(problems.validateStackSequences(pushed, popped));
+        assertTrue(problems.validateStackSequences_v2(pushed, popped));
+    }
+
+    @Test
+    public void testGetLeastNumbers() {
+        int[] arr = {3,2,1}, res = {1,2};
+        assertArrayEquals(problems.getLeastNumbers(arr, 2), res);
+        arr = new int[] {0,1,2,1};
+        res = new int[] {0};
+        assertArrayEquals(problems.getLeastNumbers(arr, 1), res);
+    }
 }

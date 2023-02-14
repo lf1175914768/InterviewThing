@@ -1147,6 +1147,574 @@ public class ArrayProblems {
 
     // -------前K个高频元素 << end --------
 
+    // -------按要求补齐数组 start >>--------
+
+    /**
+     * 给定一个已排序的正整数数组 nums ，和一个正整数 n 。从 [1, n] 区间内选取任意个数字补充到 nums 中，使得 [1, n] 区间内的任何数字都可以用 nums 中某几个数字的和来表示。
+     * 请返回 满足上述要求的最少需要补充的数字个数 。
+     *
+     * 使用 贪心的方法进行解答。
+     * 首先，题目中说数组是排序的。假设数组中前 k 个数字能组成的数字范围是 [1, total]，当我们添加数组中第 k + 1 个数字 nums[k] 的时候，范围就变成了
+     * [1, total] U [1 + nums[k], total + nums[k]] U [nums[k], nums[k]], 这是一个并集，可以合并成 [1, total] U [nums[k], total + nums[k]]。
+     * 我们仔细观察一下：
+     * 1、如果左边的 total < nums[k] - 1,那么他们中间肯定会有空缺，不能构成完整的 [1, tatal + nums[k]]。这个时候我们需要添加一个数字
+     * total + 1。先构成一个更大的范围 [1, total * 2 + 1]。这里为什么是添加 total + 1而不是添加 total，举个例子，比如可以构成的数字范围是
+     * [1,5], 如果需要添加一个构成更大范围的，我们应该选择 6 而不是 5.
+     * 2、如果左边的 total >= nums[k] - 1, 那么就可以构成完整的 [1, total + nums[k]],就不需要在添加数字了。
+     *
+     * 对应 leetcode 中第 330 题。
+     */
+    public int minPatches(int[] nums, int n) {
+        int total = 0, index = 0, count = 0;
+        while (total < n) {
+            if (index < nums.length && nums[index] <= total + 1) {
+                // 如果数组能够组成的数字范围是 [1, total], 那么加上 nums[index]
+                // 就变成了 [1, total] U [nums[index], total + nums[index]]
+                // 这种情况下结果就是 [1, total + nums[index]]
+                total += nums[index++];
+            } else {
+                total += (total + 1);
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 上面组成数字的范围是闭区间，我们还可以改成开区间[1,total), 原理都一样，稍作修改即可。
+     */
+    public int minPatches_v2(int[] nums, int n) {
+        int total = 1, index = 0, count = 0;
+        while (total <= n) {
+            if (index < nums.length && nums[index] <= total) {
+                // 如果数组能组成的数字范围是 [1,total),那么加上 nums[index]
+                // 就变成了 [1,total) U [nums[index], total + nums[index])
+                // 结果就是 [1, total + nums[index])
+                total += nums[index++];
+            } else {
+                // 添加一个新数字，并且 count + 1
+                total <<= 1;
+                count++;
+            }
+        }
+        return count;
+    }
+
+    // -------按要求补齐数组 << end --------
+
+    // -------摆动序列 start >>--------
+
+    /**
+     * 如果连续数字之间的差严格地在正数和负数之间交替，则数字序列称为 摆动序列 。第一个差（如果存在的话）可能是正数或负数。仅有一个元素或者含两个不等元素的序列也视作摆动序列。
+     * 例如， [1, 7, 4, 9, 2, 5] 是一个 摆动序列 ，因为差值 (6, -3, 5, -7, 3) 是正负交替出现的。
+     * 相反，[1, 4, 7, 2, 5] 和 [1, 7, 4, 5, 5] 不是摆动序列，第一个序列是因为它的前两个差值都是正数，第二个序列是因为它的最后一个差值为零。
+     * 子序列 可以通过从原始序列中删除一些（也可以不删除）元素来获得，剩下的元素保持其原始顺序。
+     * 给你一个整数数组 nums ，返回 nums 中作为 摆动序列 的 最长子序列的长度 。
+     *
+     * 采用动态规划的方法进行解答：
+     * 我们可以先进行一些约定：
+     * 1、某个序列被称为【上升摆动序列】，当且仅当该序列是摆动序列，且最后一个元素呈上升趋势。如序列 [1,3,2,4] 即为【上升摆动序列】。
+     * 2、某个序列被称为【下降摆动序列】，当且仅当该序列是摆动序列，且最后一个元素呈下降趋势。如序列 [4,2,3,1] 即为【下降摆动序列】。
+     *
+     * 每当我们选择一个元素作为摆动序列的一部分时，这个元素要么是上升的，要么是下降的，这取决于前一个元素的大小。那么列出状态表达式为：
+     * 1、up[i]表示以前 i 个元素中的某一个为结尾的最长的 【上升摆动序列】的长度。
+     * 2、down[i]表示以前 i 个元素中的某一个为结尾的最长的【下降摆动序列】的长度。
+     * 下面以 up[i]为例，说明其状态转移规则：
+     * 1、当 nums[i] <= nums[i - 1]时，我们无法选出更长的【上升摆动序列】的方案。因为对于任何以 nums[i] 结尾的【上升摆动序列】，
+     *   我们都可以将 nums[i] 替换为 nums[i - 1]，使其成为以 nums[i - 1] 结尾的【上升摆动序列】。
+     * 2、当 nums[i] > nums[i - 1]时，我们既可以从 up[i - 1] 进行转移，也可以从 down[i - 1] 进行转移。下面我们证明从 down[i - 1]
+     * 转移时必然合法的，即必然存在一个 down[i - 1] 对应的最长的 【下降摆动序列】的末尾元素小于 nums[i]。
+     *   a、我们记这个末尾元素在原序列中的下标为 j，假设从 j 往前的第一个【谷】为 nums[k],我们总可以让 j 移动到 k，使得这个最长的【下降摆动序列】
+     *   的末尾元素为 【谷】。
+     *   b、然后我们可以证明在这个末尾元素为 【谷】的情况下，这个末尾元素必然是从 nums[i] 往前的第一个 【谷】。证明非常简单，我们使用反证法，
+     *   如果这个末尾元素不是从 nums[i] 往前的第一个【谷】，那么我们总可以在末尾元素和 nums[i]之间取得一对 【峰】与【谷】，接在这个【下降摆动序列】
+     *   后，使其更长。
+     *   c、这样我们知道必然存在一个 down[i - 1]对应的最长的【下降摆动序列】的末尾元素Wie nums[i] 往前的第一个 【谷】，这个【谷】
+     *   必然小于 nums[i]。 证毕。
+     *
+     * 这样我们可以用同样的方法说明 down[i]的状态转移规则，最终的状态转移方程为：
+     *         | up[i - 1],                          nums[i] <= nums[i - 1]
+     * up[i] = |
+     *         | max(up[i - 1], down[i - 1] + 1),    nums[i] > nums[i - 1]
+     *
+     *           | down[i - 1],                        nums[i] >= nums[i - 1]
+     * down[i] = |
+     *           | max(down[i - 1], up[i - 1] + 1),    nums[i] < nums[i - 1]
+     *
+     * 最终的答案就是 up[n - 1] 和 down[n - 1]中的较大值，其中 n 是序列的长度。
+     *
+     * 对应  leetcode 中第 376 题。
+     */
+    public int wiggleMaxLength(int[] nums) {
+        int n = nums.length;
+        if (n < 2) {
+            return n;
+        }
+        int[] up = new int[n], down = new int[n];
+        up[0] = down[0] = 1;
+        for (int i = 1; i < n; i++) {
+            if (nums[i] > nums[i - 1]) {
+                up[i] = Math.max(up[i - 1], down[i - 1] + 1);
+                down[i] = down[i - 1];
+            } else if (nums[i] < nums[i - 1]) {
+                up[i] = up[i - 1];
+                down[i] = Math.max(up[i - 1] + 1, down[i - 1]);
+            } else {
+                up[i] = up[i - 1];
+                down[i] = down[i - 1];
+            }
+        }
+        return Math.max(up[n - 1], down[n - 1]);
+    }
+
+    /**
+     * 上面方法的 压缩版
+     */
+    public int wiggleMaxLength_v2(int[] nums) {
+        int n = nums.length;
+        if (n < 2) return n;
+        int up = 1, down = 1;
+        for (int i = 1; i < n; i++) {
+            if (nums[i] > nums[i - 1]) {
+                up = Math.max(up, down + 1);
+            } else if (nums[i] < nums[i - 1]) {
+                down = Math.max(down, up + 1);
+            }
+        }
+        return Math.max(up, down);
+    }
+
+    /**
+     * 使用 贪心的方法进行解答。
+     *
+     * 观察这个序列可以发现，我们不断的交错选择【峰】与【谷】，可使得该序列尽可能长
+     */
+    public int wiggleMaxLength_v3(int[] nums) {
+        int n = nums.length;
+        if (n < 2) return n;
+        int prevDiff = nums[1] - nums[0];
+        int ret = prevDiff != 0 ? 2 : 1;
+        for (int i = 2; i < n; i++) {
+            int diff = nums[i] - nums[i - 1];
+            if ((diff > 0 && prevDiff <= 0) || (diff < 0 && prevDiff >= 0)) {
+                ret++;
+                prevDiff = diff;
+            }
+        }
+        return ret;
+    }
+
+    // -------摆动序列 << end --------
+
+    // -------用最少数量的箭引爆气球 start >>--------
+
+    /**
+     * 有一些球形气球贴在一堵用 XY 平面表示的墙面上。墙面上的气球记录在整数数组 points ，其中points[i] = [xstart, xend] 表示水平直径在
+     *  xstart 和 xend之间的气球。你不知道气球的确切 y 坐标。
+     *
+     * 一支弓箭可以沿着 x 轴从不同点 完全垂直 地射出。在坐标 x 处射出一支箭，若有一个气球的直径的开始和结束坐标为 xstart，xend，
+     * 且满足  xstart ≤ x ≤ xend，则该气球会被 引爆 。可以射出的弓箭的数量 没有限制 。 弓箭一旦被射出之后，可以无限地前进。
+     * 给你一个数组 points ，返回引爆所有气球所必须射出的 最小 弓箭数 
+     *
+     * 对应 leetcode 中第 452 题。
+     */
+    public int findMinArrowShots(int[][] points) {
+        if (points.length == 0) return 0;
+        Arrays.sort(points, Comparator.comparingInt(p -> p[1]));
+        int res = 1;
+        int pre = points[0][1];
+        for (int i = 1; i < points.length; i++) {
+            if (points[i][0] > pre) {
+                res++;
+                pre = points[i][1];
+            }
+        }
+        return res;
+    }
+
+    // -------用最少数量的箭引爆气球 << end --------
+
+    // -------有效三角形的个数 start >>--------
+
+    /**
+     * 给定一个包含非负整数的数组 nums ，返回其中可以组成三角形三条边的三元组个数。
+     *
+     * 采用固定前两个位置，后一个位置采用二分查找的方法，
+     * 时间复杂度：O(n2logn)
+     *
+     * 对应 leetcode 中第 611 题。
+     */
+    public int triangleNumber(int[] nums) {
+        if (nums.length < 3) return 0;
+        Arrays.sort(nums);
+        int res = 0;
+        for (int i = 0; i < nums.length - 2; i++) {
+            for (int j = i + 1; j < nums.length - 1; j++) {
+                int sum = nums[i] + nums[j];
+                int left = j + 1, right = nums.length;
+                while (left < right) {
+                    int middle = left + (right - left) / 2;
+                    if (nums[middle] < sum) {
+                        left = middle + 1;
+                    } else {
+                        right = middle;
+                    }
+                }
+                res += left - j - 1;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 采用双指针的方法进行解答。
+     *
+     * 首先对数组排序
+     * 固定最长的一条边，运用双指针扫描
+     *  1、如果 nums[left] + nums[right] > nums[i],同时说明 nums[left + 1] + nums[right] > nums[i], ...
+     *  nums[right - 1] + nums[right] > nums[i],满足条件的有 right - left种，right左移进入下一轮。
+     *  2、如果 nums[left] + nums[right] <= nums[i], left 右移进入下一轮
+     */
+    public int triangleNumber_v2(int[] nums) {
+        Arrays.sort(nums);
+        int res = 0;
+        for (int i = nums.length - 1; i >= 2; i--) {
+            int left = 0, right = i - 1;
+            while (left < right) {
+                if (nums[left] + nums[right] > nums[i]) {
+                    res += right - left;
+                    right--;
+                } else {
+                    left++;
+                }
+            }
+        }
+        return res;
+    }
+
+    // -------有效三角形的个数 << end --------
+
+    // -------任务调度器 start >>--------
+
+    /**
+     * 给你一个用字符数组 tasks 表示的 CPU 需要执行的任务列表。其中每个字母表示一种不同种类的任务。任务可以以任意顺序执行，并且每个任务都可以在 1
+     * 个单位时间内执行完。在任何一个单位时间，CPU 可以完成一个任务，或者处于待命状态。
+     * 然而，两个 相同种类 的任务之间必须有长度为整数 n 的冷却时间，因此至少有连续 n 个单位时间内 CPU 在执行不同的任务，或者在待命状态。
+     * 你需要计算完成所有任务所需要的 最短时间 。
+     *
+     * 对应 leetcode 中第 621 题。
+     */
+    public int leastInterval(char[] tasks, int n) {
+        Map<Character, Integer> map = new HashMap<>();
+        int maxCount = 0, maxTaskCount = 0;
+        for (char task : tasks) {
+            map.put(task, map.getOrDefault(task, 0) + 1);
+            maxCount = Math.max(maxCount, map.get(task));
+        }
+        for (Integer value : map.values()) {
+            if (maxCount == value) {
+                maxTaskCount++;
+            }
+        }
+        return Math.max(tasks.length, (maxCount - 1) * (n + 1) + maxTaskCount);
+    }
+
+    // -------任务调度器 << end --------
+
+    // -------分割数组为连续子序列 start >>--------
+
+    /**
+     * 给你一个按升序排序的整数数组 num（可能包含重复数字），请你将它们分割成一个或多个长度至少为 3 的子序列，其中每个子序列都由连续整数组成。
+     * 如果可以完成上述分割，则返回 true ；否则，返回 false 。
+     *
+     * 对应 leetcode 中第 659 题。
+     */
+    public boolean isPossible(int[] nums) {
+        Map<Integer, Integer> countMap = new HashMap<>();
+        for (int num : nums) {
+            countMap.put(num, countMap.getOrDefault(num, 0) + 1);
+        }
+        // 定义一个哈希表记录最长的子序列
+        Map<Integer, Integer> tail = new HashMap<>();
+        for (int num : nums) {
+            Integer count = countMap.getOrDefault(num, 0);
+            if (count <= 0) {
+                // 当前元素已经用完，直接跳过
+                continue;
+            } else if (tail.getOrDefault(num - 1, 0) > 0) {
+                countMap.put(num, count - 1);
+                tail.put(num - 1, tail.get(num - 1) - 1); // 覆盖当前最长的子序列
+                tail.put(num, tail.getOrDefault(num, 0) + 1);  // 当前以num结尾的子序列 加1.
+            } else if (countMap.getOrDefault(num + 1, 0) > 0 && countMap.getOrDefault(num + 2, 0) > 0) {
+                countMap.put(num, count - 1);
+                countMap.put(num + 1, countMap.get(num + 1) - 1);
+                countMap.put(num + 2, countMap.get(num + 2) - 1);
+                tail.put(num + 2, countMap.getOrDefault(num + 2, 0) + 1);
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // -------分割数组为连续子序列 << end --------
+
+    // -------矩阵中的最长递增路径 start >>--------
+
+    /**
+     * 给定一个 m x n 整数矩阵 matrix ，找出其中 最长递增路径 的长度。
+     * 对于每个单元格，你可以往上，下，左，右四个方向移动。 你 不能 在 对角线 方向上移动或移动到 边界外（即不允许环绕）。
+     *
+     * 使用带记忆化的深度优先搜索的方法进行解答。
+     *
+     * 对应 leetcode 中第 329 题。
+     */
+    public int longestIncreasingPath(int[][] matrix) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return 0;
+        int row = matrix.length, col = matrix[0].length;
+        int[][] memo = new int[row][col];
+        int res = 1;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                res = Math.max(res, longestIncreasingPath_backTrack(matrix, i, j, memo));
+            }
+        }
+        return res;
+    }
+
+    private int longestIncreasingPath_backTrack(int[][] matrix, int i, int j, int[][] memo) {
+        if (memo[i][j] != 0) {
+            return memo[i][j];
+        }
+        ++memo[i][j];
+        int row = matrix.length, col = matrix[0].length;
+        int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        for (int[] dir : dirs) {
+            int newRow = i + dir[0], newCol = j + dir[1];
+            if (newRow >= 0 && newRow < row &&
+                    newCol >= 0 && newCol < col &&
+                    matrix[newRow][newCol] > matrix[i][j]) {
+                memo[i][j] = Math.max(memo[i][j], longestIncreasingPath_backTrack(matrix, newRow, newCol, memo) + 1);
+            }
+        }
+        return memo[i][j];
+    }
+
+
+    // -------矩阵中的最长递增路径 << end --------
+
+    // -------求众数 start >>--------
+
+    /**
+     * 给定一个大小为 n 的整数数组，找出其中所有出现超过 【 n/3 】 次的元素。
+     *
+     * 使用 摩尔投票法 进行解答。
+     * 归纳如下：
+     * 如果至多选一个代表，那他的票数至少要超过一半 【1/2】的数
+     * 如果至多选两个代表，那它的票数至少要超过 【1/3】 的数
+     * 如果至多选 m 个代表，那他的票数至少要超过 【1/(m+1)】 的票数
+     *
+     * 对应 leetcode 中第 229 题。
+     */
+    public List<Integer> majorityElement(int[] nums) {
+        List<Integer> res = new ArrayList<>();
+        if (null == nums || nums.length == 0) return res;
+        int can1 = nums[0], count1 = 0;
+        int can2 = nums[0], count2 = 0;
+        // 摩尔投票法，分为两个阶段，配对阶段和计数阶段
+        for (int num : nums) {
+            if (can1 == num) {
+                count1++;
+                continue;
+            }
+            if (can2 == num) {
+                count2++;
+                continue;
+            }
+            if (count1 == 0) {
+                can1 = num;
+                count1++;
+                continue;
+            }
+            if (count2 == 0) {
+                can2 = num;
+                count2++;
+                continue;
+            }
+            count1--;
+            count2--;
+        }
+
+        // 计数阶段
+        count1 = 0;
+        count2 = 0;
+        for (int num : nums) {
+            if (can1 == num) count1++;
+            else if (can2 == num) count2++;
+        }
+        if (count1 > nums.length / 3) res.add(can1);
+        if (count2 > nums.length / 3) res.add(can2);
+        return res;
+    }
+
+    // -------求众数 << end --------
+
+    // -------最接近的三数之和 start >>--------
+
+    /**
+     * 给你一个长度为 n 的整数数组 nums 和 一个目标值 target。请你从 nums 中选出三个整数，使它们的和与 target 最接近。
+     * 返回这三个数的和。
+     * 假定每组输入只存在恰好一个解。
+     *
+     * 对应 leetcode 中第 16 题。
+     */
+    public int threeSumClosest(int[] nums, int target) {
+        Arrays.sort(nums);
+        int res = nums[0] + nums[1] + nums[2];
+        for (int i = 0; i < nums.length - 2; i++) {
+            int start = i + 1, end = nums.length - 1;
+            while (start < end) {
+                int num = nums[i] + nums[start] + nums[end];
+                if (Math.abs(num - target) < Math.abs(target - res)) {
+                    res = num;
+                }
+                if (num > target) {
+                    end--;
+                } else if (num < target) {
+                    start++;
+                } else return num;
+            }
+        }
+        return res;
+    }
+
+    // -------最接近的三数之和 << end --------
+
+    // -------数据流中的第K大元素 start >>--------
+
+    /**
+     * 设计一个找到数据流中第 k 大元素的类（class）。注意是排序后的第 k 大元素，不是第 k 个不同的元素。
+     */
+    static final class KthLargest {
+        private final int k;
+        private final PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+        public KthLargest(int k, int[] nums) {
+            this.k = k;
+            for (int i = 0; i < k; i++) {
+                pq.offer(nums[i]);
+            }
+            for (int i = k; i < nums.length; i++) {
+                if (nums[i] > pq.peek()) {
+                    pq.poll();
+                    pq.offer(nums[i]);
+                }
+            }
+        }
+
+        public int add(int val) {
+            // 维护小顶堆只保留前 k 大的元素
+            pq.offer(val);
+            if (pq.size() > k) {
+                pq.poll();
+            }
+            return pq.peek();
+        }
+    }
+
+    // -------数据流中的第K大元素 << end --------
+
+    // -------验证栈序列 start >>--------
+
+    /**
+     * 给定 pushed 和 popped 两个序列，每个序列中的 值都不重复，只有当它们可能是在最初空栈上进行的推入 push
+     * 和弹出 pop 操作序列的结果时，返回 true；否则，返回 false 。
+     *
+     * 采用模拟的方法进行解答。
+     *
+     * 对应 leetcode 中第 946 题。
+     */
+    public boolean validateStackSequences(int[] pushed, int[] popped) {
+        Stack<Integer> stack = new Stack<>();
+        int i = 0, j = 0, len = pushed.length;
+        while (j < len) {
+            while (i < len && pushed[i] != popped[j]) {
+                stack.push(pushed[i]);
+                i++;
+            }
+            if (i < len) {
+                stack.push(pushed[i]);
+                i++;
+            }
+            while (!stack.isEmpty() && popped[j] == stack.peek()) {
+                stack.pop();
+                j++;
+            }
+            if (i == len) break;
+        }
+        return j == len;
+    }
+
+    public boolean validateStackSequences_v2(int[] pushed, int[] popped) {
+        Deque<Integer> stack = new ArrayDeque<>();
+        int len = pushed.length;
+        for (int i = 0, j = 0; i < len; i++) {
+            stack.push(pushed[i]);
+            while (!stack.isEmpty() && stack.peek() == popped[j]) {
+                stack.pop();
+                j++;
+            }
+        }
+        return stack.isEmpty();
+    }
+
+    // -------验证栈序列 << end --------
+
+    // -------最小的k个数 start >>--------
+
+    /**
+     * 输入整数数组 arr ，找出其中最小的 k 个数。例如，输入4、5、1、6、2、7、3、8这8个数字，则最小的4个数字是1、2、3、4。
+     *
+     * 使用 快排 的方法解答 topK 问题。
+     *
+     * 对应 剑指offer 第 40 题。
+     */
+    public int[] getLeastNumbers(int[] arr, int k) {
+        if (k == 0 || arr.length == 0) {
+            return new int[0];
+        }
+        // 最后一个参数表示我们要找的是下标为 k - 1 的数
+        return getLeastNumbers_QuickSearch(arr, 0, arr.length - 1, k - 1);
+    }
+
+    private int[] getLeastNumbers_QuickSearch(int[] arr, int lo, int hi, int k) {
+        int j = getLeastNumbersPartition(arr, lo, hi);
+        if (j == k) {
+            return Arrays.copyOf(arr, j + 1);
+        }
+        // 否则根据下标 j 与 k 的关系来决定继续切分左段还是右段
+        return j > k ? getLeastNumbers_QuickSearch(arr, lo, j - 1, k)
+                : getLeastNumbers_QuickSearch(arr, j + 1, hi, k);
+    }
+
+    private int getLeastNumbersPartition(int[] arr, int lo, int hi) {
+        int pivot = arr[lo];
+        while (lo < hi) {
+            while (lo < hi && arr[hi] >= pivot) {
+                hi--;
+            }
+            arr[lo] = arr[hi];
+            while (lo < hi && arr[lo] <= pivot) {
+                lo++;
+            }
+            arr[hi] = arr[lo];
+        }
+        arr[lo] = pivot;
+        return lo;
+    }
+
+    // -------最小的k个数 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

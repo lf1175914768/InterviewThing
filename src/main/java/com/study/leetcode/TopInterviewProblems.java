@@ -481,6 +481,21 @@ public class TopInterviewProblems {
         return head;
     }
 
+    public ListNode oddEvenList_v2(ListNode head) {
+        ListNode dummy = new ListNode(-1), cur = dummy, node = head, pre = dummy;
+        while (node != null) {
+            cur.next = node.next;
+            pre = node;
+            if (node.next != null) {
+                node.next = node.next.next;
+            }
+            node = node.next;
+            cur = cur.next;
+        }
+        pre.next = dummy.next;
+        return head;
+    }
+
     // -------奇偶链表 << end --------
 
     // -------递增的三元子序列 start >>--------

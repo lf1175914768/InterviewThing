@@ -73,7 +73,7 @@ public class LRUCache {
         head.next = node;
     }
 
-    class DLinkedNode {
+    static class DLinkedNode {
         int key;
         int value;
         DLinkedNode prev;

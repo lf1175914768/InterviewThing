@@ -147,4 +147,11 @@ public class DynamicProblemTests {
         param = new char[][] {{'0'}};
         assertEquals(problems.maximalSquare(param), 0);
     }
+
+    @Test
+    public void testDistinctSubSeqII() {
+        assertEquals(problems.distinctSubSeqII("abc"), 7);
+        assertEquals(problems.distinctSubSeqII("aba"), 6);
+        assertEquals(problems.distinctSubSeqII("aaa"), 3);
+    }
 }

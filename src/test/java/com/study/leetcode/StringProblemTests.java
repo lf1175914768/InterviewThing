@@ -1,6 +1,10 @@
 package com.study.leetcode;
 
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class StringProblemTests {
@@ -50,6 +54,8 @@ public class StringProblemTests {
         assertArrayEquals(problems.restoreIpAddresses("0000").toArray(new String[0]), res);
         res = new String[] {"1.0.10.23","1.0.102.3","10.1.0.23","10.10.2.3","101.0.2.3"};
         assertArrayEquals(problems.restoreIpAddresses("101023").toArray(new String[0]), res);
+        res = new String[] {"255.255.255.255"};
+        assertArrayEquals(problems.restoreIpAddresses("255255255255").toArray(new String[0]), res);
     }
 
     @Test
@@ -117,5 +123,50 @@ public class StringProblemTests {
         assertEquals(problems.simplifyPath_v2("/../"), "/");
         assertEquals(problems.simplifyPath("/a/./b/../../c/"), "/c");
         assertEquals(problems.simplifyPath_v2("/a/./b/../../c/"), "/c");
+    }
+
+    @Test
+    public void testRemoveDuplicateLetters() {
+        assertEquals(problems.removeDuplicateLetters("bcabc"), "abc");
+        assertEquals(problems.removeDuplicateLetters("cbacdcbc"), "acdb");
+    }
+
+    @Test
+    public void testCalculate() {
+        assertEquals(problems.calculate("1 + 1"), 2);
+        assertEquals(problems.calculate("2-1 + 2 "), 3);
+        assertEquals(problems.calculate("(1+(4+5+2)-3)+(6+8)"), 23);
+
+        assertEquals(problems.calculate_v2("1 + 1"), 2);
+        assertEquals(problems.calculate_v2("2-1 + 2 "), 3);
+        assertEquals(problems.calculate_v2("(1+(4+5+2)-3)+(6+8)"), 23);
+    }
+
+    @Test
+    public void testFindLadders() {
+        String[] words = {"hot","dot","dog","lot","log","cog"};
+        String[][] res = {{"hit","hot","dot","dog","cog"}, {"hit","hot","lot","log","cog"}};
+        assertArrayEquals(toArray(problems.findLadders("hit", "cog", Arrays.asList(words))), res);
+        words = new String[] {"hot","dot","dog","lot","log"};
+        assertNull(toArray(problems.findLadders("hit", "cog", Arrays.asList(words))));
+    }
+
+    @Test
+    public void testIsScramble() {
+        assertTrue(problems.isScramble("great", "rgeat"));
+        assertFalse(problems.isScramble("abcde", "caebd"));
+        assertTrue(problems.isScramble("a", "a"));
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private <T> T[][] toArray(List<List<T>> list) {
+        if (null == list || list.size() == 0) return null;
+        List[] lists = list.toArray(new List[0]);
+        int row = lists.length, col = lists[0].size(), i = 0;
+        T[][] res = (T[][]) new Object[row][col];
+        for (List item : lists) {
+            res[i++] = (T[]) item.toArray();
+        }
+        return res;
     }
 }

@@ -95,7 +95,7 @@ public class HotProblems {
                 right = mid;
             }
         }
-        if (left - 1 <= 0)
+        if (left - 1 < 0)
             return -1;
         return nums[left - 1] == target ? left - 1 : -1;
     }
@@ -235,8 +235,6 @@ public class HotProblems {
      * 例如我们找到 P[i] 的最大值为5，也就是回文串的最大长度是5，对应的下标是6，所以原字符串的开头下标是 (6 - 5) / 2 = 0.所以我们就只需要返回原字符串的
      * 第 0 到 第 (5-1) 位就可以了。
      *
-     * @param s
-     * @return
      */
 //    public String longestPalindrome_v3(String s) {
 //        String T = preProcessForPalindrome(s);
@@ -265,38 +263,64 @@ public class HotProblems {
 
     // -------正则表达式匹配 start >>--------
 
+    /**
+     * 给你一个字符串 s 和一个字符规律 p，请你来实现一个支持 '.' 和 '*' 的正则表达式匹配。
+     * '.' 匹配任意单个字符
+     * '*' 匹配零个或多个前面的那一个元素
+     * 所谓匹配，是要涵盖 整个 字符串 s的，而不是部分字符串。
+     *
+     * 采用动态规划的方法进行解答。
+     * 首先定义状态 dp[i][j] 表示 s 的前 i 个是否能被 p 的前 j 个匹配。
+     * 状态转移方程分情况讨论：
+     * 1、考虑最简单的 p[j] == s[i], 则有 dp[i][j] = dp[i - 1][j - 1]
+     * 2、 p[j] == '.' , 则有 dp[i][j] = dp[i - 1][j - 1]
+     * 对于 p[j] == '*', 明天 * 的含义是匹配零个或多个前面的那一个元素，所以要考虑他前面的元素 p[j-1]。 所以按照 p[j-1] 和 s[i] 是否相等，
+     * 我们分为两种情况：
+     * 3.1、 p[j - 1] != s[i], 这种是前一个字符匹配不上的情况，比如 (ab, abc*)。遇到 * 往前看两个， 发现前面的 s[i] 的 “ab” 对 p[j - 2]
+     * 的 “ab” 能匹配，虽然后面是 "c*"， 但是可以看做匹配 0 次 c，相当于直接去掉 c*,所以也是 true。
+     * 3.2、 p[j - 1] == s[i] or p[j - 1] == '.' ， 又可分为三种情况：
+     *    3.2.1、让 p[j - 1] 重复 0 次， 比如 (###, ###c*)， 这种情况下 dp[i][j] = dp[i][j - 2]
+     *    3.2.2、让 p[j - 1] 重复 1 次，比如 (###c, ###c*), 这种情况下 dp[i][j] = dp[i - 1][j - 2]
+     *    3.2.3、让 p[j - 1] 重复 >= 2 次，比如 (###ccccc, ###c*), 这种情况下 dp[i][j] = dp[i - 1][j]
+     *        （星号不是真实字符，s、p是否匹配，要看 s 去掉末尾最后一个字符，和 p 仍旧是匹配的，因为 * 可以表示大于等于 2 个最后一个字符，
+     *        s 末尾去掉了一个，p 末尾依旧是 * 没变）
+     *
+     *
+     * 对应 leetcode 中第 10 题。
+     */
     public boolean isMatch(String s, String p) {
         int m = s.length();
         int n = p.length();
 
-        boolean[][] f = new boolean[m + 1][n + 1];
-        f[0][0] = true;
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        // base case, s 为空，p 为空
+        dp[0][0] = true;
 
-        for (int i = 0; i <= m; i++) {
+        // s 为空，p不为空，由于 * 可以匹配0个字符，所以有可能为 true
+        for (int j = 1; j <= n; j++) {
+            if (p.charAt(j - 1) == '*') {
+                dp[0][j] = dp[0][j - 2];
+            }
+        }
+
+        for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                if (p.charAt(j - 1) == '*') {
-                    f[i][j] = f[i][j - 2];
-                    if (matches(s, p, i, j - 1)) {
-                        f[i][j] = f[i][j] || f[i - 1][j];
-                    }
-                } else {
-                    if (matches(s, p, i, j)) {
-                        f[i][j] = f[i - 1][j - 1];
+                // 文本串和模式串末位字符能匹配上
+                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else if (p.charAt(j - 1) == '*') {
+                    if (s.charAt(i - 1) == p.charAt(j - 2) || p.charAt(j - 2) == '.') {
+                        dp[i][j] = dp[i][j - 2]          // 匹配 0 次的情况
+                                || dp[i][j - 1]          // 匹配 1 次的情况
+                                || dp[i - 1][j];         // 匹配多次的情况
+                    } else {
+                        // 模式串 * 的前一个字符不能够跟文本串的末位匹配， * 只能匹配 0 次
+                        dp[i][j] = dp[i][j - 2];
                     }
                 }
             }
         }
-        return f[m][n];
-    }
-
-    private boolean matches(String s, String p, int i, int j) {
-        if (i == 0) {
-            return false;
-        }
-        if (p.charAt(j - 1) == '.') {
-            return true;
-        }
-        return s.charAt(i - 1) == p.charAt(j - 1);
+        return dp[m][n];
     }
 
     // -------正则表达式匹配 << end --------
@@ -396,6 +420,12 @@ public class HotProblems {
 
     // -------电话号码的字母组合 start >>--------
 
+    /**
+     * 给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回。
+     * 给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。
+     *
+     * 对应 leetcode 中第 17 题。
+     */
     public List<String> letterCombinations(String digits) {
         List<String> combinations = new ArrayList<>();
         if (digits == null || digits.length() == 0) {
@@ -437,6 +467,38 @@ public class HotProblems {
         }
     }
 
+    public List<String> letterCombinations_v2(String digits) {
+        List<String> res = new ArrayList<>();
+        if (digits.length() == 0) return res;
+        Map<Character, String[]> map = new HashMap<Character, String[]>() {{
+            put('2', new String[]{"a", "b", "c"});
+            put('3', new String[]{"d", "e", "f"});
+            put('4', new String[]{"g", "h", "i"});
+            put('5', new String[]{"j", "k", "l"});
+            put('6', new String[]{"m", "n", "o"});
+            put('7', new String[]{"p", "q", "r", "s"});
+            put('8', new String[]{"t", "u", "v"});
+            put('9', new String[]{"w", "x", "y", "z"});
+        }};
+        StringBuilder sb = new StringBuilder();
+        letterCombinations_dfs(sb, digits, 0, map, res);
+        return res;
+    }
+
+    private void letterCombinations_dfs(StringBuilder path, String digits, int dept, Map<Character, String[]> map, List<String> res) {
+        if (dept == digits.length()) {
+            res.add(path.toString());
+            return;
+        }
+        char digit = digits.charAt(dept);
+        String[] letters = map.get(digit);
+        for (String letter : letters) {
+            path.append(letter);
+            letterCombinations_dfs(path, digits, dept + 1, map, res);
+            path.deleteCharAt(dept);
+        }
+    }
+
     // -------电话号码的字母组合 << end --------
 
     // -------有效的括号 start >>--------
@@ -466,7 +528,7 @@ public class HotProblems {
                 }
                 continue;
             }
-            stack.add(c);
+            stack.push(c);
         }
         return stack.isEmpty();
     }
@@ -475,6 +537,11 @@ public class HotProblems {
 
     // -------括号生成 start >>--------
 
+    /**
+     * 数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。
+     *
+     * 对应 leetcode 中第 22 题。
+     */
     public List<String> generateParenthesis(int n) {
         if (n <= 0) {
             return new ArrayList<>();
@@ -714,10 +781,10 @@ public class HotProblems {
     public int longestValidParentheses_v2(String s) {
         int result = 0;
         Stack<Integer> stack = new Stack<>();
-        stack.add(-1);
+        stack.push(-1);
         for (int i = 0; i < s.length(); i++) {
             if (s.charAt(i) == '(') {
-                stack.add(i);
+                stack.push(i);
             } else {
                 stack.pop();
                 if (stack.isEmpty()) {
@@ -778,6 +845,13 @@ public class HotProblems {
 
     // -------在排序数组中查找元素的第一个和最后一个位置 start >>--------
 
+    /**
+     * 给你一个按照非递减顺序排列的整数数组 nums，和一个目标值 target。请你找出给定目标值在数组中的开始位置和结束位置。
+     * 如果数组中不存在目标值 target，返回 [-1, -1]。
+     * 你必须设计并实现时间复杂度为 O(log n) 的算法解决此问题。
+     *
+     * 对应 leetcode 中第 34 题。
+     */
     public int[] searchRange(int[] nums, int target) {
         int[] result = {-1, -1};
         if (null == nums || nums.length == 0) {
@@ -1031,9 +1105,7 @@ public class HotProblems {
 
         for (int i = 1; i < row - 1; i++) {
             closedIsLandDfs(grid, i, 0);
-            ;
             closedIsLandDfs(grid, i, col - 1);
-            ;
         }
         int res = 0;
         for (int i = 1; i < row - 1; i++) {
@@ -2901,6 +2973,23 @@ public class HotProblems {
             stack.push(current);
         }
         return sum;
+    }
+
+    public int trap_v4(int[] height) {
+        int res = 0, left = 0, right = height.length - 1;
+        int leftMax = height[left], rightMax = height[right];
+        while (left < right) {
+            if (leftMax < rightMax) {
+                res += leftMax - height[left];
+                left++;
+                leftMax = Math.max(leftMax, height[left]);
+            } else {
+                res += rightMax - height[right];
+                right--;
+                rightMax = Math.max(rightMax, height[right]);
+            }
+        }
+        return res;
     }
 
     // -------接雨水 << end --------

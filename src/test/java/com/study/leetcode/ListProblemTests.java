@@ -8,8 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class ListProblemTests {
 
@@ -108,7 +107,31 @@ public class ListProblemTests {
         assertArrayEquals(toArray(problem.removeNthFromEnd(head, 1)), res);
     }
 
-    private int[] toArray(ListNode head) {
+    @Test
+    public void testSwapPairs() {
+        ListNode head = buildCommonNode(Arrays.asList(1, 2, 3, 4));
+        int[] res = new int[] {2,1,4,3};
+        assertArrayEquals(toArray(problem.swapPairs(head)), res);
+    }
+
+    @Test
+    public void testRemoveElements() {
+        ListNode head = buildCommonNode(Arrays.asList(1,2,6,3,4,5,6));
+        int[] res = new int[] {1,2,3,4,5};
+        assertArrayEquals(toArray(problem.removeElements(head, 6)), res);
+        head = null;
+        assertNull(problem.removeElements(head, 1));
+        head = buildCommonNode(Arrays.asList(7,7,7,7));
+        assertNull(problem.removeElements(head, 7));
+        head = buildCommonNode(Arrays.asList(1,2,6,3,4,5,6));
+        assertArrayEquals(toArray(problem.removeElements_v2(head, 6)), res);
+        head = null;
+        assertNull(problem.removeElements_v2(head, 1));
+        head = buildCommonNode(Arrays.asList(7,7,7,7));
+        assertNull(problem.removeElements_v2(head, 7));
+    }
+
+    static int[] toArray(ListNode head) {
         List<Integer> rs = new ArrayList<>();
         for (ListNode p = head; p != null; p = p.next) {
             rs.add(p.val);
@@ -120,11 +143,11 @@ public class ListProblemTests {
         return tmp;
     }
 
-    private ListNode buildCommonNode(List<Integer> arr) {
+    static ListNode buildCommonNode(List<Integer> arr) {
         return buildCommonNode(arr.toArray(new Integer[0]));
     }
 
-    private ListNode buildCommonNode(Integer[] arr) {
+    static ListNode buildCommonNode(Integer[] arr) {
         ListNode pre = null, cur = null;
         for (int i = arr.length - 1; i >= 0; i--) {
             cur = new ListNode(arr[i], pre);
