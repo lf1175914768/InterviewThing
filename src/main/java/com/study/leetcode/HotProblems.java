@@ -1968,7 +1968,7 @@ public class HotProblems {
         if (board[row][col] != word.charAt(curChar))
             return false;
         visited[row][col] = true;
-        boolean result =  existWords(board, row + 1, col, word, curChar + 1, visited)
+        boolean result = existWords(board, row + 1, col, word, curChar + 1, visited)
                 || existWords(board, row - 1, col, word, curChar + 1, visited)
                 || existWords(board, row, col + 1, word, curChar + 1, visited)
                 || existWords(board, row, col - 1, word, curChar + 1, visited);
@@ -1994,11 +1994,11 @@ public class HotProblems {
         Deque<Integer> stack = new ArrayDeque<>(len);
         for (int i = 0; i < len; i++) {
             // 这个while 很关键，因为有可能不止一个柱形的最大宽度可以被计算出来
-            while (!stack.isEmpty() && heights[i] < heights[stack.peekLast()]) {
+            while (!stack.isEmpty() && heights[i] <= heights[stack.peekLast()]) {
                 int curHeight = heights[stack.pollLast()];
-                while (!stack.isEmpty() && heights[stack.peekLast()] == curHeight) {
-                    stack.pollLast();
-                }
+//                while (!stack.isEmpty() && heights[stack.peekLast()] == curHeight) {
+//                    stack.pollLast();
+//                }
                 int curWidth;
                 if (stack.isEmpty()) {
                     curWidth = i;
@@ -2012,9 +2012,9 @@ public class HotProblems {
 
         while (!stack.isEmpty()) {
             int curHeight = heights[stack.pollLast()];
-            while (!stack.isEmpty() && heights[stack.peekLast()] == curHeight) {
-                stack.pollLast();
-            }
+//            while (!stack.isEmpty() && heights[stack.peekLast()] == curHeight) {
+//                stack.pollLast();
+//            }
             int curWidth;
             if (stack.isEmpty()) {
                 curWidth = len;
@@ -2235,11 +2235,16 @@ public class HotProblems {
      *  只有让 dp[0] 为真，dp[i + 1]才会只取决于 s[0:i] 是否为单个单词，才能用上这个状态转移方程。
      */
     public boolean wordBreak_v2(String s, List<String> wordDict) {
+        int maxSize = 0;
+        for (String word : wordDict) {
+            maxSize = Math.max(maxSize, word.length());
+        }
         Set<String> wordDictSet = new HashSet<>(wordDict);
         boolean[] dp = new boolean[s.length() + 1];
         dp[0] = true;
         for (int i = 1; i <= s.length(); i++) {
-            for (int j = 0; j < i; j++) {
+            int start = Math.max(0, i - maxSize);
+            for (int j = start; j < i; j++) {
                 if (dp[j] && wordDictSet.contains(s.substring(j, i))) {
                     dp[i] = true;
                     break;
@@ -2307,7 +2312,7 @@ public class HotProblems {
      * 考虑当前位置如果是一个负数的话，那么我们希望以他前一个位置结尾的某个段的积也是一个负数，这样就可以负负得正，并且我们希望这个积尽可能的小。
      * 如果当前位置是一个正数的话，我们希望以他前一个位置结尾的积也是一个正数，并且希望他尽可能的大。所以我们维护两个dp 数组。转移方程如下：
      * dpMax[i] = Math.max(dpMax[i - 1] * nums[i], dpMin[i - 1] * nums[i], nums[i])
-     * dpMin[i] = Math.min(dpMax[i - 1] * nums[i], dpMax[i - 1] * nums[i], nums[i])
+     * dpMin[i] = Math.min(dpMax[i - 1] * nums[i], dpMin[i - 1] * nums[i], nums[i])
      * 它代表第 i 个元素结尾的最大子数组的乘积 dpMax[i]。 可以考虑把 nums[i] 加入第 i - 1个元素结尾的乘积最大或最小的子数组中，二者加上
      * nums[i]， 三者取最大，就是第 i 个元素结尾的乘积中最大子数组的乘积， 同样的，最小子数组的乘积同理。
      *
@@ -2316,8 +2321,9 @@ public class HotProblems {
     public int maxProduct(int[] nums) {
         int[] dpMax = new int[nums.length];
         int[] dpMin = new int[nums.length];
-        System.arraycopy(nums, 0, dpMax, 0, nums.length);
-        System.arraycopy(nums, 0, dpMin, 0, nums.length);
+        dpMax[0] = dpMin[0] = nums[0];
+//        System.arraycopy(nums, 0, dpMax, 0, nums.length);
+//        System.arraycopy(nums, 0, dpMin, 0, nums.length);
         int res = nums[0];
         for (int i = 1; i < nums.length; i++) {
             dpMax[i] = Math.max(dpMax[i - 1] * nums[i], Math.max(dpMin[i - 1] * nums[i], nums[i]));
@@ -2905,7 +2911,7 @@ public class HotProblems {
         for (int i = 1; i < height.length - 1; i++) {
             maxLeft[i] = Math.max(maxLeft[i - 1], height[i - 1]);
         }
-        for (int j = height.length - 2; j >= 0; j--) {
+        for (int j = height.length - 2; j > 0; j--) {
             maxRight[j] = Math.max(maxRight[j + 1], height[j + 1]);
         }
 
@@ -3107,7 +3113,7 @@ public class HotProblems {
 
     ///////-------------helper class-------------------
 
-    public static class State {
+    static class State {
         // 图节点的id
         int id;
 

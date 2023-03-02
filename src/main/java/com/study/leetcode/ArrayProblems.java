@@ -80,6 +80,12 @@ public class ArrayProblems {
      *
      * 使用单调栈的方法进行解答
      *
+     * 比如 [6,5,4,3,8]，对于前面的 [6,5,4,3] 等数字都需要向后遍历，当寻找到元素 8 时才找到了比自己大的元素；而如果已知元素 6 向后
+     * 找到元素 8 才找到了比自己大的数字，那么对于元素 [5,4,3] 来说，他们都比元素 6 更小，所以比他们更大的元素一定是元素 8，不需要
+     * 单独遍历对 [5,4,3] 向后遍历一次
+     * 根据上面的分析可知，可以遍历一次数组，如果元素是单调递减的（则他们的【下一个更大元素】相同），我们就把这些元素保存，直到找到一个较大的元素；
+     * 把该较大元素逐一跟保存了的元素比较，如果该元素更大， 那么它就是前面元素的【下一个更大元素】。
+     *
      * 对应 leetcode 中第 503 题。
      */
     public int[] nextGreaterElements(int[] nums) {
@@ -96,6 +102,20 @@ public class ArrayProblems {
                 res[i % len] = stack.peek();
             }
             stack.push(nums[i % len]);
+        }
+        return res;
+    }
+
+    public int[] nextGreaterElements_v2(int[] nums) {
+        int len = nums.length;
+        int[] res = new int[len];
+        Stack<Integer> stack = new Stack<>();
+        Arrays.fill(res, -1);
+        for (int i = 0; i < nums.length * 2; i++) {
+            while (!stack.isEmpty() && nums[stack.peek()] < nums[i % len]) {
+                res[stack.pop()] = nums[i % len];
+            }
+            stack.push(i % len);
         }
         return res;
     }
@@ -193,7 +213,7 @@ public class ArrayProblems {
     /**
      * 折木棍
      *
-     * 在你的面前从左到右摆放着 nn 根长短不一的木棍，你每次可以折断一根木棍，并将折断后得到的两根木棍一左一右放在原来的位置
+     * 在你的面前从左到右摆放着 n 根长短不一的木棍，你每次可以折断一根木棍，并将折断后得到的两根木棍一左一右放在原来的位置
      * （即若原木棍有左邻居，则两根新木棍必须放在左邻居的右边，若原木棍有右邻居，新木棍必须放在右邻居的左边，所有木棍保持左右排列）。
      * 折断后的两根木棍的长度必须为整数，且它们之和等于折断前的木棍长度。你希望最终从左到右的木棍长度单调不减，那么你需要折断多少次呢？
      *

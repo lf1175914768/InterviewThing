@@ -59,6 +59,7 @@ public class ArrayProblemTests {
         int[] param = new int[] {1,2,1};
         int[] res = new int[] {2,-1,2};
         assertArrayEquals(problems.nextGreaterElements(param), res);
+        assertArrayEquals(problems.nextGreaterElements_v2(param), res);
     }
 
     @Test
