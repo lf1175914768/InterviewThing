@@ -408,7 +408,7 @@ public class ArrayProblems {
     /**
      * 给定两个大小分别为 m 和 n 的正序（从小到大）数组 nums1 和 nums2。请你找出并返回这两个正序数组的 中位数 。
      * 算法的时间复杂度应该为 O(log (m+n)) 。
-     *
+     * <p>
      * 解题思路：
      * 我们可以将数组进行切分。一个长度为 m 的数组，有 0 到 m 总共 m + 1 个位置可以且切。
      * 我们把数组 nums1 和 nums2 分别在 i 和 j 进行切割。
@@ -421,12 +421,12 @@ public class ArrayProblems {
      * 2、当 nums1 数组和 nums2 数组的总长度是奇数时，如果我们能够保证 左半部分的长度比右半部分的长度大 1.
      *    i + j = m - i + n - j + 1, 也就是 j = (m + n + 1) / 2 - i;
      *    那么这种情况下，中位数就是左半部分的最大值，也就是左半部分比右半部分多出的哪一个数  max(nums1[i - 1], nums2[j - 1])
-     *
+     * <p>
      * 上面的第一个条件我们其实可以合并为 j = (m + n + 1) / 2 - i,因为如果 m + n是偶数，由于我们取得是 int 值，所以加1不会影响结果。
      * 当然，由于 0 <= i <= m, 为了保证 0 <= j <= n, 我们必须保证 m <= n;
      * m <= n, i < m, j = (m + n + 1) / 2 - i >= (m + m + 1) / 2 - i > (m + m + 1) / 2 - m = 0.
      * m <= n, i > 0, j = (m + n + 1) / 2 - i <= (n + n + 1) / 2 - i < (n + n + 1) / 2 = n.
-     *
+     * <p>
      * 剩下的是如何保证 max(nums1[i - 1], nums2[j - 1]) <= min(nums1[i], nums2[j])， 因为 nums1 数组和 nums2 数组是有序的，所以
      * nums1[i - 1] <= nums1[i], nums2[j - 1] <= nums2[j] 这是天然的，所以，我们只需要保证 nums2[j - 1] <= nums1[i] 和 nums1[i - 1] <= nums2[j],
      * 所以我们分两种情况讨论：
@@ -438,7 +438,7 @@ public class ArrayProblems {
      * 此时 左半部分当 j = 0时，最大的值就是 nums1[i - 1]; 当 i = 0时，最大的值就是 nums2[j - 1], 右半部分最小值和之前一样。
      * 当 i = m，或者 j = n，也就是切在了最后边。
      * 此时 左半部分最大值和之前一样，右半部分当 j = n时，最小值就是 nums1[i]; 当 i = m 时，最小值就是 nums2[j]
-     *
+     * <p>
      * 对应 leetcode 中第 4 题。
      */
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
@@ -1108,11 +1108,11 @@ public class ArrayProblems {
 
     /**
      * 给你一个整数数组 nums 和一个整数 k，请你返回其中出现频率前 k 高的元素。你可以按 任意顺序 返回答案。
-     *
+     * <p/>
      * 使用 最小堆的 方法进行解答。
-     *
+     * <p>
      * 时间复杂度： o(nlogK), 空间复杂度： o(n)
-     *
+     * <p>
      * 对应 leetcode 中第 336 题。
      */
     public int[] topKFrequent(int[] nums, int k) {
@@ -1335,7 +1335,9 @@ public class ArrayProblems {
      * 一支弓箭可以沿着 x 轴从不同点 完全垂直 地射出。在坐标 x 处射出一支箭，若有一个气球的直径的开始和结束坐标为 xstart，xend，
      * 且满足  xstart ≤ x ≤ xend，则该气球会被 引爆 。可以射出的弓箭的数量 没有限制 。 弓箭一旦被射出之后，可以无限地前进。
      * 给你一个数组 points ，返回引爆所有气球所必须射出的 最小 弓箭数 
-     *
+     * <p>
+     * 一定存在着一种最优（射出的箭数最小）的方法，使得每一只箭的射出位置都恰好对应着某一个气球的右边界。
+     * <p>
      * 对应 leetcode 中第 452 题。
      */
     public int findMinArrowShots(int[][] points) {
