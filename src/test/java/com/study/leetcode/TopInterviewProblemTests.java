@@ -201,7 +201,9 @@ public class TopInterviewProblemTests {
     @Test
     public void testLongestSubstring() {
         assertEquals(problems.longestSubstring("aaabb", 3), 3);
+        assertEquals(problems.longestSubstring_v2("aaabb", 3), 3);
         assertEquals(problems.longestSubstring("ababbc", 2), 5);
+        assertEquals(problems.longestSubstring_v2("ababbc", 2), 5);
     }
 
     @Test
