@@ -152,9 +152,11 @@ public class DynamicProblemTests {
     public void testMinOperations() {
         int[] target = {5,1,3}, arr = {9,4,2,3,4};
         assertEquals(problems.minOperations(target, arr), 2);
+        assertEquals(problems.minOperations_v2(target, arr), 2);
         target = new int[] {6,4,8,1,3,2};
         arr = new int[] {4,7,6,2,3,8,6,1};
         assertEquals(problems.minOperations(target, arr), 3);
+        assertEquals(problems.minOperations_v2(target, arr), 3);
     }
 
     @Test

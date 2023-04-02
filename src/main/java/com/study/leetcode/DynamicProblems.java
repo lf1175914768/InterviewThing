@@ -618,6 +618,34 @@ public class DynamicProblems {
         return low;
     }
 
+    public int minOperations_v2(int[] target, int[] arr) {
+        Map<Integer, Integer> pos = new HashMap<>();
+        for (int i = 0; i < target.length; i++) {
+            pos.put(target[i], i);
+        }
+        int[] resArr = new int[target.length];
+        int res = 0;
+        for (int num : arr) {
+            if (pos.containsKey(num)) {
+                int index = pos.get(num);
+                int left = 0, right = res;
+                while (left < right) {
+                    int middle = left + ((right - left) >>> 1);
+                    if (resArr[middle] < index) {
+                        left = middle + 1;
+                    } else {
+                        right = middle;
+                    }
+                }
+                resArr[left] = index;
+                if (res == right) {
+                    res++;
+                }
+            }
+        }
+        return target.length - res;
+    }
+
     // -------得到子序列的最少操作次数 << end --------
 
     // -------两个字符串的删除操作 start >>--------
