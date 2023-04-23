@@ -167,6 +167,30 @@ public class ListProblem {
         return dummyHead.next;
     }
 
+    public ListNode sortList_v2(ListNode head) {
+        return sortListQuickSort(head, null);
+    }
+
+    private ListNode sortListQuickSort(ListNode head, ListNode tail) {
+        if (head == tail || head.next == tail) return head;
+        ListNode p = head.next, left = head, right = head;
+        while (p != tail) {
+            ListNode next = p.next;
+            if (p.val < head.val) {  // 头插
+                p.next = left;
+                left = p;
+            } else {      // 尾插
+                right.next = p;
+                right = p;
+            }
+            p = next;
+        }
+        right.next = tail;
+        ListNode node = sortListQuickSort(left, head);
+        head.next = sortListQuickSort(head.next, tail);
+        return node;
+    }
+
     // -------排序链表 << end --------
 
     // -------分隔链表 start >>--------
