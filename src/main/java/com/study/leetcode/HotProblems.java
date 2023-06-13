@@ -191,7 +191,7 @@ public class HotProblems {
     public String longestPalindrome_v3(String s) {
         if (null == s || s.length() == 0)
             return "";
-        int start = 0,end = 0;
+        int start = 0, end = 0;
         for (int i = 0; i < s.length(); i++) {
             int len1 = longestPalindromeExpandAroundCenter(s, i, i);
             int len2 = longestPalindromeExpandAroundCenter(s, i, i + 1);
@@ -234,7 +234,6 @@ public class HotProblems {
      * 用 P 的下标 i 减去 P[i]， 在除以2，就是原字符串的开头下标了。
      * 例如我们找到 P[i] 的最大值为5，也就是回文串的最大长度是5，对应的下标是6，所以原字符串的开头下标是 (6 - 5) / 2 = 0.所以我们就只需要返回原字符串的
      * 第 0 到 第 (5-1) 位就可以了。
-     *
      */
 //    public String longestPalindrome_v3(String s) {
 //        String T = preProcessForPalindrome(s);
@@ -268,7 +267,7 @@ public class HotProblems {
      * '.' 匹配任意单个字符
      * '*' 匹配零个或多个前面的那一个元素
      * 所谓匹配，是要涵盖 整个 字符串 s的，而不是部分字符串。
-     *
+     * <p>
      * 采用动态规划的方法进行解答。
      * 首先定义状态 dp[i][j] 表示 s 的前 i 个是否能被 p 的前 j 个匹配。
      * 状态转移方程分情况讨论：
@@ -279,13 +278,12 @@ public class HotProblems {
      * 3.1、 p[j - 1] != s[i], 这种是前一个字符匹配不上的情况，比如 (ab, abc*)。遇到 * 往前看两个， 发现前面的 s[i] 的 “ab” 对 p[j - 2]
      * 的 “ab” 能匹配，虽然后面是 "c*"， 但是可以看做匹配 0 次 c，相当于直接去掉 c*,所以也是 true。
      * 3.2、 p[j - 1] == s[i] or p[j - 1] == '.' ， 又可分为三种情况：
-     *    3.2.1、让 p[j - 1] 重复 0 次， 比如 (###, ###c*)， 这种情况下 dp[i][j] = dp[i][j - 2]
-     *    3.2.2、让 p[j - 1] 重复 1 次，比如 (###c, ###c*), 这种情况下 dp[i][j] = dp[i - 1][j - 2]
-     *    3.2.3、让 p[j - 1] 重复 >= 2 次，比如 (###ccccc, ###c*), 这种情况下 dp[i][j] = dp[i - 1][j]
-     *        （星号不是真实字符，s、p是否匹配，要看 s 去掉末尾最后一个字符，和 p 仍旧是匹配的，因为 * 可以表示大于等于 2 个最后一个字符，
-     *        s 末尾去掉了一个，p 末尾依旧是 * 没变）
-     *
-     *
+     * 3.2.1、让 p[j - 1] 重复 0 次， 比如 (###, ###c*)， 这种情况下 dp[i][j] = dp[i][j - 2]
+     * 3.2.2、让 p[j - 1] 重复 1 次，比如 (###c, ###c*), 这种情况下 dp[i][j] = dp[i - 1][j - 2]
+     * 3.2.3、让 p[j - 1] 重复 >= 2 次，比如 (###ccccc, ###c*), 这种情况下 dp[i][j] = dp[i - 1][j]
+     * （星号不是真实字符，s、p是否匹配，要看 s 去掉末尾最后一个字符，和 p 仍旧是匹配的，因为 * 可以表示大于等于 2 个最后一个字符，
+     * s 末尾去掉了一个，p 末尾依旧是 * 没变）
+     * <p>
      * 对应 leetcode 中第 10 题。
      */
     public boolean isMatch(String s, String p) {
@@ -358,19 +356,19 @@ public class HotProblems {
     /**
      * 给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有和为 0 且不重复的三元组。
      * 注意：答案中不可以包含重复的三元组。
-     *
+     * <p>
      * 本题的难点在于如何去除重复解。
      * 1、特判，对于数组长度 n，如果数组为null 或者数组长度小于3，返回 [].
      * 2、对数组进行排序
      * 3、遍历排序后数组：
-     *     若 nums[i] > 0: 因为已经排好序，所以后面不可能有三个数加和等于0，直接返回结果。
-     *     对于重复元素：跳过，避免出现重复解
-     *     令左指针 left = i + 1， 右指针 right = n - 1， 当 left < right 时，执行循环：
-     *        当 nums[i] + nums[left] + nums[right] == 0, 执行循环，判断左界和右界是否和下一位置重复，去除重复解。
-     *        并同时将 left，right 移到下一位置，寻找新得解
-     *        若和大于0，说明 nums[right] 太大，right 左移
-     *        若和小于0，说明 nums[left] 太小，left 右移
-     *
+     * 若 nums[i] > 0: 因为已经排好序，所以后面不可能有三个数加和等于0，直接返回结果。
+     * 对于重复元素：跳过，避免出现重复解
+     * 令左指针 left = i + 1， 右指针 right = n - 1， 当 left < right 时，执行循环：
+     * 当 nums[i] + nums[left] + nums[right] == 0, 执行循环，判断左界和右界是否和下一位置重复，去除重复解。
+     * 并同时将 left，right 移到下一位置，寻找新得解
+     * 若和大于0，说明 nums[right] 太大，right 左移
+     * 若和小于0，说明 nums[left] 太小，left 右移
+     * <p>
      * 对应 leetcode 中第 15 题
      */
     public List<List<Integer>> threeSum(int[] nums) {
@@ -423,7 +421,7 @@ public class HotProblems {
     /**
      * 给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回。
      * 给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。
-     *
+     * <p>
      * 对应 leetcode 中第 17 题。
      */
     public List<String> letterCombinations(String digits) {
@@ -505,7 +503,7 @@ public class HotProblems {
 
     /**
      * 使用栈来实现，
-     *
+     * <p>
      * 对应 leetcode 中第 20 题。
      */
     public boolean isValid(String s) {
@@ -539,7 +537,7 @@ public class HotProblems {
 
     /**
      * 数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。
-     *
+     * <p>
      * 对应 leetcode 中第 22 题。
      */
     public List<String> generateParenthesis(int n) {
@@ -688,19 +686,18 @@ public class HotProblems {
      * 整数数组的一个 排列  就是将其所有成员以序列或线性顺序排列。
      * 整数数组的 下一个排列 是指其整数的下一个字典序更大的排列。更正式地，如果数组的所有排列根据其字典顺序从小到大排列在一个容器中，
      * 那么数组的 下一个排列 就是在这个有序容器中排在它后面的那个排列。如果不存在下一个更大的排列，那么这个数组必须重排为字典序最小的排列（即，其元素按升序排列）。
-     *
+     * <p>
      * 例如，arr = [1,2,3] 的下一个排列是 [1,3,2] 。
      * 类似地，arr = [2,3,1] 的下一个排列是 [3,1,2] 。
      * 而 arr = [3,2,1] 的下一个排列是 [1,2,3] ，因为 [3,2,1] 不存在一个字典序更大的排列。
-     *
-     *
+     * <p>
      * 解题思路：
      * 1、从后向前查找第一个相邻的元素对 (i, i + 1), 满足 A[i] < A[i + 1]。此时[i+1, end) 必然是降序
      * 2、在 [i + 1, end)中从后往前查找第一个满足 A[i] < A[k] 的k。 A[i], A[k] 分别就是【小数】和【大数】。
      * 3、将 A[i] 与 A[k] 交换
      * 4、可以断定这时 [i + 1, end) 必然是降序，重新排序 [i + 1, end) 使其升序。
      * 5、如果在步骤1中找不到符合的相邻元素时，说明当前 [begin, end) 为一个降序顺序，直接跳到 步骤4
-     *
+     * <p>
      * 对应 leetcode 中第 31 题。
      *
      * @param nums list of nums
@@ -849,7 +846,7 @@ public class HotProblems {
      * 给你一个按照非递减顺序排列的整数数组 nums，和一个目标值 target。请你找出给定目标值在数组中的开始位置和结束位置。
      * 如果数组中不存在目标值 target，返回 [-1, -1]。
      * 你必须设计并实现时间复杂度为 O(log n) 的算法解决此问题。
-     *
+     * <p>
      * 对应 leetcode 中第 34 题。
      */
     public int[] searchRange(int[] nums, int target) {
@@ -1290,9 +1287,9 @@ public class HotProblems {
 
     /**
      * 给定一个字符串 s ，请你找出其中不含有重复字符的 最长子串 的长度。
-     *
+     * <p>
      * 对于滑动窗口问题，窗口的定义 是 左闭右开的，也就是 [left, right)
-     *
+     * <p>
      * 对应 leetcode 中第 3 题。
      */
     public int lengthOfLongestSubstring(String s) {
@@ -1336,10 +1333,10 @@ public class HotProblems {
             int weight = edge[2];
             // from -> List(<to, weight>)
             // 邻接表存储图结构，同时存储权重信息
-            graph[from].add(new int[] {to, weight});
+            graph[from].add(new int[]{to, weight});
         }
         // 启动 dijkstra 算法计算以节点k为起点到其他节点的最短路径
-        int[] distTo = networkDelayTimeDijkstra(k , graph);
+        int[] distTo = networkDelayTimeDijkstra(k, graph);
 
         // 找到最长的那一条最短路径
         int res = 0;
@@ -1439,17 +1436,16 @@ public class HotProblems {
      * 给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。
      * 你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。
      * 返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。
-     *
+     * <p>
      * 这里的 k = 1.
      * 直接套状态转移方程，根据base case，可以做一些化简：
      * dp[i][1][0] = max(dp[i - 1][1][0], dp[i - 1][1][1] + prices[i])
      * dp[i][1][1] = max(dp[i - 1][1][1], dp[i - 1][0][0] - prices[i])
-     *             = max(dp[i - 1][1][1], -prices[i])
-     *
+     * = max(dp[i - 1][1][1], -prices[i])
+     * <p>
      * 现在发现 k 都是1，不会改变，即 k 对状态转移方程已经没有影响了。可以进一步化简去掉所有的 k。
      * dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] + prices[i])
      * dp[i][1] = max(dp[i - 1][1], -prices[i])
-     *
      */
     public int maxProfit(int[] prices) {
         int n = prices.length;
@@ -1484,15 +1480,15 @@ public class HotProblems {
     /**
      * 可以认为这一题的 k 为 infinity， 如果 k 为正无穷，那么就可以认为 k 和 k - 1 是一样的，
      * 可以这样改写框架
-     *
+     * <p>
      * dp[i][k][0] = max(dp[i-1][k][0], dp[i-1][k][1] + prices[i])
      * dp[i][k][1] = max(dp[i-1][k][1], dp[i-1][k-1][0] - prices[i])
-     *             = max(dp[i-1][k][1], dp[i-1][k][0] - prices[i])
-     *
+     * = max(dp[i-1][k][1], dp[i-1][k][0] - prices[i])
+     * <p>
      * 我们发现数组中的 k 已经不会在改变了，也就是不需要记录 k 这个状态了。
      * dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] + prices[i])
      * dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] - prices[i])
-     *
+     * <p>
      * 对应 leetcode 中第 122 题。
      */
     public int maxProfit_infinity(int[] prices) {
@@ -1528,7 +1524,7 @@ public class HotProblems {
 
     /**
      * 每次sell 之后要等一天才能继续交易，只要将这个特点融入上一题即可
-     *
+     * <p>
      * dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i])
      * dp[i][1] = max(dp[i-1][1], dp[i-2][0] - prices[i])
      * 解释：第 i 天选择 buy 的时候，要从 i-2 的状态转移，而不是 i-1 。
@@ -1580,8 +1576,8 @@ public class HotProblems {
                     dp[i][k][1] = -prices[i];
                     continue;
                 }
-                dp[i][k][0] = Math.max(dp[i-1][k][0], dp[i-1][k][1] + prices[i]);
-                dp[i][k][1] = Math.max(dp[i-1][k][1], dp[i-1][k-1][0] - prices[i]);
+                dp[i][k][0] = Math.max(dp[i - 1][k][0], dp[i - 1][k][1] + prices[i]);
+                dp[i][k][1] = Math.max(dp[i - 1][k][1], dp[i - 1][k - 1][0] - prices[i]);
             }
         }
         // 穷举了 n × max_k × 2 个状态，正确。
@@ -1596,7 +1592,7 @@ public class HotProblems {
      * 给你一个 32 位的有符号整数 x ，返回将 x 中的数字部分反转后的结果。
      * 如果反转后整数超过 32 位的有符号整数的范围 [−231,  231 − 1] ，就返回 0。
      * 假设环境不允许存储 64 位整数（有符号或无符号）。
-     *
+     * <p>
      * 对应 leetcode 中第 7 题
      */
     public int reverse(int x) {
@@ -1617,9 +1613,9 @@ public class HotProblems {
 
     /**
      * 给定一个不含重复数字的数组 nums ，返回其 所有可能的全排列 。你可以 按任意顺序 返回答案。
-     *
+     * <p>
      * 使用 回溯的解法进行求解
-     *
+     * <p>
      * 对应 leetcode 中第 46 题
      */
     public List<List<Integer>> permute(int[] nums) {
@@ -1652,10 +1648,10 @@ public class HotProblems {
     /**
      * 给定一个 n × n 的二维矩阵 matrix 表示一个图像。请你将图像顺时针旋转 90 度。
      * 你必须在 原地 旋转图像，这意味着你需要直接修改输入的二维矩阵。请不要 使用另一个矩阵来旋转图像。
-     *
+     * <p>
      * 解题思路：
      * 经证明，发现可以先通过水平轴翻转，然后在根据主对角线翻转 得到
-     *
+     * <p>
      * 对应 leetcode 中第 48 题
      */
     public void rotate(int[][] matrix) {
@@ -1664,7 +1660,7 @@ public class HotProblems {
         for (int i = 0; i < n / 2; i++) {
             for (int j = 0; j < n; j++) {
                 int temp = matrix[i][j];
-                matrix[i][j] = matrix[n - 1 -i][j];
+                matrix[i][j] = matrix[n - 1 - i][j];
                 matrix[n - 1 - i][j] = temp;
             }
         }
@@ -1686,7 +1682,7 @@ public class HotProblems {
      * 给定一个非负整数数组 nums ，你最初位于数组的 第一个下标 。
      * 数组中的每个元素代表你在该位置可以跳跃的最大长度。
      * 判断你是否能够到达最后一个下标。
-     *
+     * <p>
      * 对应 leetcode 中第 55 题
      */
     public boolean canJump(int[] nums) {
@@ -1724,7 +1720,7 @@ public class HotProblems {
     /**
      * 以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi] 。请你合并所有重叠的区间，
      * 并返回一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间。
-     *
+     * <p>
      * 对应 leetcode 中第 56 题
      */
     public int[][] merge(int[][] intervals) {
@@ -1755,13 +1751,13 @@ public class HotProblems {
      * 一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。
      * 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。
      * 问总共有多少条不同的路径？
-     *
+     * <p>
      * 解题思路:
      * dp 数组的定义: dp[i][j] 表示从开始的 [0,0] 到达 [i,j] 共有 dp[i][j] 条路径.
      * 那么对于 dp[i][j] 来说,由于只能 向右或者向下走,所以 [i,j] 的来源只能是 [i-1,j] 或者 [i,j-1] ,
      * 对于 dp 数组的定义,分别对应 dp[i-1][j] 和 dp[i][j-1] ,所以有递推公式, dp[i][j] = dp[i-1][j] + dp[i][j-1]
      * 同时考虑 base case, dp[..][0] = 1 , dp[0][..] = 1, 显然,只能通过直线到达,所以值都为 1.
-     *
+     * <p>
      * 对应 leetcode 中第 62 题
      */
     public int uniquePaths(int m, int n) {
@@ -1774,10 +1770,10 @@ public class HotProblems {
         }
         for (int i = 1; i < m; i++) {
             for (int j = 1; j < n; j++) {
-                dp[i][j] = dp[i-1][j] + dp[i][j-1];
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
             }
         }
-        return dp[m-1][n-1];
+        return dp[m - 1][n - 1];
     }
 
     /**
@@ -1802,7 +1798,7 @@ public class HotProblems {
     /**
      * 给定一个包含非负整数的 m x n 网格 grid ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
      * 说明：每次只能向下或者向右移动一步。
-     *
+     * <p>
      * 对应 leetcode 中第 64 题
      */
     public int minPathSum(int[][] grid) {
@@ -1814,7 +1810,7 @@ public class HotProblems {
         }
         for (int i = 1; i < grid.length; i++) {
             for (int j = 1; j < grid[0].length; j++) {
-                grid[i][j] += Math.min(grid[i-1][j], grid[i][j - 1]);
+                grid[i][j] += Math.min(grid[i - 1][j], grid[i][j - 1]);
             }
         }
         return grid[grid.length - 1][grid[0].length - 1];
@@ -1828,7 +1824,7 @@ public class HotProblems {
      * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
      * 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
      * 注意：给定 n 是一个正整数。
-     *
+     * <p>
      * 对应 leetcode 中第 70题
      */
     public int climbStairs(int n) {
@@ -1848,7 +1844,7 @@ public class HotProblems {
     /**
      * 给定一个包含红色、白色和蓝色，一共 n 个元素的数组，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。
      * 此题中，我们使用整数 0、1 和 2 分别表示红色、白色和蓝色。
-     *
+     * <p>
      * 对应 leetcode 中第 75 题
      */
     public void sortColors(int[] nums) {
@@ -1863,6 +1859,7 @@ public class HotProblems {
         int zero = 0;
         int two = len;
         int i = 0;
+        // 注意，这里是 i < two, 而不是 i < len,因为当 i 到达 two 的时候，two 后面的内容已经保证了全部都是 2 了
         while (i < two) {
             if (nums[i] == 0) {
                 int temp = nums[i];
@@ -1890,7 +1887,7 @@ public class HotProblems {
     /**
      * 给你一个整数数组 nums ，数组中的元素 互不相同 。返回该数组所有可能的子集（幂集）。
      * 解集 不能 包含重复的子集。你可以按 任意顺序 返回解集。
-     *
+     * <p>
      * 对应 leetcode 中第 78 题
      */
     public List<List<Integer>> subsets(int[] nums) {
@@ -1915,7 +1912,7 @@ public class HotProblems {
     /**
      * 给你一个整数数组 nums ，其中可能包含重复元素，请你返回该数组所有可能的子集（幂集）。
      * 解集 不能 包含重复的子集。返回的解集中，子集可以按 任意顺序 排列。
-     *
+     * <p>
      * 对应 leetcode 中第 90 题
      */
     public List<List<Integer>> subsetsWithDup(int[] nums) {
@@ -1944,7 +1941,7 @@ public class HotProblems {
     /**
      * 给定一个 m x n 二维字符网格 board 和一个字符串单词 word 。如果 word 存在于网格中，返回 true ；否则，返回 false 。
      * 单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母不允许被重复使用。
-     *
+     * <p>
      * 对应 leetcode 中第 79 题
      */
     public boolean exist(char[][] board, String word) {
@@ -1983,9 +1980,9 @@ public class HotProblems {
     /**
      * 给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1 。
      * 求在该柱状图中，能够勾勒出来的矩形的最大面积。
-     *
+     * <p>
      * 使用单调栈的方法进行解答
-     *
+     * <p>
      * 对应 leetcode 中第 84 题
      */
     public int largestRectangleArea(int[] heights) {
@@ -2056,14 +2053,14 @@ public class HotProblems {
 
     /**
      * 给定一个仅包含 0 和 1 、大小为 rows x cols 的二维二进制矩阵，找出只包含 1 的最大矩形，并返回其面积。
-     *
+     * <p>
      * 解题思路：
      * 遍历每个点，求以这个点为矩阵的右下角的所有矩阵面积。那么如何找出这样的矩阵呢？
      * 如果我们知道了以这个点结尾的连续 1 的个数的话，问题就变得简单了。
      * 1、首先求出高度是 1 的矩形面积，也就是它自身的数，
      * 2、然后向上扩展一行，高度增加 1，选出当前列最小的数字，作为矩阵的宽，求出面积。
      * 3、然后继续向上扩展，重复步骤 2 .
-     *
+     * <p>
      * 对应 leetcode 中第 85 题
      */
     public int maximalRectangle(char[][] matrix) {
@@ -2104,11 +2101,11 @@ public class HotProblems {
     /**
      * 给定一个未排序的整数数组 nums ，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。
      * 请你设计并实现时间复杂度为 O(n) 的算法解决此问题。
-     *
+     * <p>
      * 解题思路：
-     *  使用哈希表的方式进行解答，对于每一个 nums 中的元素，只判断满足当前元素没有左侧边界的情况进入内层循环，
-     *  而对于所有的元素来说，每一个元素最终至多只会走一遍内层循环。大大优化了算法的效率。
-     *
+     * 使用哈希表的方式进行解答，对于每一个 nums 中的元素，只判断满足当前元素没有左侧边界的情况进入内层循环，
+     * 而对于所有的元素来说，每一个元素最终至多只会走一遍内层循环。大大优化了算法的效率。
+     * <p>
      * 对应 leetcode 中第 128 题
      */
     public int longestConsecutive(int[] nums) {
@@ -2136,10 +2133,10 @@ public class HotProblems {
      * 用 hashmap 存储每个端点值对应的连续区间的长度。
      * 若数已经在 hashmap 中，跳过不做处理
      * 若是新的数字加入：
-     *  取出其左右相邻数已有的连续区间长度 left 和 right
-     *  计算当前数的区间长度为 cur_length = left + right + 1;
-     *  根据 cur_length 更新最大长度 max_length 的值
-     *  更新区间两端点的值
+     * 取出其左右相邻数已有的连续区间长度 left 和 right
+     * 计算当前数的区间长度为 cur_length = left + right + 1;
+     * 根据 cur_length 更新最大长度 max_length 的值
+     * 更新区间两端点的值
      */
     public int longestConsecutive_v2(int[] nums) {
         Map<Integer, Integer> map = new HashMap<>();
@@ -2169,10 +2166,10 @@ public class HotProblems {
     /**
      * 给你一个字符串 s 和一个字符串列表 wordDict 作为字典。请你判断是否可以利用字典中出现的单词拼接出 s 。
      * 注意：不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。
-     *
+     * <p>
      * 解题思路：
      * DFS
-     *
+     * <p>
      * 对应 leetcode 中第 139 题
      */
     public boolean wordBreak(String s, List<String> wordDict) {
@@ -2218,21 +2215,21 @@ public class HotProblems {
      * 使用动态规划的方法进行解答：
      * s 喘能否分解为单词表的单词
      * 将大问题分解为规模小一点的子问题：san
-     *  1、前 i 个字符的子串，能否分解盛单词
-     *  2、剩余子串，是否为单个单词。
-     *
+     * 1、前 i 个字符的子串，能否分解盛单词
+     * 2、剩余子串，是否为单个单词。
+     * <p>
      * 定义 dp[i] 长度为 i 的 s[0:i - 1]子串是否能拆分盛单词。题目求 dp[s.length]
-     *
+     * <p>
      * 状态转移方程：
      * 类似的，我们用指针 j 去划分 s[0:i] 子串，
      * s[0:i] 子串对应 dp[i + 1],它是否为 true(s[0:i] 能否break)，取决于两点：
-     *  它的前缀子串 s[0:j-1] 的 dp[j]，是否为 true
-     *  剩余子串 s[j:i], 是否是单词表的单词
-     *
+     * 它的前缀子串 s[0:j-1] 的 dp[j]，是否为 true
+     * 剩余子串 s[j:i], 是否是单词表的单词
+     * <p>
      * base case：
-     *  dp[0] = true。即，长度为 0 的 s[0:-1] 能拆分盛单词表单词， （这看似荒谬，但这只是为了让边界情况也能套用状态转移方程而已）
-     *  当 j = 0时， s[0:i] 的 dp[i + 1],取决于 s[0:-1] 的 dp[0], 和，剩余子串 s[0:i] 是否时单个单词。
-     *  只有让 dp[0] 为真，dp[i + 1]才会只取决于 s[0:i] 是否为单个单词，才能用上这个状态转移方程。
+     * dp[0] = true。即，长度为 0 的 s[0:-1] 能拆分成单词表单词， （这看似荒谬，但这只是为了让边界情况也能套用状态转移方程而已）
+     * 当 j = 0时， s[0:i] 的 dp[i + 1],取决于 s[0:-1] 的 dp[0], 和，剩余子串 s[0:i] 是否时单个单词。
+     * 只有让 dp[0] 为真，dp[i + 1]才会只取决于 s[0:i] 是否为单个单词，才能用上这个状态转移方程。
      */
     public boolean wordBreak_v2(String s, List<String> wordDict) {
         int maxSize = 0;
@@ -2259,29 +2256,29 @@ public class HotProblems {
     // -------环形链表II start >>--------
 
     /**
-     *`给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+     * `给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
      * 如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，
      * 评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。
      * 如果 pos 是 -1，则在该链表中没有环。注意：pos 不作为参数进行传递，仅仅是为了标识链表的实际情况。
      * 不允许修改 链表。
-     *
+     * <p>
      * 解题思路：使用双指针法
      * 设两指针第一次相遇， fast，slow都指向链表头部 head，fast每轮走 2 步，slow 每轮走 1 步。
      * 第一种结果：
-     *    fast 指针走过链表末端，说明链表无环，直接返回 null
+     * fast 指针走过链表末端，说明链表无环，直接返回 null
      * 第二种结果：
-     *    当 fast == slow 时，两指针在环中第一次相遇。 假设链表共有 a + b 个节点，其中链表头部到链表入口右 a 个节点。链表环有 b 个节点
-     *    设两指针分别走了 f, s 步，则有：
-     *    1、fast 走的步数是 slow 的两倍，即 f = 2s;
-     *    2、fast 比 slow 多走了n个环的长度，即 f = s + nb;
-     *    以上两式相减得：f = 2nb, s = nb,即 fast 和 slow指针分别走了 2n 个，n 个环的周长。
-     *
+     * 当 fast == slow 时，两指针在环中第一次相遇。 假设链表共有 a + b 个节点，其中链表头部到链表入口右 a 个节点。链表环有 b 个节点
+     * 设两指针分别走了 f, s 步，则有：
+     * 1、fast 走的步数是 slow 的两倍，即 f = 2s;
+     * 2、fast 比 slow 多走了n个环的长度，即 f = s + nb;
+     * 以上两式相减得：f = 2nb, s = nb,即 fast 和 slow指针分别走了 2n 个，n 个环的周长。
+     * <p>
      * 目前情况分析：
-     *    如果让指针从链表头部一直向前走并统计步数 k， 那么所有 走到链表入口节点时的步数是 k = a + nb
-     *    而目前， slow 指针走过的步数是 nb 步。因此我们只要想办法让 slow 再走 a 步停下来，就可以到环的入口。
-     *    但是我们不知道 a 的值，但是我们可以使用双指针法。我们构建一个指针，此指针需要有如下性质：
-     *      此指针 和 slow 一起向前走 a 步后，两者在入口节点重合。那么从哪里走到入口节点需要 a 步呢？答案就是链表头部 head
-     *
+     * 如果让指针从链表头部一直向前走并统计步数 k， 那么所有 走到链表入口节点时的步数是 k = a + nb
+     * 而目前， slow 指针走过的步数是 nb 步。因此我们只要想办法让 slow 再走 a 步停下来，就可以到环的入口。
+     * 但是我们不知道 a 的值，但是我们可以使用双指针法。我们构建一个指针，此指针需要有如下性质：
+     * 此指针 和 slow 一起向前走 a 步后，两者在入口节点重合。那么从哪里走到入口节点需要 a 步呢？答案就是链表头部 head
+     * <p>
      * 对应 leetcode 中第 142 题
      */
     public ListNode detectCycle(ListNode head) {
@@ -2306,7 +2303,7 @@ public class HotProblems {
 
     /**
      * 给你一个整数数组 nums ，请你找出数组中乘积最大的连续子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积。
-     *
+     * <p>
      * 解题思路：
      * 使用动态规划进行解题；我们可以根据正负性进行分类讨论。
      * 考虑当前位置如果是一个负数的话，那么我们希望以他前一个位置结尾的某个段的积也是一个负数，这样就可以负负得正，并且我们希望这个积尽可能的小。
@@ -2315,7 +2312,7 @@ public class HotProblems {
      * dpMin[i] = Math.min(dpMax[i - 1] * nums[i], dpMin[i - 1] * nums[i], nums[i])
      * 它代表第 i 个元素结尾的最大子数组的乘积 dpMax[i]。 可以考虑把 nums[i] 加入第 i - 1个元素结尾的乘积最大或最小的子数组中，二者加上
      * nums[i]， 三者取最大，就是第 i 个元素结尾的乘积中最大子数组的乘积， 同样的，最小子数组的乘积同理。
-     *
+     * <p>
      * 对应 leetcode 中第 152 题。
      */
     public int maxProduct(int[] nums) {
@@ -2354,7 +2351,7 @@ public class HotProblems {
     /**
      * 给定一个大小为 n 的数组，找到其中的多数元素。多数元素是指在数组中出现次数 大于 n/2的元素。
      * 你可以假设数组是非空的，并且给定的数组总是存在多数元素。
-     *
+     * <p>
      * 对应 leetcode 中第 169 题。
      */
     public int majorityElement(int[] nums) {
@@ -2375,7 +2372,7 @@ public class HotProblems {
 
     /**
      * 给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。
-     *
+     * <p>
      * 对应 leetcode 中第 206 题。
      *
      * @param head head node
@@ -2413,9 +2410,8 @@ public class HotProblems {
     /**
      * 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。
      * 请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
-     *
+     * <p>
      * 对应 leetcode 中第 215 题
-     *
      */
     public int findKthLargest(int[] nums, int k) {
         PriorityQueue<Integer> queue = new PriorityQueue<>(k, Comparator.comparingInt(a -> a));
@@ -2517,7 +2513,7 @@ public class HotProblems {
             return false;
         int p = findKthLargestFind(nums, start, end);
         return findKthLargestPartSort(nums, start, p - 1, targetPosition) ||
-        findKthLargestPartSort(nums, p + 1, end, targetPosition);
+                findKthLargestPartSort(nums, p + 1, end, targetPosition);
     }
 
     private int findKthLargestFind(int[] nums, int start, int end) {
@@ -2539,7 +2535,7 @@ public class HotProblems {
 
     /**
      * 给你一个单链表的头节点 head ，请你判断该链表是否为回文链表。如果是，返回 true ；否则，返回 false 。
-     *
+     * <p>
      * 对应 leetcode 中第 234 题。
      */
     public boolean isPalindrome(ListNode head) {
@@ -2576,7 +2572,7 @@ public class HotProblems {
      * 给你一个整数数组 nums，返回 数组 answer ，其中 answer[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积 。
      * 题目数据 保证 数组 nums之中任意元素的全部前缀元素和后缀的乘积都在  32 位 整数范围内。
      * 请不要使用除法，且在 O(n) 时间复杂度内完成此题。
-     *
+     * <p>
      * 对应 leetcode 中第 238 题
      */
     public int[] productExceptSelf(int[] nums) {
@@ -2600,13 +2596,13 @@ public class HotProblems {
     /**
      * 给你一个整数 n ，返回 和为 n 的完全平方数的最少数量 。
      * 完全平方数 是一个整数，其值等于另一个整数的平方；换句话说，其值等于一个整数自乘的积。例如，1、4、9 和 16 都是完全平方数，而 3 和 11 不是。
-     *
+     * <p>
      * 使用动态规划进行求解
      * 首先初始化 长度为 n + 1 的数组 dp，每个位置都为 0
      * 如果 n 为 0，则结果为 0
      * 对数组进行遍历，下标为i，每次都将当前数字先更新为 最大的结果，即 dp[i] = i
      * 动态转移方程： dp[i] = MIN(dp[i], dp[i - j * j] + 1), i 表示当前数字， j * j 表示平方数
-     *
+     * <p>
      * 对应 leetcode 中第 279题。
      */
     public int numSquares(int n) {
@@ -2629,7 +2625,7 @@ public class HotProblems {
      * 编码规则为: k[encoded_string]，表示其中方括号内部的 encoded_string 正好重复 k 次。注意 k 保证为正整数。
      * 你可以认为输入字符串总是有效的；输入字符串中没有额外的空格，且输入的方括号总是符合格式要求的。
      * 此外，你可以认为原始数据不包含数字，所有的数字只表示重复的次数 k ，例如不会出现像 3a 或 2[4] 的输入。
-     *
+     * <p>
      * 对应 leetcode 中第 394 题
      */
     public String decodeString(String s) {
@@ -2668,11 +2664,11 @@ public class HotProblems {
      * 回文字符串 是正着读和倒过来读一样的字符串。
      * 子字符串 是字符串中的由连续字符组成的一个序列。
      * 具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
-     *
+     * <p>
      * 使用动态规划实现
      * dp[i][j] 表示字符串 s 在[i, j] 区间的子串是否是一个回文串。
      * 状态转移方程：当 s[i] = s[j] && (j - i < 2 || dp[i + 1][j - 1]) 时， dp[i][j] = true, 否则为 false
-     *
+     * <p>
      * 对应 leetcode 中第 647 题
      */
     public int countSubstrings(String s) {
@@ -2696,12 +2692,12 @@ public class HotProblems {
     /**
      * 给你一个整数数组 nums ，你需要找出一个 连续子数组 ，如果对这个子数组进行升序排序，那么整个数组都会变为升序排序。
      * 请你找出符合题意的 最短 子数组，并输出它的长度。
-     *
+     * <p>
      * 假设把这个数组分成三段，左段和右段是标准的升序数组，中序数组虽是无序的，但满足最小值大于 左段的最大值，最大值小于右段的最小值。
      * 那么我们就可以找 中断的左右边界，我们分别定义为 begin 和 end；分两头开始遍历：
      * 从左到右维护一个最大值 max， 在进入右段之前，那么遍历到的 nums[i] 都是小于 max 的， 我们要求的 end 就是遍历中最后一个小于 max元素的位置。
      * 同理，从右到左维护一个最小值 min，在进入左段之前，那么遍历到的 nums[i] 也都是大于 min 的，要求的 begin 也就是最后一个大于 min 元素的位置。
-     *
+     * <p>
      * 对应 leetcode 中第 581 题。
      */
     public int findUnsortedSubArray(int[] nums) {
@@ -2716,7 +2712,7 @@ public class HotProblems {
             }
             if (nums[len - 1 - i] > min) {
                 // 从右到左维护最小值，寻找左边界
-                begin = len - i -1;
+                begin = len - i - 1;
             } else {
                 min = nums[len - i - 1];
             }
@@ -2731,9 +2727,9 @@ public class HotProblems {
     /**
      * 给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
      * 异位词 指由相同字母重排列形成的字符串（包括相同的字符串）。
-     *
+     * <p>
      * 使用 滑动窗口 方法实现
-     *
+     * <p>
      * 对应 leetcode 中第 438 题
      */
     public List<Integer> findAnagrams(String s, String p) {
@@ -2770,9 +2766,9 @@ public class HotProblems {
     /**
      * 给定一个整数数组 temperatures ，表示每天的温度，返回一个数组 answer ，其中 answer[i] 是指在第 i 天之后，
      * 才会有更高的温度。如果气温在这之后都不会升高，请在该位置用 0 来代替。
-     *
+     * <p>
      * 使用 单调栈的方法进行实现。
-     *
+     * <p>
      * 对应 leetcode 中第 739题。
      */
     public int[] dailyTemperatures(int[] temperatures) {
@@ -2820,7 +2816,7 @@ public class HotProblems {
      * 给定一个包含 n + 1 个整数的数组 nums ，其数字都在 [1, n] 范围内（包括 1 和 n），可知至少存在一个重复的整数。
      * 假设 nums 只有 一个重复的整数 ，返回 这个重复的数 。
      * 你设计的解决方案必须 不修改 数组 nums 且只用常量级 O(1) 的额外空间。
-     *
+     * <p>
      * 使用环形链表的方式解答此题：
      * 如果数组中没有重复的数，以数组 [1,3,4,2] 为例，我们将数组下标 n 和数 nums[n] 建立一个映射关系 f(n)，为：
      * 0 -> 1 , 1 -> 3 , 2 -> 4, 3 -> 2.
@@ -2831,11 +2827,11 @@ public class HotProblems {
      * 同样的，可以产生一个类似链表一样的序列。
      * 0 -> 1 -> 3 -> 2 -> 4 -> 2 -> 4 -> 2 ...
      * 这里的 2 -> 4 是一个循环。
-     *
+     * <p>
      * 综上，可以得出两个结论：
      * 1. 数组中有一个重复的数 <==> 链表中存在环
      * 2. 找到数组中的重复数 <==> 找到链表的环入口
-     *
+     * <p>
      * 对应 leetcode 中第 287 题。
      */
     public int findDuplicate(int[] nums) {
@@ -2889,7 +2885,7 @@ public class HotProblems {
 
     /**
      * 给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
-     *
+     * <p>
      * 这里使用 动态规划 得方法进行解题。
      * 对于每一列，我们可以求它左边最高得墙和右边最高得墙，装水得多少，根据木桶效应，选择其中较矮得一个就够了。
      * 首先使用两个数组，maxLeft[i] 代表第 i 列左边最高得墙得高度， maxRight[i] 代表第 i 列右边最高得墙
@@ -2900,7 +2896,7 @@ public class HotProblems {
      * 对于 maxRight，我们可以这样求：
      * maxRight[i] = max(maxRight[i + 1], height[i + 1])。它后边得墙得右边得最高高度和它后边得墙得高度
      * 选择一个较大得，就是当前列右边最高得墙了。
-     *
+     * <p>
      * 对应 leetcode 中第 42 题。
      */
     public int trap(int[] height) {
@@ -2956,7 +2952,7 @@ public class HotProblems {
 
     /**
      * 使用 栈 得方法进行解答。
-     *
+     * <p>
      * 我们用栈保存每堵墙。当遍历墙得高度得时候，如果当前高度小于栈顶得墙得高度，说明这里会有积水，我们将墙得高度得下标入栈。
      * 如果当前高度大于栈顶得墙得高度，说明之前得积水到这里停下，我们可以计算下有多少积水了。计算完成后，就把当前得墙继续入栈，作为新得积水得墙。
      * 总体得原则就是：
@@ -3008,7 +3004,7 @@ public class HotProblems {
      * [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]（下标 从 0 开始 计数）。
      * 例如， [0,1,2,4,5,6,7] 在下标 3 处经旋转后可能变为 [4,5,6,7,0,1,2] 。
      * 给你 旋转后 的数组 nums 和一个整数 target ，如果 nums 中存在这个目标值 target ，则返回它的下标，否则返回 -1 。
-     *
+     * <p>
      * 对应 leetcode 中第 33 题。
      */
     public int search(int[] nums, int target) {
@@ -3044,17 +3040,17 @@ public class HotProblems {
      * 给你一个非负整数 x ，计算并返回 x 的 算术平方根 。
      * 由于返回类型是整数，结果只保留 整数部分 ，小数部分将被 舍去 。
      * 注意：不允许使用任何内置指数函数和算符，例如 pow(x, 0.5) 或者 x ** 0.5 。
-     *
+     * <p>
      * 思路分析：
      * 如果这个整数的平方 恰好等于 输入整数，那么我们就找到了这个整数
      * 如果这个整数的平方 严格大于 输入整数，那么这个整数肯定不是我们要找的那个数。
      * 如果这个整数的平方 严格小于 输入整数，那么这个整数 可能 是我们要找的那个数。
-     *
+     * <p>
      * 因此，我们可以使用【二分查找】 来查找这个整数，不断缩小范围去猜。
      * 猜的数平方以后大了就往小了猜。
      * 猜的数平方以后恰恰好等于输入的数就找到了。
      * 猜的数平方以后小了，可能猜的数就是，也可能不是。
-     *
+     * <p>
      * 对应 leetcode 中第 69 题。
      */
     public int mySqrt(int x) {
@@ -3078,7 +3074,7 @@ public class HotProblems {
 
     /**
      * 给你一个 m 行 n 列的矩阵 matrix ，请按照 顺时针螺旋顺序 ，返回矩阵中的所有元素。
-     *
+     * <p>
      * 对应 leetcode 中第 54 题。
      */
     public List<Integer> spiralOrder(int[][] matrix) {

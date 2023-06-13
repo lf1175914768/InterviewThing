@@ -218,6 +218,13 @@ public class TreeProblemTests {
 
         TreeNode node7 = new TreeNode(7);
         TreeNode node4 = new TreeNode(4, node2, node7);
+        assertEquals(problem.insertIntoBST_v2(node4, 6).right.left.val, 6);
+
+        node1 = new TreeNode(1);
+        node3 = new TreeNode(3);
+        node2 = new TreeNode(2, node1, node3);
+        node7 = new TreeNode(7);
+        node4 = new TreeNode(4, node2, node7);
         assertEquals(problem.insertIntoBST(node4, 6).right.left.val, 6);
     }
 

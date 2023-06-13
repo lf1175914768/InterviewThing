@@ -1,8 +1,6 @@
 package com.study.leetcode;
 
 
-import java.util.List;
-
 public class ListProblem {
 
     // -------反转链表 start >>--------
