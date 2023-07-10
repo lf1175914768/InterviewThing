@@ -3,6 +3,7 @@ package com.study.leetcode;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -53,5 +54,30 @@ public class GraphProblemTests {
         int[] order = problems.findOrder(2, prerequisites);
         assertEquals(order[0], 0);
         assertEquals(order[1], 1);
+    }
+
+    @Test
+    public void testCloneGraph() {
+        GraphProblems.Node node1 = new GraphProblems.Node(1, new ArrayList<>());
+        GraphProblems.Node node2 = new GraphProblems.Node(2, new ArrayList<>());
+        GraphProblems.Node node3 = new GraphProblems.Node(3, new ArrayList<>());
+        GraphProblems.Node node4 = new GraphProblems.Node(4, new ArrayList<>());
+        node1.neighbors.add(node2);
+        node1.neighbors.add(node4);
+        node2.neighbors.add(node1);
+        node2.neighbors.add(node3);
+        node3.neighbors.add(node2);
+        node3.neighbors.add(node4);
+        node4.neighbors.add(node1);
+        node4.neighbors.add(node3);
+
+        GraphProblems.Node finalNode = problems.cloneGraph(node2);
+        assertEquals(finalNode.val, 2);
+        Integer[] res = {1, 3};
+        assertArrayEquals(finalNode.neighbors.stream().map(item -> item.val).toArray(Integer[]::new), res);
+        GraphProblems.Node node_v2 = problems.cloneGraph_v2(node3);
+        assertEquals(node_v2.val, 3);
+        res = new Integer[] {2, 4};
+        assertArrayEquals(node_v2.neighbors.stream().map(item -> item.val).toArray(Integer[]::new), res);
     }
 }

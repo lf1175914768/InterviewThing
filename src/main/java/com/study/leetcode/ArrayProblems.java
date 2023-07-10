@@ -1737,6 +1737,43 @@ public class ArrayProblems {
 
     // -------最小的k个数 << end --------
 
+    // -------数组中的逆序对 start >>--------
+
+    /**
+     * 在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组，求出这个数组中的逆序对的总数。
+     * <p>
+     * 对应 剑指offer 中第 51 题。
+     */
+    public int reversePairs(int[] nums) {
+        int[] temp = new int[nums.length];
+        return reversePairsMergeSort(nums, 0, nums.length - 1, temp);
+    }
+
+    private int reversePairsMergeSort(int[] nums, int left, int right, int[] temp) {
+        if (left >= right) return 0;
+        int middle = left + ((right - left) >>> 1);
+        int res = reversePairsMergeSort(nums, left, middle, temp)
+                + reversePairsMergeSort(nums, middle + 1, right, temp);
+        int i = left, j = middle + 1;
+        for (int k = left; k <= right; k++) {
+            temp[k] = nums[k];
+        }
+        for (int k = left; k <= right; k++) {
+            if (i == middle + 1) {
+                // 表示左子数组已经合并完
+                nums[k] = temp[j++];
+            } else if (j == right + 1 || temp[i] <= temp[j]) {
+                nums[k] = temp[i++];
+            } else {
+                nums[k] = temp[j++];
+                res += middle - i + 1;   // 统计逆序对
+            }
+        }
+        return res;
+    }
+
+    // -------数组中的逆序对 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {

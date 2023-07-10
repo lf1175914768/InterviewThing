@@ -36,4 +36,10 @@ public class MathProblemTests {
         assertArrayEquals(problem.lexicalOrder(2).toArray(new Integer[0]), res);
         assertArrayEquals(problem.lexicalOrder_v2(2).toArray(new Integer[0]), res);
     }
+
+    @Test
+    public void testCountDigitOne() {
+        assertEquals(problem.countDigitOne(12), 5);
+        assertEquals(problem.countDigitOne(13), 6);
+    }
 }

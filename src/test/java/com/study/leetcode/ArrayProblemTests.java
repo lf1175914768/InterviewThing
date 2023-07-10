@@ -437,4 +437,10 @@ public class ArrayProblemTests {
         res = new int[] {0};
         assertArrayEquals(problems.getLeastNumbers(arr, 1), res);
     }
+
+    @Test
+    public void testReversePairs() {
+        int[] arr = new int[] {7,5,6,4};
+        assertEquals(problems.reversePairs(arr), 5);
+    }
 }

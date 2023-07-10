@@ -228,6 +228,57 @@ public class GraphProblems {
 
     // -------课程表II << end --------
 
+    // -------克隆图 start >>--------
+
+    /**
+     * 给你无向 连通 图中一个节点的引用，请你返回该图的 深拷贝（克隆）。
+     * 图中的每个节点都包含它的值 val（int） 和其邻居的列表（list[Node]）。
+     * <p>
+     * 采用 dfs 的方法进行解答
+     * </p>
+     * 对应 leetcode 中第 133 题。
+     */
+    public Node cloneGraph(Node node) {
+        Map<Node, Node> lookup = new HashMap<>();
+        return cloneGraphDfs(node, lookup);
+    }
+
+    private Node cloneGraphDfs(Node node, Map<Node, Node> lookup) {
+        if (node == null) return null;
+        if (lookup.containsKey(node)) return lookup.get(node);
+        Node clone = new Node(node.val, new ArrayList<>());
+        lookup.put(node, clone);
+        for (Node n : node.neighbors) {
+            clone.neighbors.add(cloneGraphDfs(n, lookup));
+        }
+        return clone;
+    }
+
+    /**
+     * 采用 BFS 的方法进行解答
+     */
+    public Node cloneGraph_v2(Node node) {
+        if (node == null) return null;
+        Map<Node, Node> lookup = new HashMap<>();
+        Node clone = new Node(node.val, new ArrayList<>());
+        lookup.put(node, clone);
+        Deque<Node> queue = new LinkedList<>();
+        queue.offer(node);
+        while (!queue.isEmpty()) {
+            Node tmp = queue.poll();
+            for (Node neighbor : tmp.neighbors) {
+                if (!lookup.containsKey(neighbor)) {
+                    lookup.put(neighbor, new Node(neighbor.val, new ArrayList<>()));
+                    queue.offer(neighbor);
+                }
+                lookup.get(tmp).neighbors.add(lookup.get(neighbor));
+            }
+        }
+        return clone;
+    }
+
+    // -------克隆图 << end --------
+
     // -------组合总和 start >>--------
 
     public List<List<Integer>> permute1(int[] nums) {
@@ -235,4 +286,16 @@ public class GraphProblems {
     }
 
     // -------组合总和 << end --------
+
+    // --------------------helper class----------------------
+
+    static final class Node {
+        int val;
+        List<Node> neighbors;
+
+        Node(int val, List<Node> neighbors) {
+            this.val = val;
+            this.neighbors = neighbors;
+        }
+    }
 }

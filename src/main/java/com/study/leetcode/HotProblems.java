@@ -3088,6 +3088,7 @@ public class HotProblems {
             for (int row = top + 1; row <= bottom; row++) {
                 res.add(matrix[row][right]);
             }
+            // 判断是否会重复打印
             if (left < right && top < bottom) {
                 for (int col = right - 1; col >= left; col--) {
                     res.add(matrix[bottom][col]);
