@@ -8,8 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.study.algorithm.HeapSort;
-import com.study.algorithm.MergeSort;
-import com.study.algorithm.QuickSort;
 import com.study.interview.dynamicprogramming.MaxCommonSequence;
 import com.study.interview.dynamicprogramming.MaxIncrementalSubArray;
 import com.study.interview.string.KMPAlgorithm;
@@ -43,16 +41,6 @@ public class ApplicationTest {
 		Node root = bts.preOrderDeserialize_1(serial);
 		assertEquals(bts.preOrderSerialize_1(root), serial);
 	}
-
-	@Test
-	public void test() {
-		QuickSort sort = new QuickSort();
-		int[] test = {1,2,6,9,8,3,6,5,7,8,9,4,5,6,5,6,8,9,7,4,5,6,12,456,78,9};
-		sort.sort(test, 0, test.length - 1);
-		for(int i = 0; i < test.length; i++) {
-			System.out.print(test[i] + " ");
-		}
-	}
 	
 	@Test
 	public void testHeapSort() {
@@ -61,17 +49,6 @@ public class ApplicationTest {
 		sort.heapSort_2(test);
 		for(int i = 0; i < test.length; i++) {
 			System.out.print(test[i] + " ");
-		}
-	}
-	
-	@Test
-	public void testMergeSort() {
-		int[] arr = {2,3,6,9,8,2,3,45,89,2,102,56,9,89,1425,589,456};
-		int[] temp = new int[arr.length];
-		MergeSort sort = new MergeSort();
-		sort.sort(arr, 0, arr.length - 1, temp);
-		for(int i = 0; i < arr.length; i++) {
-			System.out.print(arr[i] + " ");
 		}
 	}
 	

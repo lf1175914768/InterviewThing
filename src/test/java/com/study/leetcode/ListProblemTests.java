@@ -72,6 +72,19 @@ public class ListProblemTests {
     }
 
     @Test
+    public void testSortList() {
+        ListNode head = buildCommonNode(Arrays.asList(4, 2, 1, 3));
+        int[] rs = new int[] {1,2,3,4};
+        assertArrayEquals(toArray(problem.sortList(head)), rs);
+        head = buildCommonNode(Arrays.asList(-1,5,3,4,0));
+        rs = new int[] {-1,0,3,4,5};
+        assertArrayEquals(toArray(problem.sortList(head)), rs);
+        head = buildCommonNode(Arrays.asList(4, 2, 1, 3));
+        rs = new int[] {1,2,3,4};
+        assertArrayEquals(toArray(problem.sortList_v2(head)), rs);
+    }
+
+    @Test
     public void testPartition() {
         ListNode head = buildCommonNode(Arrays.asList(1, 4, 3, 2, 5, 2));
         int[] rs = new int[] {1,2,2,4,3,5};

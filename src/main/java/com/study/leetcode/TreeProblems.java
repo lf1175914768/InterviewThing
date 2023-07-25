@@ -252,6 +252,10 @@ public class TreeProblems {
         return root;
     }
 
+    /**
+     * 我们用一个栈保存已经遍历过的节点，遍历前序遍历的数组，一直作为当前根节点的左子树，知道当前节点和中序遍历的数组节点相等了，那么我们
+     * 正序遍历中序遍历的数组，倒着遍历已经遍历过的根节点（用栈的pop实现），找到最后一次相等的位置，将他作为该节点的右子树。
+     */
     public TreeNode buildTree_v2(int[] preOrder, int[] inOrder) {
         if (preOrder.length == 0) {
             return null;
@@ -454,6 +458,29 @@ public class TreeProblems {
         return root;
     }
 
+    public TreeNode insertIntoBST_v2(TreeNode root, int val) {
+        if (root == null) return new TreeNode(val);
+        TreeNode cur = root;
+        while (cur != null) {
+            if (cur.val > val) {
+                if (cur.left == null) {
+                    cur.left = new TreeNode(val);
+                    break;
+                } else {
+                    cur = cur.left;
+                }
+            } else {
+                if (cur.right == null) {
+                    cur.right = new TreeNode(val);
+                    break;
+                } else {
+                    cur = cur.right;
+                }
+            }
+        }
+        return root;
+    }
+
     // -------二叉搜索树中的插入操作 << end --------
 
     // -------删除二叉搜索树中的节点 start >>--------
@@ -513,7 +540,7 @@ public class TreeProblems {
 
     /**
      * 给你一个整数 n ，请你生成并返回所有由 n 个节点组成且节点值从 1 到 n 互不相同的不同 二叉搜索树 。可以按 任意顺序 返回答案。
-     *
+     * <p>
      * 解析思路：
      * 可以利用一下查找二叉树的性质。左子树的所有值小于根节点，右子树的所有值大于根节点。
      * 如果求 1...n的所有可能。只需要把 1 作为根节点，[]作为左子树，[2..n] 的所有可能作为右子树。
@@ -521,9 +548,11 @@ public class TreeProblems {
      * 把 3 作为根节点，[1,2]作为左子树，[4..n] 的所有可能作为右子树。
      * ...
      * 把 n 作为根节点，[1..n-1]作为左子树，[] 的所有可能作为右子树。
-     *
+     * <p>
      * 至于，[2..n]的所有可能以及其他情况的所有可能，可以利用上面的方法，把每个数字作为根节点，然后把所有可能的左子树和右子树组合起来即可。
      * 如果只有一个数字，那么所有可能就是一种情况，把该数字作为一棵树，而如果湿 []， 那就返回null
+     * <p>
+     * 对应 leetcode 中第 95 题。
      */
     public List<TreeNode> generateTrees(int n) {
         List<TreeNode> ans = new ArrayList<>();
@@ -897,6 +926,7 @@ public class TreeProblems {
         targetSum -= root.val;
         if (root.left == null && root.right == null && targetSum == 0) {
             result.add(new LinkedList<>(list));
+            // 注意这里不能加 return，否则，最后的 pollLast 没有执行，会导致结果输出有问题
         }
         pathSumToAdd(root.left, targetSum, result, list);
         pathSumToAdd(root.right, targetSum, result, list);
@@ -1808,6 +1838,33 @@ public class TreeProblems {
     }
 
     // -------打家劫舍III << end --------
+
+    // -------平衡二叉树 start >>--------
+
+    /**
+     * 输入一颗二叉树的根节点，判断该树是不是平衡二叉树，如果某二叉树中任意节点的左右子树的深度相差不超过 1，那么它就是一颗平衡二叉树。
+     * <p>
+     * 采用后序遍历 + 剪枝 的方法进行解答。
+     * 定义返回值：
+     * 1、当节点 root 左/右子树的深度差 < 2时，则返回当前子树的深度，即节点 root 的左/右子树的深度最大值 + 1
+     * 2、当节点 root 左/右子树的深度差 >= 2时，返回 -1，代表此子树不是平衡树。
+     * <p>
+     * 对应 剑指offer 第 55 题。
+     */
+    public boolean isBalanced(TreeNode root) {
+        return isBalancedDfs(root) != -1;
+    }
+
+    private int isBalancedDfs(TreeNode root) {
+        if (root == null) return 0;
+        int left = isBalancedDfs(root.left);
+        if (left == -1) return -1;
+        int right = isBalancedDfs(root.right);
+        if (right == -1) return -1;
+        return Math.abs(left - right) < 2 ? Math.max(left, right) + 1 : -1;
+    }
+
+    // -------平衡二叉树 << end --------
 
     // -------组合总和 start >>--------
 

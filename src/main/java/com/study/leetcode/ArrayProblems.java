@@ -80,6 +80,12 @@ public class ArrayProblems {
      *
      * 使用单调栈的方法进行解答
      *
+     * 比如 [6,5,4,3,8]，对于前面的 [6,5,4,3] 等数字都需要向后遍历，当寻找到元素 8 时才找到了比自己大的元素；而如果已知元素 6 向后
+     * 找到元素 8 才找到了比自己大的数字，那么对于元素 [5,4,3] 来说，他们都比元素 6 更小，所以比他们更大的元素一定是元素 8，不需要
+     * 单独遍历对 [5,4,3] 向后遍历一次
+     * 根据上面的分析可知，可以遍历一次数组，如果元素是单调递减的（则他们的【下一个更大元素】相同），我们就把这些元素保存，直到找到一个较大的元素；
+     * 把该较大元素逐一跟保存了的元素比较，如果该元素更大， 那么它就是前面元素的【下一个更大元素】。
+     *
      * 对应 leetcode 中第 503 题。
      */
     public int[] nextGreaterElements(int[] nums) {
@@ -96,6 +102,20 @@ public class ArrayProblems {
                 res[i % len] = stack.peek();
             }
             stack.push(nums[i % len]);
+        }
+        return res;
+    }
+
+    public int[] nextGreaterElements_v2(int[] nums) {
+        int len = nums.length;
+        int[] res = new int[len];
+        Stack<Integer> stack = new Stack<>();
+        Arrays.fill(res, -1);
+        for (int i = 0; i < nums.length * 2; i++) {
+            while (!stack.isEmpty() && nums[stack.peek()] < nums[i % len]) {
+                res[stack.pop()] = nums[i % len];
+            }
+            stack.push(i % len);
         }
         return res;
     }
@@ -193,7 +213,7 @@ public class ArrayProblems {
     /**
      * 折木棍
      *
-     * 在你的面前从左到右摆放着 nn 根长短不一的木棍，你每次可以折断一根木棍，并将折断后得到的两根木棍一左一右放在原来的位置
+     * 在你的面前从左到右摆放着 n 根长短不一的木棍，你每次可以折断一根木棍，并将折断后得到的两根木棍一左一右放在原来的位置
      * （即若原木棍有左邻居，则两根新木棍必须放在左邻居的右边，若原木棍有右邻居，新木棍必须放在右邻居的左边，所有木棍保持左右排列）。
      * 折断后的两根木棍的长度必须为整数，且它们之和等于折断前的木棍长度。你希望最终从左到右的木棍长度单调不减，那么你需要折断多少次呢？
      *
@@ -388,7 +408,7 @@ public class ArrayProblems {
     /**
      * 给定两个大小分别为 m 和 n 的正序（从小到大）数组 nums1 和 nums2。请你找出并返回这两个正序数组的 中位数 。
      * 算法的时间复杂度应该为 O(log (m+n)) 。
-     *
+     * <p>
      * 解题思路：
      * 我们可以将数组进行切分。一个长度为 m 的数组，有 0 到 m 总共 m + 1 个位置可以且切。
      * 我们把数组 nums1 和 nums2 分别在 i 和 j 进行切割。
@@ -401,12 +421,12 @@ public class ArrayProblems {
      * 2、当 nums1 数组和 nums2 数组的总长度是奇数时，如果我们能够保证 左半部分的长度比右半部分的长度大 1.
      *    i + j = m - i + n - j + 1, 也就是 j = (m + n + 1) / 2 - i;
      *    那么这种情况下，中位数就是左半部分的最大值，也就是左半部分比右半部分多出的哪一个数  max(nums1[i - 1], nums2[j - 1])
-     *
+     * <p>
      * 上面的第一个条件我们其实可以合并为 j = (m + n + 1) / 2 - i,因为如果 m + n是偶数，由于我们取得是 int 值，所以加1不会影响结果。
      * 当然，由于 0 <= i <= m, 为了保证 0 <= j <= n, 我们必须保证 m <= n;
      * m <= n, i < m, j = (m + n + 1) / 2 - i >= (m + m + 1) / 2 - i > (m + m + 1) / 2 - m = 0.
      * m <= n, i > 0, j = (m + n + 1) / 2 - i <= (n + n + 1) / 2 - i < (n + n + 1) / 2 = n.
-     *
+     * <p>
      * 剩下的是如何保证 max(nums1[i - 1], nums2[j - 1]) <= min(nums1[i], nums2[j])， 因为 nums1 数组和 nums2 数组是有序的，所以
      * nums1[i - 1] <= nums1[i], nums2[j - 1] <= nums2[j] 这是天然的，所以，我们只需要保证 nums2[j - 1] <= nums1[i] 和 nums1[i - 1] <= nums2[j],
      * 所以我们分两种情况讨论：
@@ -418,7 +438,7 @@ public class ArrayProblems {
      * 此时 左半部分当 j = 0时，最大的值就是 nums1[i - 1]; 当 i = 0时，最大的值就是 nums2[j - 1], 右半部分最小值和之前一样。
      * 当 i = m，或者 j = n，也就是切在了最后边。
      * 此时 左半部分最大值和之前一样，右半部分当 j = n时，最小值就是 nums1[i]; 当 i = m 时，最小值就是 nums2[j]
-     *
+     * <p>
      * 对应 leetcode 中第 4 题。
      */
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
@@ -1088,11 +1108,11 @@ public class ArrayProblems {
 
     /**
      * 给你一个整数数组 nums 和一个整数 k，请你返回其中出现频率前 k 高的元素。你可以按 任意顺序 返回答案。
-     *
+     * <p/>
      * 使用 最小堆的 方法进行解答。
-     *
+     * <p>
      * 时间复杂度： o(nlogK), 空间复杂度： o(n)
-     *
+     * <p>
      * 对应 leetcode 中第 336 题。
      */
     public int[] topKFrequent(int[] nums, int k) {
@@ -1315,7 +1335,9 @@ public class ArrayProblems {
      * 一支弓箭可以沿着 x 轴从不同点 完全垂直 地射出。在坐标 x 处射出一支箭，若有一个气球的直径的开始和结束坐标为 xstart，xend，
      * 且满足  xstart ≤ x ≤ xend，则该气球会被 引爆 。可以射出的弓箭的数量 没有限制 。 弓箭一旦被射出之后，可以无限地前进。
      * 给你一个数组 points ，返回引爆所有气球所必须射出的 最小 弓箭数 
-     *
+     * <p>
+     * 一定存在着一种最优（射出的箭数最小）的方法，使得每一只箭的射出位置都恰好对应着某一个气球的右边界。
+     * <p>
      * 对应 leetcode 中第 452 题。
      */
     public int findMinArrowShots(int[][] points) {
@@ -1714,6 +1736,43 @@ public class ArrayProblems {
     }
 
     // -------最小的k个数 << end --------
+
+    // -------数组中的逆序对 start >>--------
+
+    /**
+     * 在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组，求出这个数组中的逆序对的总数。
+     * <p>
+     * 对应 剑指offer 中第 51 题。
+     */
+    public int reversePairs(int[] nums) {
+        int[] temp = new int[nums.length];
+        return reversePairsMergeSort(nums, 0, nums.length - 1, temp);
+    }
+
+    private int reversePairsMergeSort(int[] nums, int left, int right, int[] temp) {
+        if (left >= right) return 0;
+        int middle = left + ((right - left) >>> 1);
+        int res = reversePairsMergeSort(nums, left, middle, temp)
+                + reversePairsMergeSort(nums, middle + 1, right, temp);
+        int i = left, j = middle + 1;
+        for (int k = left; k <= right; k++) {
+            temp[k] = nums[k];
+        }
+        for (int k = left; k <= right; k++) {
+            if (i == middle + 1) {
+                // 表示左子数组已经合并完
+                nums[k] = temp[j++];
+            } else if (j == right + 1 || temp[i] <= temp[j]) {
+                nums[k] = temp[i++];
+            } else {
+                nums[k] = temp[j++];
+                res += middle - i + 1;   // 统计逆序对
+            }
+        }
+        return res;
+    }
+
+    // -------数组中的逆序对 << end --------
 
     // -------组合总和 start >>--------
 

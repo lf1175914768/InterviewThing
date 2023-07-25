@@ -118,4 +118,46 @@ public class MathProblems {
     }
 
     // -------字典序排数 << end --------
+
+    // -------1~n整数中1出现的次数 start >>--------
+
+    /***
+     * 输入一个整数 n ，求1～n这n个整数的十进制表示中1出现的次数。
+     * 例如，输入12，1～12这些整数中包含1 的数字有1、10、11和12，1一共出现了5次。
+     * <p>
+     * 解题思路：
+     * 将 1 ~ n的个位、十位、百位……的 1 出现的次数相加，即为 1 出现的总次数。
+     * 设数字 n 是一个 x 位数，记 n 的第 i 位为 ni。那么可以称
+     * <ul>
+     * <li>ni为当前位，记为 cur</li>
+     * <li>ni-1……n2n1为低位，记为 low</li>
+     * <li>nx……ni+1为高位，记为 high</li>
+     * <li>将10的i次幂称为位因子，记为 digit</li>
+     * </ul>
+     * 某位中 1 出现的次数的计算方法：
+     * 根据当前位 cur 值的不同，分为三种情况：
+     * <ol>
+     * <li>当 cur = 0时，此位 1 的出现次数只由高位 high 决定，计算公式为：high * digit</li>
+     * <li>当 cur = 1时，此位 1 的出现次数由高位 high 和低位 low决定，计算公式为： high * digit + low + 1 </li>
+     * <li>当 cur = 2,3...9 时，此位 1 的出现次数只由高位 high 决定，计算公式为： (high + 1) * digit </li>
+     * </ol>
+     * <p>
+     * 对应 剑指offer第 43 题。
+     */
+    public int countDigitOne(int n) {
+        int digit = 1, res = 0;
+        int high = n / 10, cur = n % 10, low = 0;
+        while (high != 0 || cur != 0) {    // 当 high 和 cur 同时为 0 时，说明已经越过最高位，因此跳出
+            if (cur == 0) res += high * digit;
+            else if (cur == 1) res += high * digit + low + 1;
+            else res += (high + 1) * digit;
+            low += cur * digit;
+            cur = high % 10;
+            high /= 10;
+            digit *= 10;
+        }
+        return res;
+    }
+
+    // -------1~n整数中1出现的次数 << end --------
 }

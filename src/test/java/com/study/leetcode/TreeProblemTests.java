@@ -218,6 +218,13 @@ public class TreeProblemTests {
 
         TreeNode node7 = new TreeNode(7);
         TreeNode node4 = new TreeNode(4, node2, node7);
+        assertEquals(problem.insertIntoBST_v2(node4, 6).right.left.val, 6);
+
+        node1 = new TreeNode(1);
+        node3 = new TreeNode(3);
+        node2 = new TreeNode(2, node1, node3);
+        node7 = new TreeNode(7);
+        node4 = new TreeNode(4, node2, node7);
         assertEquals(problem.insertIntoBST(node4, 6).right.left.val, 6);
     }
 
@@ -551,6 +558,21 @@ public class TreeProblemTests {
         TreeNode root = new TreeNode(3, node2, node31);
         assertEquals(problem.rob(root), 7);
         assertEquals(problem.rob_v2(root), 7);
+    }
+
+    @Test
+    public void testIsBalanced() {
+        TreeNode root = buildCommonTree();
+        assertTrue(problem.isBalanced(root));
+
+        TreeNode node1 = new TreeNode(4);
+        TreeNode node2 = new TreeNode(4);
+        TreeNode node4 = new TreeNode(3);
+        TreeNode node3 = new TreeNode(3, node1, node2);
+        TreeNode node5 = new TreeNode(2, node3, node4);
+        TreeNode node6 = new TreeNode(2);
+        root = new TreeNode(1, node5, node6);
+        assertFalse(problem.isBalanced(root));
     }
 
     /**

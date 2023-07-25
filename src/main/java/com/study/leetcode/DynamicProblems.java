@@ -1,8 +1,6 @@
 package com.study.leetcode;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -555,6 +553,101 @@ public class DynamicProblems {
 
     // -------最长公共子序列 << end --------
 
+    // -------得到子序列的最少操作次数 start >>--------
+
+    /**
+     * 给你一个数组 target ，包含若干 互不相同 的整数，以及另一个整数数组 arr ，arr 可能 包含重复元素。
+     * 每一次操作中，你可以在 arr 的任意位置插入任一整数。比方说，如果 arr = [1,4,1,2] ，那么你可以在中间添加 3 得到 [1,4,3,1,2] 。
+     * 你可以在数组最开始或最后面添加整数。
+     * 请你返回 最少 操作次数，使得 target 成为 arr 的一个子序列。
+     * 一个数组的 子序列 指的是删除原数组的某些元素（可能一个元素都不删除），同时不改变其余元素的相对顺序得到的数组。
+     * 比方说，[2,7,4] 是 [4,2,3,7,2,1,4] 的子序列（加粗元素），但 [2,4,2] 不是子序列。
+     * <p/>
+     * 为了方便，我们令 target 长度为 n，arr长度为 m，target 和 arr的最长公共子序列长度为 max，不难发现最终答案为 n - max。
+     * 因此从题面来说，这是一道最长公共子序列问题 （LCS）.
+     * 但朴素求解 LCS问题复杂度为 O(m*n)。使用状态定义 【f[i][j]为考虑 a 数组的前 i 个元素和 b 数组的前 j 个元素的最长公共子序列长度为多少】进行求解。
+     * <p/>
+     * 当 LCS 问题添加某些条件限制之后，会存在一些很有趣的性质：
+     * 其中一个经典的性质就是：当其中一个数组元素各不相同时，最长公共子序列问题 (LCS) 可以转化为最长上升子序列 (LIS) 进行求解。同时最长上升子序列
+     * 问题 (LIS) 存在使用 【维护单调序列 + 二分】的贪心解法，复杂度为 O(nlogn)。
+     * 因此本题可以通过 [LCS]问题 -> 利用 target 数组元素各不相同时，转化为 LIS 问题 -> 使用 LIS 的贪心算法，做到 O(nlogn) 的复杂度。
+     * <p/>
+     * <p>
+     *  证明：
+     *  1、为何其中一个数组元素各不相同时，LCS问题可以转化为 LIS 问题？
+     *  Answer：本质是利用【当其中一个数组元素各不相同时，这时候每一个“公共子序列”都对应一个不重复元素数组的下标数组“上升子序列”，反之亦然】。
+     * </p>
+     *
+     * 对应 leetcode 中第 1713 题。
+     */
+    public int minOperations(int[] target, int[] arr) {
+        int n = target.length;
+        Map<Integer, Integer> pos = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            pos.put(target[i], i);
+        }
+        List<Integer> resList = new ArrayList<>();
+        for (int val : arr) {
+            if (pos.containsKey(val)) {
+                int idx = pos.get(val);
+                int it = minOperationBinarySearch(resList, idx);
+                if (it != resList.size()) {
+                    resList.set(it, idx);
+                } else {
+                    resList.add(idx);
+                }
+            }
+        }
+        return n - resList.size();
+    }
+
+    private int minOperationBinarySearch(List<Integer> resList, int target) {
+        int size = resList.size();
+        if (size == 0 || resList.get(size - 1) < target) {
+            return size;
+        }
+        int low = 0, high = size - 1;
+        while (low < high) {
+            int middle = low + ((high - low) >>> 1);
+            if (resList.get(middle) < target) {
+                low = middle + 1;
+            } else {
+                high = middle;
+            }
+        }
+        return low;
+    }
+
+    public int minOperations_v2(int[] target, int[] arr) {
+        Map<Integer, Integer> pos = new HashMap<>();
+        for (int i = 0; i < target.length; i++) {
+            pos.put(target[i], i);
+        }
+        int[] resArr = new int[target.length];
+        int res = 0;
+        for (int num : arr) {
+            if (pos.containsKey(num)) {
+                int index = pos.get(num);
+                int left = 0, right = res;
+                while (left < right) {
+                    int middle = left + ((right - left) >>> 1);
+                    if (resArr[middle] < index) {
+                        left = middle + 1;
+                    } else {
+                        right = middle;
+                    }
+                }
+                resArr[left] = index;
+                if (res == right) {
+                    res++;
+                }
+            }
+        }
+        return target.length - res;
+    }
+
+    // -------得到子序列的最少操作次数 << end --------
+
     // -------两个字符串的删除操作 start >>--------
 
     /**
@@ -720,7 +813,7 @@ public class DynamicProblems {
 
     /**
      * 在一个由 '0' 和 '1' 组成的二维矩阵内，找到只包含 '1' 的最大正方形，并返回其面积。
-     *
+     * <p/>
      * 使用动态规划得方法进行解答：
      * 定义 dp[i][j] 是以 matrix[i - 1][j - 1] 为右下角得正方形得最大边长。
      * 则可以根据画图帮助理解，有如下性质：

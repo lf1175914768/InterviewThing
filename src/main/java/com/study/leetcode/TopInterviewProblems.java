@@ -503,7 +503,7 @@ public class TopInterviewProblems {
     /**
      * 给你一个整数数组 nums ，判断这个数组中是否存在长度为 3 的递增子序列。
      * 如果存在这样的三元组下标 (i, j, k) 且满足 i < j < k ，使得 nums[i] < nums[j] < nums[k] ，返回 true ；否则，返回 false 。
-     *
+     * <p>
      * 对应 leetcode 中第 334 题。
      */
     public boolean increasingTriplet(int[] nums) {
@@ -617,6 +617,36 @@ public class TopInterviewProblems {
             }
         }
         return ans;
+    }
+
+    /**
+     * 采用 递归的方法进行解答
+     * <p/>
+     * <ol>
+     * <li>递归最基本的是记住递归函数的含义（务必牢记函数定义）：这里函数的返回结果是满足题意的最长子字符串的长度。</li>
+     * <li>递归的终止条件（能直接写出的最简单的case）：如果字符串 s 的长度小于 k，那么一定不存在满足题意的子字符串。返回 0；</li>
+     * <li>调用递归（重点）：如果一个字符 c 在 s 中出现的次数少于 k 次，那么 s 中所有包含 c 的子字符串都不能满足题意。所以，应该在 s 的所有不包含
+     *  c 的子字符串中继续寻找结果；把 s 按照 c 分割（分割后每个子串都不包含 c），得到很多子字符串 t；下一步要求 t 作为源字符串的时候，它的最长的
+     *  满足题意的子字符串长度就是我们要求的（到现在为止，我们已经把大问题分割为了小问题）。此时我们发现，恰好已经定义了函数 来解决这个问题。于是形成了递归。</li>
+     * <li>未进入递归时的返回结果：如果 s 中的每个字符出现的次数都大于 k 次，那么 s 就是我们要求的字符串，直接返回该字符串的长度</li>
+     * </ol>
+     */
+    public int longestSubstring_v2(String s, int k) {
+        if (s.length() < k) return 0;
+        Map<Character, Integer> map = new HashMap<>();
+        for (char ch : s.toCharArray()) {
+            map.put(ch, map.getOrDefault(ch, 0) + 1);
+        }
+        for (Character ch : map.keySet()) {
+            if (map.get(ch) < k) {
+                int res = 0;
+                for (String t : s.split(String.valueOf(ch))) {
+                    res = Math.max(res, longestSubstring_v2(t, k));
+                }
+                return res;
+            }
+        }
+        return s.length();
     }
 
     // -------至少有K个重复字符的最长子串 << end --------
@@ -870,7 +900,16 @@ public class TopInterviewProblems {
 
     /**
      * 给定整数 n ，返回 所有小于非负整数 n 的质数的数量 。
-     *
+     * <p/>
+     * 采用厄拉多塞筛法进行解答：
+     * 我们考虑这样一个事实：如果 x 是质数，那么大于 x 的 x 的倍数 2x，3x，4x 一定不是质数，因此我们可以从此入手；
+     * 我们设 isPrime[i] 表示数 i 是不是质数，如果是质数，则为 true，否则为 false，从小到大遍历每个数，如果这个数为质数，则将其所有的倍数都标记为
+     * 合数（除了该质数本身），即 false，这样在运行结束的时候，我们可以知道质数的个数。
+     * <p/>
+     * 这种方法的正确性是比较显然的：这种方法显然不会将质数标记为合数；另一方面，从从小到大遍历到数 x 时，倘若他是合数，则它一定是某个小于 x 的质数 y 的
+     * 整数倍，故我们还可以继续优化，对于一个质数 x，如果按上文说的我们从 2x 开始标记其实是冗余的，应该直接从 x * x 开始标记，因为 2x，3x，…… 这些数
+     * 一定是在 x 之前就被其他数的倍数标记过了。
+     * <p/>
      * 对应 leetcode 中第 204 题。
      */
     public int countPrimes(int n) {

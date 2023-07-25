@@ -59,6 +59,7 @@ public class ArrayProblemTests {
         int[] param = new int[] {1,2,1};
         int[] res = new int[] {2,-1,2};
         assertArrayEquals(problems.nextGreaterElements(param), res);
+        assertArrayEquals(problems.nextGreaterElements_v2(param), res);
     }
 
     @Test
@@ -435,5 +436,11 @@ public class ArrayProblemTests {
         arr = new int[] {0,1,2,1};
         res = new int[] {0};
         assertArrayEquals(problems.getLeastNumbers(arr, 1), res);
+    }
+
+    @Test
+    public void testReversePairs() {
+        int[] arr = new int[] {7,5,6,4};
+        assertEquals(problems.reversePairs(arr), 5);
     }
 }
